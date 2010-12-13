@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+    #parse ($init)
+
+<html dir="#language ("lang.dir")" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>$the_title - $company_name</title>
+    <meta name="CoralWatch" content="CoralWatch"/>
+    <meta name="description"
+          content="CoralWatch is an organisation built on a research project at the University of Queensland, Brisbane, Australia. We have developed a cheap, simple, non-invasive method for the monitoring of coral bleaching, and assessment of coral health. Our Coral Health Chart is basically a series of sample colours, with variation in brightness representing different stages of bleaching/recovery, based on controlled experiments."/>
+    <meta name="keyword"
+          content="coralwatch, coral, feef, monitoring, bleaching, The University of Queensland, Brisbane, Australia"/>
+    $theme.include($top_head_include)
+
+    <link rel="stylesheet" type="text/css" href="http://o.aolcdn.com/dojo/1.4.0/dijit/themes/tundra/tundra.css"/>
+    <script type="text/javascript">
+        var djConfig = {
+            isDebug:false, parseOnLoad:true, locale:"en"
+        };
+    </script>
+    <script type="text/javascript" src="http://o.aolcdn.com/dojo/1.4.0/dojo/dojo.xd.js"></script>
+    <link rel="stylesheet" href="http://o.aolcdn.com/dojo/1.4.0/dojox/grid/resources/Grid.css">
+    <link rel="stylesheet" href="http://o.aolcdn.com/dojo/1.4.0/dojox/grid/resources/tundraGrid.css">
+    <link rel="stylesheet" href="http://o.aolcdn.com/dojo/1.4.0/dojox/form/resources/Rating.css">
+    <style type="text/css">
+        .dojoxGrid table {
+            margin: 0;
+        }
+    </style>
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-16789464-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+</head>
+
+<body class="$css_class tundra">
+
+    $theme.include($top_messages_include)
+
+<div id="wrapper">
+    <div id="banner">
+        <h1 class="logo">
+            <a class="png" href="$company_url">$company_name</a>
+
+			<span class="current-community">
+                $community_name
+            </span>
+        </h1>
+        <!--[if IE 6]>
+        <div style="border: 3px solid #ff0000; background-color: #ffff99;">
+            Unfortunately we are not able to provide the full experience of this site in your browser. Upgrade to a
+            newer version. <a href="http://www.bringdownie6.com/">More...</a>
+        </div>
+        <![endif]-->
+        #parse ("$full_templates_path/dock.vm")
+
+        #if ($update_available_url)
+            <div class="popup-alert-notice">
+                <a class="update-available"
+                   href="$update_available_url">#language ("updates-are-available-for-liferay")</a>
+            </div>
+        #end
+    </div>
+
+    #if ($has_navigation)
+        #parse ("$full_templates_path/navigation.vm")
+    #end
+
+    #if ($selectable)
+        $theme.include($content_include)
+    #else
+        $portletDisplay.recycle()
+
+        $portletDisplay.setTitle($the_title)
+
+        $theme.wrapPortlet("portlet.vm", $content_include)
+    #end
+
+    <div id="footer"></div>
+</div>
+
+</body>
+
+    $theme.include($bottom_include)
+
+</html>
