@@ -150,21 +150,6 @@ padding-right:0px;
 
 
 /*-----------------------------------*/
-#p_p_id_56_INSTANCE_9IBg_ .portlet {
-background-color:#D9DFD3;
-color:#2E3192;
-font-family:'Arial';
-font-size:1.4em;
-font-weight:normal;
-left:100px;
-position:relative;
-text-align:left;
-top:100px;
-width:40%;
-padding-left:10px;
-padding-right:10px;
-padding-top:10px;
-}
 
 
 .columns-max	{
@@ -176,4 +161,10 @@ padding-top:10px;
 .columns-max #column-1 {
 	width:70%;
 	background-image: none;
+}
+
+#portlet-wrapper-terms-of-use #portlet-wrapper-password-reminder {
+		position:relative;
+	z-index:30;
+	background-color:#ffffff;
 }
