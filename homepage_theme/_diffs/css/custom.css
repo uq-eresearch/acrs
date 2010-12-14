@@ -168,3 +168,8 @@ padding-right:0px;
 	background-color:#ffffff;
 }
 
+.portlet {
+
+	position: absolute;
+	top:200px;	
+}
