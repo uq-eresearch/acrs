@@ -146,4 +146,23 @@ padding-right:0px;
     background-color: #dae238;
 }
 	
+/*-----------------------------------*/
 
+
+.columns-max	{
+	position:relative;
+	z-index:30;
+	background-color:#ffffff;
+}
+
+.columns-max #column-1 {
+	width:70%;
+	background-image: none;
+}
+
+
+#portlet-wrapper-terms-of-use #portlet-wrapper-password-reminder {
+		position:relative;
+	z-index:30;
+	background-color:#ffffff;
+}
