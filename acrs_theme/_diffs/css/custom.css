@@ -166,3 +166,9 @@ padding-right:0px;
 	z-index:30;
 	background-color:#ffffff;
 }
+
+.portlet {
+
+	position: absolute;
+	top:200px;	
+}
