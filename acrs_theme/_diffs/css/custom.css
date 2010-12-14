@@ -172,3 +172,27 @@ padding-right:0px;
 	position: absolute;
 	top:200px;	
 }
+
+
+h1, h3, p {
+	color: #2e3192; 
+	font-family: Arial, Helvetica, sans-serif;
+	line-height:1.2em;
+	}
+
+h1 { 
+	font-size:1.4em;
+	
+}
+
+h3 {
+	color: #B375AC;
+	font-size:1.0em;
+}
+
+img {
+	margin-left: 5px;
+	margin-right:5px;
+	margin-top:5px;
+	margin-bottom:5px;
+}
