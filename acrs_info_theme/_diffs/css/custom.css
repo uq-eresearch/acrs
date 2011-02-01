@@ -74,9 +74,8 @@ padding-right:0px;
 
 #navigation ul {
     min-height: 2ex;
-    width: 77%;
-    padding-left:5em;
-	font-size:0.9em;
+    width: 70%;
+    font-size:0.9em;
 }
 
 #add-page {
@@ -132,6 +131,7 @@ padding-right:0px;
     float: none;
     margin: 0;
     z-index:400;
+	font-size:1.2em;
 }
 
 #navigation .child-menu li a {
