@@ -1,14 +1,20 @@
+#wrapper {
+	margin-bottom:0px;
+	margin-top:0px;
+	margin-left:auto;
+	margin-right:auto;
+	width:1000px;
+}
 
 #banner {
 	z-index:20;
 	position:absolute;
 	background-image: url("../images/acrs-logo.png");
 	background-repeat:no-repeat;
-	background-position:left top;
-	left:200px;
-	width:70%;
-	height:180px;
-	top:5px;
+	background-position:17% 0%;
+	width:1000px;
+	height:170px;
+	
 }
 
 
@@ -18,8 +24,7 @@ h1.logo {
 	
 
 #content-wrapper { 	
-	position: relative;
-	left:10px;
+
  }
 
 #add-page {
@@ -36,7 +41,7 @@ padding-right:0px;
 
 #column-1,#column-3 {
 
-	width:12%;
+	width:13%;
 	background-image:url("../images/common/coralbackgr_strip.png");
 	background-repeat:no-repeat;
 	background-position:center top;
@@ -45,9 +50,8 @@ padding-right:0px;
 	}
 
 
-	
 #column-2 {
-	background-image:url("../images/Bleachedbranching.jpg");
+	background-image:url("../images/info_theme_header.jpg");
 	background-repeat:no-repeat;
 	width:74%;
 	height:1000px;
@@ -61,19 +65,18 @@ padding-right:0px;
 	
 	background-color:#dae238;
 	position: absolute;
-	left:10px;
-	top: 180px;
+	top: 170px;
 	z-index:1;
-	width:98%
+	width:1000px;
 
 	
 	}
 
 #navigation ul {
     min-height: 2ex;
-    width: 70%;
+    width: 77%;
     padding-left:5em;
-	padding-right:5em;
+	font-size:0.9em;
 }
 
 #add-page {
@@ -169,8 +172,12 @@ padding-right:0px;
 
 .portlet {
 
-	position: absolute;
-	top:200px;	
+	position: relative;
+	top:200px;
+	padding-left: 30px;
+	padding-right:30px;
+	padding-top:10px;
+	width:92%;
 }
 
 
@@ -180,14 +187,18 @@ h1, h3, p {
 	line-height:1.2em;
 	}
 
+p{
+	font-size:1.3em;
+}	
 h1 { 
-	font-size:1.4em;
+	font-size:1.5em;
 	
 }
 
 h3 {
-	color: #B375AC;
-	font-size:1.0em;
+	color: #9B6D95;
+	font-size:1.2em;
+	
 }
 
 img {
