@@ -6,12 +6,12 @@
 <html dir="#language ("lang.dir")" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>$the_title - $company_name</title>
-    <meta name="CoralWatch" content="CoralWatch"/>
+    <title>Australian Coral Reef Society</title>
+    <meta name="ACRS" content="ACRS"/>
     <meta name="description"
-          content="CoralWatch is an organisation built on a research project at the University of Queensland, Brisbane, Australia. We have developed a cheap, simple, non-invasive method for the monitoring of coral bleaching, and assessment of coral health. Our Coral Health Chart is basically a series of sample colours, with variation in brightness representing different stages of bleaching/recovery, based on controlled experiments."/>
+          content="The Australian Coral Reef Society is the oldest organisation in the world concerned with the study and protection of coral reefs, and it has played a significant role in the nation&rsquo;s history."/>
     <meta name="keyword"
-          content="coralwatch, coral, feef, monitoring, bleaching, The University of Queensland, Brisbane, Australia"/>
+          content="coral, feef, reef, monitoring, bleaching, The University of Queensland, Brisbane, Australia"/>
     $theme.include($top_head_include)
 
     <link rel="stylesheet" type="text/css" href="http://o.aolcdn.com/dojo/1.4.0/dijit/themes/tundra/tundra.css"/>
