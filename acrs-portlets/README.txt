@@ -44,3 +44,8 @@ be found in the root of the deployment or in the src/main/resources folder.
 
 If you want to use another database you will need to also add a dependency to the matching JDBC
 driver in the "pom.xml" file.
+
+=== Compiling and Deploying
+- Run the following command from the project base directory
+ mvn package -Dmaven.test.skip=true && cp target/acrs-portlets.war /path/to/liferay-portal-5.2.3/deploy
+- Then go into the Add Application section of liferay and drag and drop the portlet 
