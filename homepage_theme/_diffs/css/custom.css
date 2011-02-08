@@ -175,4 +175,10 @@ padding-right:0px;
 
 	position: absolute;
 	top:180px;	
+	-moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+    border-radius: 20px;
+	behavior: url("/acrs-theme/css/border-radius.htc");
+
 }
