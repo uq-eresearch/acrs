@@ -19,24 +19,22 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(unique = true)
-    private String email;
-
+    private String title;
     private String firstName;
-
     private String lastName;
-
-    @Column(length = 500)
-    private String address;
-
-    private String phone;
-
-    private String occupation;
-
+    private String streetAddress;
+    private String city;
+    private String state;
+    private String postcode;
     private String country;
-
+    private String email;
+    private String phone;
+    private String institution;
+    private String researchInterest;
+    private String newsletterPref;
+    private String membershipType;
+    
     private String passwordHash;
-
     private String passwordResetId;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -51,8 +49,8 @@ public class Member {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.passwordHash = passwordHash;
         this.registrationDate = new Date();
+        this.passwordHash = passwordHash;
     }
 
     public long getId() {
@@ -62,14 +60,15 @@ public class Member {
     public void setId(long id) {
         this.id = id;
     }
-
-    public String getEmail() {
-        return email;
+    
+    public String getTitle() {
+        return title;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setTitle(String title) {
+        this.title = title;
     }
+    
 
     public String getFirstName() {
         return firstName;
@@ -86,13 +85,52 @@ public class Member {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
-    public String getAddress() {
-        return address;
+    
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+    
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+    
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+   
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhone() {
@@ -103,22 +141,39 @@ public class Member {
         this.phone = phone;
     }
 
-    public String getOccupation() {
-        return occupation;
+    public String getInstitution() {
+        return institution;
     }
 
-    public void setOccupation(String occupation) {
-        this.occupation = occupation;
+    public void setInstitution(String institution) {
+        this.institution = institution;
+    }
+	
+    public String getResearchInterest() {
+        return researchInterest;
     }
 
-    public String getCountry() {
-        return country;
+    public void setResearchInterest(String researchInterest) {
+        this.researchInterest = researchInterest;
+    }
+	
+    public String getNewsletterPref() {
+        return newsletterPref;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setNewsletterPref(String newsletterPref) {
+        this.newsletterPref = newsletterPref;
+    }
+	
+    public String getMembershipType() {
+        return membershipType;
     }
 
+    public void setMembershipType(String membershipType) {
+        this.membershipType = membershipType;
+    }
+	  
+    
     public String getPasswordHash() {
         return passwordHash;
     }

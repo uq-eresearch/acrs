@@ -79,6 +79,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
         }));
         this.connectorService = new JpaConnectorService(emf);
         this.memberDao = new MemberDaoImpl(this.connectorService);
+        //TODO remove this later. This is only an example
         if (memberDao.getAll().isEmpty()) {
             // ensure that there's always one user to begin with
             createDefaultUsers();

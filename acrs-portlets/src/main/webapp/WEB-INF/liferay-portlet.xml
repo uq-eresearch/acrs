@@ -9,7 +9,7 @@
         <!--<configuration-action-class>org.coralwatch.portlets.configuration.UserConfigurationActionImpl-->
         <!--</configuration-action-class>-->
         <instanceable>true</instanceable>
-        <!--<header-portlet-css>/css/coralwatch-portlets.css</header-portlet-css>-->
+        <header-portlet-css>/css/acrs-portlets.css</header-portlet-css>
         <!--<header-portlet-css>/js/jit/css/ForceDirected.css</header-portlet-css>-->
     </portlet>
     <role-mapper>
