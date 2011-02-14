@@ -106,7 +106,7 @@ padding-right:0px;
 }
 
 #navigation li.selected a, #navigation li a:hover, #navigation .child-menu li a {
-    background-color: #e4ea6c;
+    background-color: #FFFFFF;
 }
 
 #navigation li:hover .child-menu {
@@ -179,6 +179,16 @@ padding-right:0px;
     -webkit-border-radius: 20px;
     -khtml-border-radius: 20px;
     border-radius: 20px;
-	behavior: url("/acrs-theme/css/border-radius.htc");
+	/*behavior: url("/acrs-theme/css/border-radius.htc");*/
 
 }
+
+
+a {
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
