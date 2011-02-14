@@ -106,7 +106,7 @@ padding-right:0px;
 }
 
 #navigation li.selected a, #navigation li a:hover, #navigation .child-menu li a {
-    background-color: #e4ea6c;
+    background-color: #ffffff;
 }
 
 #navigation li:hover .child-menu {
@@ -172,12 +172,12 @@ padding-right:0px;
 
 .portlet {
 
-	position: relative;
+	position: absolute;
 	top:180px;
 	padding-left: 30px;
 	padding-right:30px;
 	padding-top:10px;
-	width:92%;
+	width:694px;
 }
 
 
@@ -196,7 +196,7 @@ h1 {
 }
 
 h3 {
-	color: #9B6D95;
+	color: #9150D3;
 	font-size:1.2em;
 	
 }
@@ -208,6 +208,13 @@ img {
 	margin-bottom:5px;
 }
 
+a {
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
 
 
 
