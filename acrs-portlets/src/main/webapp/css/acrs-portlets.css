@@ -48,7 +48,9 @@ form div label {
   display: block;
   float: left;
   width: 130px;
-  padding: 3px 5px;
+  padding-left:5px;
+  padding-top:5px;
+  padding-right:5px;
   margin: 0 0 5px 0;
   text-align: right;
 }
@@ -62,15 +64,67 @@ form div select, form div textarea, form div input {
 }
 
 form div input.inputCheckbox, form div input.radioCheckbox{
-	width: 10px;
+	width: 20px;
 	padding-left: 5px;
-}	
+}
 
-#memberListTable td {
+form div.notes p, form div small {
+  line-height: 125%;
+}
+
+form div.wide small {
+  margin: 0 0 5px 0;
+}
+
+table#memberListTable {
+	background-color:#ffffff;
+	border-collapse:separate;
+	border-spacing:1px;
+	clear:both;
+}
+
+table#memberListTable td {
 	padding-top: 3px;
 	padding-bottom: 3px;
 	padding-left: 3px;
 	padding-right: 3px;
-	background-color: #ACE8D1;
-}		
+	background-color: #D4F2EA;
+	font-size:1.2em;
+	color:#000000;
+}
 
+table#memberListTable th {
+	background-color:#E6E6E6;
+	font-weight:bold;
+	text-align:center;
+}
+
+
+
+#applicantDetailsTable {
+	background-color:#ffffff;
+	border-collapse:separate;
+	border-spacing:1px;
+	clear:both;
+	margin-left:10px;
+}
+
+.applLabel {
+	background-color:#E6E6E6;
+	font-weight:bold;
+	text-align:right;
+	font-size:1.0em;
+	padding-right:10px;
+	padding-left:10px;
+}
+
+.applData {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right:10px;
+	padding-left:10px;
+	background-color: #D4F2EA;
+	font-size:1.2em;
+	color:#000000;
+
+}

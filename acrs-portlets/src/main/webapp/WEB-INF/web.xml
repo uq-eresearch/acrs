@@ -9,5 +9,14 @@
     <listener>
         <listener-class>org.acrs.app.ApplicationContext</listener-class>
     </listener>
-
+    
+    <servlet>
+    <servlet-name>paypalServlet</servlet-name>
+    <servlet-class>org.acrs.servlets.PayPalServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+    </servlet>
+   <servlet-mapping>
+   <servlet-name>paypalServlet</servlet-name>
+   <url-pattern>/paypal/*</url-pattern>
+   </servlet-mapping>
 </web-app>

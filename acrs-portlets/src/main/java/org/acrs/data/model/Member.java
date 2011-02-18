@@ -19,6 +19,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @NotNull
     private String title;
     private String firstName;
     private String lastName;
@@ -29,10 +30,20 @@ public class Member {
     private String country;
     private String email;
     private String phone;
+    
+    @Column(length=500)
     private String institution;
+    @Column(length=500)
     private String researchInterest;
+    
     private String newsletterPref;
     private String membershipType;
+    
+    private Double membershipAmount;
+    
+    private String renewalFlag;
+    private String acrsEmailListFlag;
+    private String paypalRef;
     
     private String passwordHash;
     private String passwordResetId;
@@ -43,6 +54,7 @@ public class Member {
 
     public Member() {
         this.registrationDate = new Date();
+        
     }
 
     public Member(String firstName, String lastName, String email, String passwordHash) {
@@ -172,7 +184,39 @@ public class Member {
     public void setMembershipType(String membershipType) {
         this.membershipType = membershipType;
     }
-	  
+    
+    public Double getMembershipAmount() {
+        return membershipAmount;
+    }
+
+    public void setMembershipAmount(Double membershipAmount) {
+        this.membershipAmount = membershipAmount;
+    }
+	
+    
+    public String getRenewalFlag() {
+        return renewalFlag;
+    }
+
+    public void setRenewalFlag(String renewalFlag) {
+        this.renewalFlag = renewalFlag;
+    }
+    
+    public String getAcrsEmailListFlag() {
+        return acrsEmailListFlag;
+    }
+
+    public void setAcrsEmailListFlag(String acrsEmailListFlag) {
+        this.acrsEmailListFlag = acrsEmailListFlag;
+    }
+
+    public String getPaypalRef() {
+        return paypalRef;
+    }
+
+    public void setPaypalRef(String paypalRef) {
+        this.paypalRef = paypalRef;
+    }
     
     public String getPasswordHash() {
         return passwordHash;
