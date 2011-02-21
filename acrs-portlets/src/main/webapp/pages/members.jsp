@@ -36,6 +36,9 @@
 		<th>Research<br>Interest</th>		
 		<th>Newsletter<br>Preference</th>		
 		<th>Membership<br>Type</th>
+		<th>Membership<br>Amount</th>
+		<th>Paypal<br>Reference</th>
+	
 				
 		</tr>
 		<% for (Member member : members) { %>
@@ -48,6 +51,8 @@
 		<td><%=member.getResearchInterest()%></td>
 		<td><%=member.getNewsletterPref()%></td>
 		<td><%=member.getMembershipType()%></td>
+		<td><%=member.getMembershipAmount()+"0"%></td>
+		<td><%=member.getPaypalRef()%></td>
 		</tr>
 		<%} %>
 		</table>
@@ -174,7 +179,8 @@
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Student" /> Student ($30.00)<br />
 					<input class="radioCheckbox" type="radio" name="membershipType" value="FiveYear" /> 5 Year Full ($200.00)<br />		
 	
-				<div>There is a $10.00 discount on Full and Student single year memberships for applications received between 1 January and 28 February each year. Memberships are valid until the end of the calendar year.</div>
+				<div>
+				There is a $10.00 discount on Full and Student single year memberships for applications received between 1 January and 28 February each year. Memberships are valid until the end of the calendar year.</div>
 				
 				</div>
 				
