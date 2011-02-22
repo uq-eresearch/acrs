@@ -1,6 +1,7 @@
 package org.acrs.app;
 
 import org.acrs.data.access.MemberDao;
+import java.util.Properties;
 
 /**
  * Author: alabri
@@ -15,5 +16,5 @@ public interface Configuration {
      * @return MemberDao
      */
     MemberDao getUserDao();
-
+    Properties getSubmissionEmailConfig();
 }

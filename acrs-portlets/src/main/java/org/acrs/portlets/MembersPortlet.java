@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 
+import org.acrs.util.Emailer;
+import javax.mail.MessagingException;
+
 /**
  * Author: alabri
  * Date: 08/02/2011
@@ -36,9 +39,14 @@ public class MembersPortlet extends GenericPortlet {
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
         //Do all you views here
     	
+    	
     	// if the user is a liferay admin list the membership database in the JSP.
     	boolean isAdmin = renderRequest.isUserInRole("administrator");
     	renderRequest.setAttribute("isAdmin", isAdmin);
+
+    	// form is the default non-admin view
+    	String cmd = "_FORM";
+    	renderRequest.setAttribute("cmd", cmd);
     	    	
     	List<Member> allMembers = membersDao.getAll();
     	renderRequest.setAttribute("allMembers", allMembers);
@@ -148,13 +156,29 @@ public class MembersPortlet extends GenericPortlet {
 	    	newMember.setMembershipAmount(membershipAmount);
 	    	newMember.setRenewalFlag(renewalFlag);
 	    	newMember.setAcrsEmailListFlag(acrsEmailListFlag);
+	    	newMember.setPaypalRef("");
+	    	newMember.setPaypalStatus("UNPAID");
 	    	
 	    	membersDao.save(newMember);
 	    	
+	    	// email stuff out
+	    	String approvalEmail1="peggy.newman@uq.edu.au";
+	    	String approvalEmail2="peggggy@gmail.com";
+	    	String message="Hi, got a new member: \n First Name: " + firstName + "\n Last Name: " + lastName;
+	    	
+	    	try {
+	    		Emailer.sendEmail(approvalEmail1,"no-reply@acrs.org","New ACRS Membership", message);
+	    		Emailer.sendEmail(approvalEmail2,"no-reply@acrs.org","New ACRS Membership", message);
+	    		
+	    	} catch (MessagingException e) {
+	    		_log.fatal("Could not send email.");
+	    	}
+	    	
+	    	
+	    	
 	    	actionResponse.setRenderParameter("newMemberId", String.valueOf(newMember.getId()));
 	    	session.setAttribute("newMember", newMember, PortletSession.APPLICATION_SCOPE);
-	    	//session.setAttribute("paypalItemName", paypalItemName, PortletSession.APPLICATION_SCOPE);
-	    	actionRequest.setAttribute("paypalItemName", paypalItemName);
+	    	session.setAttribute("paypalItemName", paypalItemName, PortletSession.APPLICATION_SCOPE);
     	}
     	
     }

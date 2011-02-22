@@ -19,7 +19,6 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotNull
     private String title;
     private String firstName;
     private String lastName;
@@ -44,6 +43,7 @@ public class Member {
     private String renewalFlag;
     private String acrsEmailListFlag;
     private String paypalRef;
+    private String paypalStatus;
     
     private String passwordHash;
     private String passwordResetId;
@@ -216,6 +216,14 @@ public class Member {
 
     public void setPaypalRef(String paypalRef) {
         this.paypalRef = paypalRef;
+    }
+    
+    public String getPaypalStatus() {
+        return paypalStatus;
+    }
+
+    public void setPaypalStatus(String paypalStatus) {
+        this.paypalStatus = paypalStatus;
     }
     
     public String getPasswordHash() {

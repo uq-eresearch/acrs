@@ -26,7 +26,8 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final JpaConnectorService connectorService;
     private final MemberDao memberDao;
     private final Logger logger = Logger.getLogger(ApplicationContext.class.getName());
-
+    private final Properties submissionEmailConfig;
+    
     public ApplicationContext() throws InitializationException {
         Properties properties = new Properties();
         InputStream resourceAsStream = null;
@@ -84,6 +85,10 @@ public class ApplicationContext implements Configuration, ServletContextListener
             // ensure that there's always one user to begin with
             createDefaultUsers();
         }
+        
+        this.submissionEmailConfig = new Properties();
+        String submissionEmailServer = getProperty(properties, "emailServer");
+        this.submissionEmailConfig.setProperty("mail.smtp.host", submissionEmailServer);
     }
 
     @Override
@@ -105,6 +110,11 @@ public class ApplicationContext implements Configuration, ServletContextListener
     @Override
     public MemberDao getUserDao() {
         return memberDao;
+    }
+    
+    @Override
+    public Properties getSubmissionEmailConfig() {
+        return submissionEmailConfig;
     }
 
     private static String getProperty(Properties properties, String propertyName) throws InitializationException {
