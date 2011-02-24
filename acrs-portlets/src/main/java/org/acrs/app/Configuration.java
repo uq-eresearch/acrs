@@ -16,5 +16,8 @@ public interface Configuration {
      * @return MemberDao
      */
     MemberDao getUserDao();
+    
     Properties getSubmissionEmailConfig();
+    
+    String getServerProxyName();
 }

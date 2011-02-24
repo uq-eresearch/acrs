@@ -27,7 +27,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final MemberDao memberDao;
     private final Logger logger = Logger.getLogger(ApplicationContext.class.getName());
     private final Properties submissionEmailConfig;
-    
+    private final String serverProxy;
     public ApplicationContext() throws InitializationException {
         Properties properties = new Properties();
         InputStream resourceAsStream = null;
@@ -88,6 +88,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
         
         this.submissionEmailConfig = new Properties();
         String submissionEmailServer = getProperty(properties, "emailServer");
+        this.serverProxy = getProperty(properties, "serverProxyName");
         this.submissionEmailConfig.setProperty("mail.smtp.host", submissionEmailServer);
     }
 
@@ -117,6 +118,11 @@ public class ApplicationContext implements Configuration, ServletContextListener
         return submissionEmailConfig;
     }
 
+    @Override
+    public String getServerProxyName() {
+        return serverProxy;
+    }
+    
     private static String getProperty(Properties properties, String propertyName) throws InitializationException {
         return getProperty(properties, propertyName, false);
     }

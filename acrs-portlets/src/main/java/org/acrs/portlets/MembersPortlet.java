@@ -138,6 +138,11 @@ public class MembersPortlet extends GenericPortlet {
 	    		paypalItemName = paypalItemName + " (with early discount)";
 	    	}
     		
+	    	// tidy up nulls 
+	    	if (acrsEmailListFlag == null) {acrsEmailListFlag = "N";}
+	    	if (renewalFlag == null) {renewalFlag = "N";}
+	    	
+	    	
 	    	// save member details
 	    	newMember.setTitle(title);
 	    	newMember.setFirstName(firstName);
@@ -157,18 +162,35 @@ public class MembersPortlet extends GenericPortlet {
 	    	newMember.setRenewalFlag(renewalFlag);
 	    	newMember.setAcrsEmailListFlag(acrsEmailListFlag);
 	    	newMember.setPaypalRef("");
-	    	newMember.setPaypalStatus("UNPAID");
+	    	newMember.setPaypalStatus("UNVERIFIED");
 	    	
 	    	membersDao.save(newMember);
 	    	
 	    	// email stuff out
 	    	String approvalEmail1="peggy.newman@uq.edu.au";
-	    	String approvalEmail2="peggggy@gmail.com";
-	    	String message="Hi, got a new member: \n First Name: " + firstName + "\n Last Name: " + lastName;
+	    	String approvalEmail2="peggy.newman@uq.edu.au";
+	    	String emailListCoordEmail = "peggy.newman@uq.edu.au";
+	    	
+	    	String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership for your approval. \n\nKind Regards, \nThe ACRS Website\n\n";
+	    	String emailListMessage = "Hi, \n\nThe following membership applicant indicated a desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
+	    	String applicantDetail = "\n\tName:\t\t\t\t" + title + " " + firstName + " " + lastName 
+	    						   + "\n\tAddress:\t\t\t" + streetAddress + ", " + city + " " + state + " " + postcode
+	    						   + "\n\tEmail:\t\t\t" + email
+	    						   + "\n\tPhone:\t\t\t" + phone
+	    						   + "\n\tInstitution:\t\t" + institution
+	    						   + "\n\tResearch Interest:\t" + researchInterest
+	    						   + "\n\tNewsletter Preference:\t" + newsletterPref
+	    						   + "\n\tMembership Type: \t\t" + membershipType
+	    						   + "\n\tMembership Amount: \t" + membershipAmount + "0"
+	    						   ;
 	    	
 	    	try {
-	    		Emailer.sendEmail(approvalEmail1,"no-reply@acrs.org","New ACRS Membership", message);
-	    		Emailer.sendEmail(approvalEmail2,"no-reply@acrs.org","New ACRS Membership", message);
+	    		Emailer.sendEmail(approvalEmail1,"no-reply@acrs.org","New ACRS Membership", approvalMessage+applicantDetail);
+	    		Emailer.sendEmail(approvalEmail2,"no-reply@acrs.org","New ACRS Membership", approvalMessage+applicantDetail);
+	    		
+	    		if (acrsEmailListFlag.equals("Y")) {
+	    			Emailer.sendEmail(emailListCoordEmail,"no-reply@acrs.org","New ACRS Mail List Subscribe Request", emailListMessage+applicantDetail);
+	    		}
 	    		
 	    	} catch (MessagingException e) {
 	    		_log.fatal("Could not send email.");

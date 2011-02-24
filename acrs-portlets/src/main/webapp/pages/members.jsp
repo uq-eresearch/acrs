@@ -40,6 +40,7 @@
 		<th>Institution</th>
 		<th>Research<br>Interest</th>		
 		<th>Newsletter<br>Preference</th>		
+		<th>Email List<br>Subscription</th>		
 		<th>Membership<br>Type</th>
 		<th>Membership<br>Renewal Flag</th>
 		<th>Membership<br>Amount</th>
@@ -57,6 +58,7 @@
 		<td><%=member.getInstitution()%></td>
 		<td><%=member.getResearchInterest()%></td>
 		<td><%=member.getNewsletterPref()%></td>
+		<td><%=member.getAcrsEmailListFlag()%></td>
 		<td><%=member.getMembershipType()%></td>
 		<td><%=member.getRenewalFlag()%></td>
 		<td><%=member.getMembershipAmount()+"0"%></td>
@@ -95,7 +97,7 @@
 		
 		%>	
 		
-		<p>Please do not use this form yet. It is still under development.</p>
+		
 		
 		
 			 <% if (cmd == "_FORM") { %>
@@ -110,8 +112,8 @@
 			<form id="membershipForm" action="<portlet:actionURL/>" method="post" name="<portlet:namespace />fm">
 			
 			<fieldset>
-			<legend>Application for Membership</legend>
-			
+			<legend>Application for Individual Membership</legend>
+			<p>Please do not use this form yet. It is still under development.</p>
 				<div>
 					<label for="title">Title</label>
 					<select name="title" id="title">
@@ -228,7 +230,7 @@
 			%>
 				
 				<fieldset>
-				<legend>Application for Membership</legend>
+				<legend>Application for Individual Membership</legend>
 			
 				<p>Applicant Details</p>
 			
@@ -259,14 +261,17 @@
 				<input type="hidden" name="amount" value="<%=newMember.getMembershipAmount()+ "0" %>">
 				<input type="hidden" name="currency_code" value="AUD">
 				<input type="hidden" name="button_subtype" value="services">
-				<input type="hidden" name="no_note" value="0">
-				<input type="hidden" name="cn" value="Add special instructions to the seller">
-				<input type="hidden" name="no_shipping" value="2">
-				<input type="hidden" name="return" value="http://acrs.metadata.net/web/guest/home">
+				<input type="hidden" name="no_note" value="1">
+				<input type="hidden" name="no_shipping" value="1">
+				<input type="hidden" name="rm" value="1">
+				<input type="hidden" name="return" value="http://acrs.metadata.net/web/guest/end-application">
 				<input type="hidden" name="cancel_return" value="http://acrs.metadata.net/web/guest/home">
-				<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
-				<input type="image" src="https://www.sandbox.paypal.com/en_AU/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
-				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">
+				<input type="hidden" name="bn" value="PP-BuyNowBF:btn_paynowCC_LG.gif:NonHosted">
+				<input type="hidden" name="notify_url" value="http://acrs.metadata.net/acrs-portlet/paypal/">
+				<input type="image" src="https://www.sandbox.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
+				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">				
+								
+				
 				
 				<INPUT TYPE="hidden" NAME="payer_id" VALUE="<%=newMember.getId()%>">
 				<INPUT TYPE="hidden" NAME="first_name" VALUE="<%=newMember.getFirstName()%>">
