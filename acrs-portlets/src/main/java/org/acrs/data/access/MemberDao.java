@@ -16,4 +16,5 @@ public interface MemberDao extends Dao<Member> {
      * @return a member
      */
     Member getById(Long id);
+    Member getByEmail(String email);
 }

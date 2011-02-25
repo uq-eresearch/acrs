@@ -20,4 +20,6 @@ public interface Configuration {
     Properties getSubmissionEmailConfig();
     
     String getServerProxyName();
+    
+    String getPaypalIpnUrl();
 }

@@ -94,6 +94,16 @@ table#memberListTable td {
 	color:#000000;
 }
 
+table#memberListTable table td {
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 1px;
+	padding-right: 1px;
+	background-color: #D4F2EA;
+	font-size:0.9em;
+	color:#000000;
+}
+
 table#memberListTable th {
 	background-color:#E6E6E6;
 	font-weight:bold;

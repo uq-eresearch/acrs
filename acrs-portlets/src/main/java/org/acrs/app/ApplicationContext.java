@@ -28,6 +28,8 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final Logger logger = Logger.getLogger(ApplicationContext.class.getName());
     private final Properties submissionEmailConfig;
     private final String serverProxy;
+    private final String paypalIpnUrl;
+    
     public ApplicationContext() throws InitializationException {
         Properties properties = new Properties();
         InputStream resourceAsStream = null;
@@ -89,6 +91,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
         this.submissionEmailConfig = new Properties();
         String submissionEmailServer = getProperty(properties, "emailServer");
         this.serverProxy = getProperty(properties, "serverProxyName");
+        this.paypalIpnUrl = getProperty(properties, "paypalIpnUrl");
         this.submissionEmailConfig.setProperty("mail.smtp.host", submissionEmailServer);
     }
 
@@ -121,6 +124,10 @@ public class ApplicationContext implements Configuration, ServletContextListener
     @Override
     public String getServerProxyName() {
         return serverProxy;
+    }
+    
+    public String getPaypalIpnUrl() {
+    	return paypalIpnUrl;
     }
     
     private static String getProperty(Properties properties, String propertyName) throws InitializationException {

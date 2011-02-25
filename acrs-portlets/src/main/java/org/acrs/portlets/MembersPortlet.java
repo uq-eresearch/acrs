@@ -91,6 +91,17 @@ public class MembersPortlet extends GenericPortlet {
     			
     		 errors.add("All fields are required.");
     	}
+    	
+    	if ((email == null) || email.isEmpty()) {
+   		 	errors.add("Please include a valid email address.");
+    	}
+    	else {
+    		//check for pre-existing email
+    		if (membersDao.getByEmail(email) != null)
+    		{
+    			errors.add("The email address <b>" + email + "</b> is already registered with us. Please use a different email address.");
+    		}
+    	}
 	
 	    	
     	if (errors.size() > 0) {
@@ -162,7 +173,7 @@ public class MembersPortlet extends GenericPortlet {
 	    	newMember.setRenewalFlag(renewalFlag);
 	    	newMember.setAcrsEmailListFlag(acrsEmailListFlag);
 	    	newMember.setPaypalRef("");
-	    	newMember.setPaypalStatus("UNVERIFIED");
+	    	newMember.setPaypalStatus("Unverified");
 	    	
 	    	membersDao.save(newMember);
 	    	
@@ -195,8 +206,6 @@ public class MembersPortlet extends GenericPortlet {
 	    	} catch (MessagingException e) {
 	    		_log.fatal("Could not send email.");
 	    	}
-	    	
-	    	
 	    	
 	    	actionResponse.setRenderParameter("newMemberId", String.valueOf(newMember.getId()));
 	    	session.setAttribute("newMember", newMember, PortletSession.APPLICATION_SCOPE);

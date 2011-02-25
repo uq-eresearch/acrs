@@ -36,4 +36,15 @@ public class MemberDaoImpl extends JpaDao<Member> implements MemberDao, Serializ
         assert resultList.size() == 1 : "Email should be unique";
         return (Member) resultList.get(0);
     }
+    
+    public Member getByEmail(String email) {
+    	Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM Member o WHERE o.email = :email");
+    	query.setParameter("email", email);
+    	List<?> resultList = query.getResultList();
+        if (resultList.isEmpty()) {
+            return null;
+        }
+        assert resultList.size() == 1 : "Email should be unique";
+        return (Member) resultList.get(0);
+    }
 }

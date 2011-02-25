@@ -38,7 +38,6 @@ public class PayPalServlet extends HttpServlet {
 	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		_log.info("Query String: " + request.getRequestURL());
 		// read post from PayPal system and add 'cmd'
 		Enumeration en = request.getParameterNames();
 		String str = "cmd=_notify-validate";
@@ -47,60 +46,60 @@ public class PayPalServlet extends HttpServlet {
 		String paramValue = request.getParameter(paramName);
 		str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue);
 		}
-		_log.info("Assembled String: " + str);
+		_log.info("Return to paypal str: " + str);
 		// post back to PayPal system to validate
 		// NOTE: change http: to https: in the following URL to verify using SSL (for increased security).
 		// using HTTPS requires either Java 1.4 or greater, or Java Secure Socket Extension (JSSE)
 		// and configured for older versions.
-		URL u = new URL("http://www.sandbox.paypal.com/cgi-bin/webscr");
+		URL u = new URL(ACRSApplication.getConfiguration().getPaypalIpnUrl());
 		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ACRSApplication.getConfiguration().getServerProxyName(), 8080));
 		URLConnection uc = u.openConnection(proxy);
 
 		uc.setDoOutput(true);
 		uc.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 		
-		_log.info("URLConnection open");
-
 		PrintWriter pw = new PrintWriter(uc.getOutputStream());
-		_log.info("pw instantiated");
 		pw.print(str);
 		pw.close();
 		
-		_log.info("About to read response from paypal");
+		_log.info("Waiting for response from paypal");
 		BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 		String res = in.readLine();
 		_log.info("Response: " + res);
 		in.close();
 		
 		// assign posted variables to local variables
-//		String memberID = request.getParameter("payer_id");
-//		String itemName = request.getParameter("item_name");
-//		String itemNumber = request.getParameter("item_number");
-//		String paymentStatus = request.getParameter("payment_status");
-//		String paymentAmount = request.getParameter("mc_gross");
-//		String paymentCurrency = request.getParameter("mc_currency");
-//		String txnId = request.getParameter("txn_id");
-//		String receiverEmail = request.getParameter("receiver_email");
-//		String payerEmail = request.getParameter("payer_email");
 
-		// convert id to long
-		
+		String itemNumber = request.getParameter("item_number");
+		String paymentStatus = request.getParameter("payment_status");
+	
 		
 		//check notification validation
 		if(res.equals("VERIFIED")) {
-		// check that paymentStatus=Completed
-		// check that txnId has not been previously processed
-		// check that receiverEmail is your Primary PayPal email
-		// check that paymentAmount/paymentCurrency are correct
-		
-/*			membersDao = ACRSApplication.getConfiguration().getUserDao();	
-			Member thisMember = membersDao.getById(Long.parseLong(memberID));	
-
-			thisMember.setPaypalRef(str);
-			membersDao.save(thisMember);
-*/			
+			
 			_log.info("paypal response = VERIFIED: " + str);
-			// process payment
+			
+			if (paymentStatus.equals("Completed")) {
+				
+				// try to find this member
+				try {
+					
+					membersDao = ACRSApplication.getConfiguration().getUserDao();	
+					Member thisMember = membersDao.getById(Long.parseLong(itemNumber));	
+
+					thisMember.setPaypalRef(str);
+					thisMember.setPaypalStatus(paymentStatus);
+					membersDao.save(thisMember);
+					
+				}
+				catch (Exception e) {
+					_log.error("Problem updating this member record.");
+				}
+				
+			}
+			else {
+				_log.error("Payment status not COMPLETED: " + str);
+			}
 		}
 		else if(res.equals("INVALID")) {
 		// log for investigation

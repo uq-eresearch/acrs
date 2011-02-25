@@ -7,7 +7,6 @@
 <%@ page import="javax.portlet.*"%>
 
 
-
 <%@ taglib prefix="portlet" uri="http://java.sun.com/portlet"%>
 <portlet:defineObjects />
 
@@ -26,6 +25,11 @@
 
 		<%
 			List<Member> members = (List<Member>) renderRequest.getAttribute("allMembers");
+		
+
+			
+			
+		
 		%>
 		<fieldset>
 		<legend>Australian Coral Reef Society Memberships</legend>
@@ -49,7 +53,25 @@
 		<th>Paypal<br>Reference</th>
 				
 		</tr>
-		<% for (Member member : members) { %>
+		<% for (Member member : members) { 
+		
+			String paypalRefStr = "";
+			
+			//make the paypal info readable
+			if (member.getPaypalRef() == null) {
+				paypalRefStr = "Unavailable.";
+			}
+			else {
+				String[] tokens = member.getPaypalRef().split("&");
+				paypalRefStr = "Paypal Details: <table border=0>";
+				for(int i=0; i < tokens.length; i++) {
+					paypalRefStr = paypalRefStr + "<tr><td>" + tokens[i] + "</td></tr>";
+				}
+				paypalRefStr=paypalRefStr + "</table>";
+			}
+		
+		
+		%>
 		<tr>
 		<td><%=member.getTitle() + " " + member.getFirstName() + " " + member.getLastName()%></td>
 		<td><%=member.getStreetAddress() + ", " + member.getCity() + "<br>" + member.getState() + " " + member.getPostcode() + " " + member.getCountry()%></td>
@@ -64,7 +86,7 @@
 		<td><%=member.getMembershipAmount()+"0"%></td>
 		<td><%=member.getRegistrationDate()%></td>
 		<td><%=member.getPaypalStatus()%></td>
-		<td><%=member.getPaypalRef()%></td>
+		<td><%=paypalRefStr%></td>
 		</tr>
 		<%} %>
 		</table>
@@ -257,6 +279,7 @@
 				<input type="hidden" name="cmd" value="_xclick">
 				<input type="hidden" name="business" value="V7JL47XMCL6GA">
 				<input type="hidden" name="lc" value="AU">
+				<input type="hidden" name="item_number" value="<%=newMember.getId()%>">
 				<input type="hidden" name="item_name" value="<%=paypalItemName%>">
 				<input type="hidden" name="amount" value="<%=newMember.getMembershipAmount()+ "0" %>">
 				<input type="hidden" name="currency_code" value="AUD">
