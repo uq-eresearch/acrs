@@ -12,6 +12,7 @@
           content="The Australian Coral Reef Society is the oldest organisation in the world concerned with the study and protection of coral reefs, and it has played a significant role in the nation&rsquo;s history."/>
     <meta name="keyword"
           content="coral, feef, reef, monitoring, bleaching, The University of Queensland, Brisbane, Australia"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
     $theme.include($top_head_include)
 
     <link rel="stylesheet" type="text/css" href="http://o.aolcdn.com/dojo/1.4.0/dijit/themes/tundra/tundra.css"/>
