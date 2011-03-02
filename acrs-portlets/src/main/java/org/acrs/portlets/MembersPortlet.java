@@ -9,7 +9,12 @@ import org.acrs.data.model.Member;
 
 import javax.ccpp.SetAttribute;
 import javax.portlet.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +25,9 @@ import java.util.Calendar;
 
 import org.acrs.util.Emailer;
 import javax.mail.MessagingException;
+
+import org.apache.poi.hssf.usermodel.*;
+
 
 /**
  * Author: alabri
@@ -241,4 +249,122 @@ public class MembersPortlet extends GenericPortlet {
             _log.info("Destroying portlet");
         }
     }
+    
+    public void serveResource(ResourceRequest req, ResourceResponse res) throws PortletException, IOException {
+    
+    	// create an excel file containing the member list for the user to download
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    	    	
+    	HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet s = wb.createSheet("ACRS Member Database " + sdf.format(new Date()));
+		s.setFitToPage(true);
+		HSSFRow r = null;
+		HSSFCell c = null;
+		
+	    // Header
+	    HSSFRow th = s.createRow(0);
+	    HSSFCellStyle thStyle = wb.createCellStyle();
+	    HSSFFont f = wb.createFont();
+	    f.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+	    thStyle.setFont(f);
+	    
+	    ArrayList<String> headings = new ArrayList<String>();
+	    headings.add("Title");
+	    headings.add("First Name");
+	    headings.add("Last Name");
+	    headings.add("Street Address");
+	    headings.add("City");
+	    headings.add("State");
+	    headings.add("Postcode");
+	    headings.add("Country");
+	    headings.add("Email");
+	    headings.add("Phone");
+	    headings.add("Institution");
+	    headings.add("Research Interest");
+	    headings.add("Newsletter Preference");
+	    headings.add("ACRS Email List Flag");
+	    headings.add("Membership Type");
+	    headings.add("Renewal Flag");
+	    headings.add("Membership Amount");
+	    headings.add("Registration Date");
+	    headings.add("Paypal Status");
+	    headings.add("Paypal Confirmation Details");
+
+	    // write to sheet
+	    for (String h : headings){
+		    c = th.createCell(headings.indexOf(h));
+		    HSSFRichTextString rts = new HSSFRichTextString(h);
+		    c.setCellValue(rts);
+		    c.setCellStyle(thStyle);
+	    }
+	    
+	    
+	    // add members
+	    List<Member> allMembers = membersDao.getAll();
+	    for (Member member : allMembers) { 
+	        
+	        	ArrayList<String> a = new ArrayList<String>();
+	        	a.add(member.getTitle()  					);
+	        	a.add(member.getFirstName()                 );
+	        	a.add(member.getLastName()                  );
+	        	a.add(member.getStreetAddress()             );
+	        	a.add(member.getCity()                      );
+	        	a.add(member.getState()                     );
+	        	a.add(member.getPostcode()                  );
+	        	a.add(member.getCountry()                   );
+	        	a.add(member.getEmail()                     );
+	        	a.add(member.getPhone()                     );
+	        	a.add(member.getInstitution()               );
+	        	a.add(member.getResearchInterest()          );
+	        	a.add(member.getNewsletterPref()            );
+	        	a.add(member.getAcrsEmailListFlag()         );
+	        	a.add(member.getMembershipType()            );
+	        	a.add(member.getRenewalFlag()               );
+	        	a.add(member.getMembershipAmount()+"0"      );
+	        	a.add(member.getRegistrationDate().toString() );
+	        	a.add(member.getPaypalStatus()              );
+	        	a.add(member.getPaypalRef());
+	        	
+
+	        	r = s.createRow(allMembers.indexOf(member)+1);
+	        	for (String m : a) {
+	        		c = r.createCell(a.indexOf(m));
+	        		HSSFRichTextString rts = new HSSFRichTextString(m);
+	        		c.setCellValue(rts);
+	        		s.autoSizeColumn((short) a.indexOf(m));
+	        	}
+	        
+	    }	
+	    	
+    	// write workbook out to file
+	    FileOutputStream fos = new FileOutputStream("MemberList.xls");
+    	wb.write(fos);
+    	fos.flush();
+    	fos.close();
+		
+		File file = new File("MemberList.xls");
+		FileInputStream fileIn = new FileInputStream(file);
+		res.setContentType("application/vnd.ms-excel");
+		
+		OutputStream out = res.getPortletOutputStream();
+    	
+    	
+    	byte[] outputByte = new byte[4096];
+		while(fileIn.read(outputByte, 0, 4096) != -1)
+		{
+			out.write(outputByte, 0, 4096);
+		}
+		
+		fileIn.close();
+    	
+    	out.flush();
+    	out.close();
+    	
+    	file.delete();
+    	
+    	
+    }
+    
+    
+    
 }

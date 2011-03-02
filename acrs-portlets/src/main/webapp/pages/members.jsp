@@ -5,7 +5,7 @@
 <%@ page import="java.util.List"%>
 <%@ page import="org.acrs.data.access.MemberDao"%>
 <%@ page import="javax.portlet.*"%>
-
+<%@ page import="org.apache.poi.hssf.usermodel.*" %>
 
 <%@ taglib prefix="portlet" uri="http://java.sun.com/portlet"%>
 <portlet:defineObjects />
@@ -34,6 +34,10 @@
 		<fieldset>
 		<legend>Australian Coral Reef Society Memberships</legend>
 		
+		<div style="text-align:right;" >
+			<a href="<portlet:resourceURL/>" >Export - Download </a>
+		</div>
+		
 		<div style="width: 680px; height:500px; overflow:auto">
 		<table id="memberListTable">
 		<tr>
@@ -56,6 +60,8 @@
 		<% for (Member member : members) { 
 		
 			String paypalRefStr = "";
+			String paypalDetails = "";
+			String tableID ="paypalDetailsTable" + member.getId();
 			
 			//make the paypal info readable
 			if (member.getPaypalRef() == null) {
@@ -63,11 +69,13 @@
 			}
 			else {
 				String[] tokens = member.getPaypalRef().split("&");
-				paypalRefStr = "Paypal Details: <table border=0>";
+				//paypalRefStr = "Paypal Details: <table border=0>";
+				paypalRefStr = "<a href=\"#\" onclick=\"toggle_visibility('paypalDetailsTable" + member.getId() + "');\"> Paypal Details </a> ";
+				paypalDetails = "<table id=\"paypalDetailsTable" + member.getId() + "\" style=\"border:0px; display:none\"> ";
 				for(int i=0; i < tokens.length; i++) {
-					paypalRefStr = paypalRefStr + "<tr><td>" + tokens[i] + "</td></tr>";
+					paypalDetails = paypalDetails + "<tr><td>" + tokens[i] + "</td></tr>";
 				}
-				paypalRefStr=paypalRefStr + "</table>";
+				paypalDetails=paypalDetails + "</table>";
 			}
 		
 		
@@ -86,11 +94,14 @@
 		<td><%=member.getMembershipAmount()+"0"%></td>
 		<td><%=member.getRegistrationDate()%></td>
 		<td><%=member.getPaypalStatus()%></td>
-		<td><%=paypalRefStr%></td>
+		<td><%=paypalRefStr + paypalDetails%></td>
 		</tr>
 		<%} %>
 		</table>
 		</div>
+	
+		
+		
 		</fieldset>
 	
 
@@ -308,7 +319,7 @@
 				<INPUT TYPE="hidden" NAME="night_phone_a" VALUE="<%=newMember.getPhone()%>">				
 				
 				</form>
-				
+				</fieldset>
 <!-- 				
 				<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_xclick">
