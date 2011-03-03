@@ -21,15 +21,8 @@
 	boolean isAdmin = (Boolean)renderRequest.getAttribute("isAdmin");
 	if (isAdmin)
 	{
-%>
-
-		<%
-			List<Member> members = (List<Member>) renderRequest.getAttribute("allMembers");
-		
-
-			
-			
-		
+		   
+		   List<Member> members = (List<Member>) renderRequest.getAttribute("allMembers");
 		%>
 		<fieldset>
 		<legend>Australian Coral Reef Society Memberships</legend>
@@ -81,7 +74,10 @@
 		
 		%>
 		<tr>
-		<td><%=member.getTitle() + " " + member.getFirstName() + " " + member.getLastName()%></td>
+		<td><a href="?cmd=_EDIT&id=9" >
+		    <%=member.getTitle() + " " + member.getFirstName() + " " + member.getLastName()%>
+		    </a>
+		</td>
 		<td><%=member.getStreetAddress() + ", " + member.getCity() + "<br>" + member.getState() + " " + member.getPostcode() + " " + member.getCountry()%></td>
 		<td><%=member.getEmail()%></td>
 		<td><%=member.getPhone()%></td>
@@ -100,7 +96,6 @@
 		</table>
 		</div>
 	
-		
 		
 		</fieldset>
 	
@@ -304,8 +299,6 @@
 				<input type="hidden" name="notify_url" value="http://acrs.metadata.net/acrs-portlet/paypal/">
 				<input type="image" src="https://www.sandbox.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
 				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">				
-								
-				
 				
 				<INPUT TYPE="hidden" NAME="payer_id" VALUE="<%=newMember.getId()%>">
 				<INPUT TYPE="hidden" NAME="first_name" VALUE="<%=newMember.getFirstName()%>">
@@ -320,50 +313,7 @@
 				
 				</form>
 				</fieldset>
-<!-- 				
-				<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-				<input type="hidden" name="cmd" value="_xclick">
-				<input type="hidden" name="business" value="seller_1297898682_biz@uq.edu.au">
-				<input type="hidden" name="lc" value="AU">
-				<input type="hidden" name="item_number" value="<%=newMember.getId()%>">
-				<input type="hidden" name="item_name" value="<%=paypalItemName%>">
-				<input type="hidden" name="amount" value="<%=newMember.getMembershipAmount()+ "0" %>">
-				<input type="hidden" name="currency_code" value="AUD">
-				<input type="hidden" name="button_subtype" value="services">
-				<input type="hidden" name="no_note" value="0">
-				<input type="hidden" name="cn" value="Add special instructions to the seller">
-				<input type="hidden" name="no_shipping" value="2">
-				<input type="hidden" name="rm" value="1">				
-				<input type="hidden" name="return" value="http://acrs.metadata.net/web/guest/home">
-				<input type="hidden" name="cancel_return" value="http://acrs.metadata.net/web/guest/home">
-				<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
-				<input type="image" src="https://www.sandbox.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
-				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">
-				</form>
-				
-
-  				
-				<form target='_paypal' action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="265YJXAX586B6">
-				<input type="hidden" name="amount" value="<%=newMember.getMembershipAmount()+ "0" %>">
-				<input type="hidden" name="item_name" value="<%=paypalItemName%>">
-				<input type="hidden" name="item_number" value="">
-				
-				<INPUT TYPE="hidden" NAME="first_name" VALUE="<%=newMember.getFirstName()%>">
-				<INPUT TYPE="hidden" NAME="last_name" VALUE="<%=newMember.getLastName()%>">
-				<INPUT TYPE="hidden" NAME="address1" VALUE="<%=newMember.getStreetAddress()%>">
-				<INPUT TYPE="hidden" NAME="city" VALUE="<%=newMember.getCity()%>">
-				<INPUT TYPE="hidden" NAME="state" VALUE="<%=newMember.getState()%>">
-				<INPUT TYPE="hidden" NAME="zip" VALUE="<%=newMember.getPostcode()%>">
-				<INPUT TYPE="hidden" NAME="country" VALUE="<%=newMember.getCountry()%> ">
-				<INPUT TYPE="hidden" NAME="email" VALUE="<%=newMember.getEmail()%>">
-				<INPUT TYPE="hidden" NAME="night_phone_a" VALUE="<%=newMember.getPhone()%>">
-				
-				<input type="image" src="https://www.sandbox.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
-				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">
-				</form>
--->				
+		
 			
 			<%
 			} // end if cmd == _SUBMIT 
