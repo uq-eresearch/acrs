@@ -2,6 +2,7 @@ package org.acrs.app;
 
 import org.acrs.data.access.MemberDao;
 import java.util.Properties;
+import org.acrs.data.access.jpa.JpaConnectorService;
 
 /**
  * Author: alabri
@@ -22,4 +23,6 @@ public interface Configuration {
     String getServerProxyName();
     
     String getPaypalIpnUrl();
+    
+    JpaConnectorService getJpaConnectorService();
 }

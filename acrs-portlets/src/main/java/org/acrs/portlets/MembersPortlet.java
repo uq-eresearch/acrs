@@ -2,6 +2,8 @@ package org.acrs.portlets;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+
 import org.acrs.app.ACRSApplication;
 import org.acrs.data.access.MemberDao;
 import org.acrs.data.model.Member;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 
+import org.acrs.util.AppUtil;
 import org.acrs.util.Emailer;
 import javax.mail.MessagingException;
 
@@ -45,19 +48,17 @@ public class MembersPortlet extends GenericPortlet {
     }
 
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-        //Do all you views here
-    	
+        
+    	//Do all you views here
     	
     	// if the user is a liferay admin list the membership database in the JSP.
     	boolean isAdmin = renderRequest.isUserInRole("administrator");
     	renderRequest.setAttribute("isAdmin", isAdmin);
 
-    	// form is the default non-admin view
-    	String cmd = "_FORM";
-    	renderRequest.setAttribute("cmd", cmd);
-    	    	
     	List<Member> allMembers = membersDao.getAll();
     	renderRequest.setAttribute("allMembers", allMembers);
+    	renderRequest.setAttribute("membersDao", membersDao);
+    	
     	include(viewJSP, renderRequest, renderResponse);
     }
 
@@ -65,6 +66,8 @@ public class MembersPortlet extends GenericPortlet {
     	
     	//Process data here
     	PortletSession session = actionRequest.getPortletSession(true);
+    	String cmd = ParamUtil.getString(actionRequest, "cmd");
+    	
     	List<String> errors = new ArrayList<String>();
     	    		
     	String title = actionRequest.getParameter("title");
@@ -84,6 +87,10 @@ public class MembersPortlet extends GenericPortlet {
     	String renewalFlag = actionRequest.getParameter("renewalFlag");
     	String acrsEmailListFlag = actionRequest.getParameter("acrsEmailListFlag");
     	
+    	// tidy up nulls 
+    	if (acrsEmailListFlag == null) {acrsEmailListFlag = "N";}
+    	if (renewalFlag == null) {renewalFlag = "N";}
+    	
     	if ( (firstName == null) || firstName.isEmpty()
     	  || (streetAddress == null) || streetAddress.isEmpty()
     	  || (city == null) || city.isEmpty()
@@ -94,7 +101,6 @@ public class MembersPortlet extends GenericPortlet {
     	  || (phone == null)|| phone.isEmpty()
     	  || (institution == null)|| institution.isEmpty()
     	  || (researchInterest == null)|| researchInterest.isEmpty()
-    	  || (newsletterPref == null)|| newsletterPref.isEmpty()
     	  || (membershipType == null)|| membershipType.isEmpty() ) {
     			
     		 errors.add("All fields are required.");
@@ -105,12 +111,12 @@ public class MembersPortlet extends GenericPortlet {
     	}
     	else {
     		//check for pre-existing email
-    		if (membersDao.getByEmail(email) != null)
+
+    		if ((cmd.equals("ADD")) && (membersDao.getByEmail(email) != null))
     		{
     			errors.add("The email address <b>" + email + "</b> is already registered with us. Please use a different email address.");
     		}
     	}
-	
 	    	
     	if (errors.size() > 0) {
     		
@@ -119,108 +125,144 @@ public class MembersPortlet extends GenericPortlet {
     	
     	else {
     		
-    		Member newMember = new Member();
-	    	
-    		// calculate membership amount
-	    	Double membershipAmount = 0.00;
-	    	String paypalItemName = "Australian Coral Reef Society ";
-	    	int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-	    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-	    	Date startDiscountDate = new Date();
-	    	Date endDiscountDate = new Date();
-	    	
-	    	if (membershipType.equals("Full")) {
-	    		membershipAmount=50.00;
-	    		paypalItemName = paypalItemName + "Full Membership for " + Integer.toString(thisYear);
-	    	
-	    	} else if (membershipType.equals("Student")) {
-	    		membershipAmount=30.00;
-	    		paypalItemName = paypalItemName + "Student Membership for " + Integer.toString(thisYear);
-	    	} else if (membershipType.equals("FiveYear")) {
-	    		membershipAmount=200.00;
-	    		paypalItemName = paypalItemName + "Full 5 Year Membership from " + Integer.toString(thisYear);
-	    	}
-	    	
-	    	try {
-				startDiscountDate = sdf.parse("01-01-" + Integer.toString(thisYear));
-				endDiscountDate = sdf.parse("01-03-" + Integer.toString(thisYear));
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    	
-			
-	    	if ( !(membershipType.equals("FiveYear")) 
-	    	    && (newMember.getRegistrationDate().after(startDiscountDate))
-	    	    && (newMember.getRegistrationDate().before(endDiscountDate)) ) {
-	    		membershipAmount = membershipAmount - 10.00;
-	    		paypalItemName = paypalItemName + " (with early discount)";
-	    	}
+    		if (cmd.equals("ADD")) {
     		
-	    	// tidy up nulls 
-	    	if (acrsEmailListFlag == null) {acrsEmailListFlag = "N";}
-	    	if (renewalFlag == null) {renewalFlag = "N";}
-	    	
-	    	
-	    	// save member details
-	    	newMember.setTitle(title);
-	    	newMember.setFirstName(firstName);
-	    	newMember.setLastName(lastName);
-	    	newMember.setStreetAddress(streetAddress);
-	    	newMember.setCity(city);
-	    	newMember.setState(state);
-	    	newMember.setPostcode(postcode);
-	    	newMember.setCountry(country);
-	    	newMember.setEmail(email);
-	    	newMember.setPhone(phone);
-	    	newMember.setInstitution(institution);
-	    	newMember.setResearchInterest(researchInterest);
-	    	newMember.setNewsletterPref(newsletterPref);
-	    	newMember.setMembershipType(membershipType);
-	    	newMember.setMembershipAmount(membershipAmount);
-	    	newMember.setRenewalFlag(renewalFlag);
-	    	newMember.setAcrsEmailListFlag(acrsEmailListFlag);
-	    	newMember.setPaypalRef("");
-	    	newMember.setPaypalStatus("Unverified");
-	    	
-	    	membersDao.save(newMember);
-	    	
-	    	// email stuff out
-	    	String approvalEmail1="peggy.newman@uq.edu.au";
-	    	String approvalEmail2="peggy.newman@uq.edu.au";
-	    	String emailListCoordEmail = "peggy.newman@uq.edu.au";
-	    	
-	    	String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership for your approval. \n\nKind Regards, \nThe ACRS Website\n\n";
-	    	String emailListMessage = "Hi, \n\nThe following membership applicant indicated a desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
-	    	String applicantDetail = "\n\tName:\t\t\t\t" + title + " " + firstName + " " + lastName 
-	    						   + "\n\tAddress:\t\t\t" + streetAddress + ", " + city + " " + state + " " + postcode
-	    						   + "\n\tEmail:\t\t\t" + email
-	    						   + "\n\tPhone:\t\t\t" + phone
-	    						   + "\n\tInstitution:\t\t" + institution
-	    						   + "\n\tResearch Interest:\t" + researchInterest
-	    						   + "\n\tNewsletter Preference:\t" + newsletterPref
-	    						   + "\n\tMembership Type: \t\t" + membershipType
-	    						   + "\n\tMembership Amount: \t" + membershipAmount + "0"
-	    						   ;
-	    	
-	    	try {
-	    		Emailer.sendEmail(approvalEmail1,"no-reply@acrs.org","New ACRS Membership", approvalMessage+applicantDetail);
-	    		Emailer.sendEmail(approvalEmail2,"no-reply@acrs.org","New ACRS Membership", approvalMessage+applicantDetail);
-	    		
-	    		if (acrsEmailListFlag.equals("Y")) {
-	    			Emailer.sendEmail(emailListCoordEmail,"no-reply@acrs.org","New ACRS Mail List Subscribe Request", emailListMessage+applicantDetail);
-	    		}
-	    		
-	    	} catch (MessagingException e) {
-	    		_log.fatal("Could not send email.");
-	    	}
-	    	
-	    	actionResponse.setRenderParameter("newMemberId", String.valueOf(newMember.getId()));
-	    	session.setAttribute("newMember", newMember, PortletSession.APPLICATION_SCOPE);
-	    	session.setAttribute("paypalItemName", paypalItemName, PortletSession.APPLICATION_SCOPE);
-    	}
+	    		Member newMember = new Member();
+		    	
+	    		// calculate membership amount
+		    	Double membershipAmount = 0.00;
+		    	String paypalItemName = "Australian Coral Reef Society ";
+		    	int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+		    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		    	Date startDiscountDate = new Date();
+		    	Date endDiscountDate = new Date();
+		    	
+		    	if (membershipType.equals("Full")) {
+		    		membershipAmount=50.00;
+		    		paypalItemName = paypalItemName + "Full Membership for " + Integer.toString(thisYear);
+		    	
+		    	} else if (membershipType.equals("Student")) {
+		    		membershipAmount=30.00;
+		    		paypalItemName = paypalItemName + "Student Membership for " + Integer.toString(thisYear);
+		    	} else if (membershipType.equals("FiveYear")) {
+		    		membershipAmount=200.00;
+		    		paypalItemName = paypalItemName + "Full 5 Year Membership from " + Integer.toString(thisYear);
+		    	}
+		    	
+		    	try {
+					startDiscountDate = sdf.parse("01-01-" + Integer.toString(thisYear));
+					endDiscountDate = sdf.parse("01-03-" + Integer.toString(thisYear));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	
+				
+		    	if ( !(membershipType.equals("FiveYear")) 
+		    	    && (newMember.getRegistrationDate().after(startDiscountDate))
+		    	    && (newMember.getRegistrationDate().before(endDiscountDate)) ) {
+		    		membershipAmount = membershipAmount - 10.00;
+		    		paypalItemName = paypalItemName + " (with early discount)";
+		    	}
+		    	
+		    	// save member details
+		    	newMember.setTitle(title);
+		    	newMember.setFirstName(firstName);
+		    	newMember.setLastName(lastName);
+		    	newMember.setStreetAddress(streetAddress);
+		    	newMember.setCity(city);
+		    	newMember.setState(state);
+		    	newMember.setPostcode(postcode);
+		    	newMember.setCountry(country);
+		    	newMember.setEmail(email);
+		    	newMember.setPhone(phone);
+		    	newMember.setInstitution(institution);
+		    	newMember.setResearchInterest(researchInterest);
+		    	newMember.setNewsletterPref(newsletterPref);
+		    	newMember.setMembershipType(membershipType);
+		    	newMember.setMembershipAmount(membershipAmount);
+		    	newMember.setRenewalFlag(renewalFlag);
+		    	newMember.setAcrsEmailListFlag(acrsEmailListFlag);
+		    	newMember.setPaypalRef("");
+		    	newMember.setPaypalStatus("Unverified");
+		    	
+		    	membersDao.save(newMember);
+		    	
+		    	// email stuff out
+		    	String approvalEmail1="peggy.newman@uq.edu.au";
+		    	String approvalEmail2="peggy.newman@uq.edu.au";
+		    	String emailListCoordEmail = "peggy.newman@uq.edu.au";
+		    	
+		    	String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership for your approval. \n\nKind Regards, \nThe ACRS Website\n\n";
+		    	String emailListMessage = "Hi, \n\nThe following membership applicant indicated a desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
+		    	String applicantDetail = "\n\tName:\t\t\t\t" + title + " " + firstName + " " + lastName 
+		    						   + "\n\tAddress:\t\t\t" + streetAddress + ", " + city + " " + state + " " + postcode
+		    						   + "\n\tEmail:\t\t\t" + email
+		    						   + "\n\tPhone:\t\t\t" + phone
+		    						   + "\n\tInstitution:\t\t" + institution
+		    						   + "\n\tResearch Interest:\t" + researchInterest
+		    						   + "\n\tNewsletter Preference:\t" + newsletterPref
+		    						   + "\n\tMembership Type: \t\t" + membershipType
+		    						   + "\n\tMembership Amount: \t" + membershipAmount + "0"
+		    						   ;
+		    	
+		    	try {
+		    		Emailer.sendEmail(approvalEmail1,"no-reply@acrs.org","New ACRS Membership", approvalMessage+applicantDetail);
+		    		Emailer.sendEmail(approvalEmail2,"no-reply@acrs.org","New ACRS Membership", approvalMessage+applicantDetail);
+		    		
+		    		if (acrsEmailListFlag.equals("Y")) {
+		    			Emailer.sendEmail(emailListCoordEmail,"no-reply@acrs.org","New ACRS Mail List Subscribe Request", emailListMessage+applicantDetail);
+		    		}
+		    		
+		    	} catch (MessagingException e) {
+		    		_log.fatal("Could not send email.");
+		    	}
+		    	
+		    	actionResponse.setRenderParameter("newMemberId", String.valueOf(newMember.getId()));
+		    	session.setAttribute("newMember", newMember, PortletSession.APPLICATION_SCOPE);
+		    	session.setAttribute("paypalItemName", paypalItemName, PortletSession.APPLICATION_SCOPE);
+    		} // end if ADD
+    		
+    		else if (cmd.equals("MEMBERLIST")) {
+    			
+    			//String memberId = ParamUtil.getString(actionRequest, "editMemberId");
+    			//Member editMember = new Member();
+    			long editMemberId = Long.parseLong(ParamUtil.getString(actionRequest, "editMemberId"));
+    			Member editMember = membersDao.getById(editMemberId);
+    			Double membershipAmount = Double.parseDouble(actionRequest.getParameter("membershipAmount"));
+    			String paypalStatus = actionRequest.getParameter("paypalStatus");
+    			
+    			editMember.setTitle(title);
+    			editMember.setFirstName(firstName);
+    			editMember.setLastName(lastName);
+    			editMember.setStreetAddress(streetAddress);
+    			editMember.setCity(city);
+    			editMember.setState(state);
+    			editMember.setPostcode(postcode);
+    			editMember.setCountry(country);
+    			editMember.setEmail(email);
+    			editMember.setPhone(phone);
+    			editMember.setInstitution(institution);
+    			editMember.setResearchInterest(researchInterest);
+    			editMember.setNewsletterPref(newsletterPref);
+    			editMember.setMembershipType(membershipType);
+    			editMember.setMembershipAmount(membershipAmount);
+    			editMember.setRenewalFlag(renewalFlag);
+    			editMember.setAcrsEmailListFlag(acrsEmailListFlag);
+    			editMember.setPaypalStatus(paypalStatus);
+    					    	
+    			membersDao.save(editMember);
+    			
+    			List<String> messages = new ArrayList<String>();
+    			messages.add("Member record for " + editMember.getFirstName() + " " + editMember.getLastName() 
+    					   + "has been updated.");
+    			actionRequest.setAttribute("messages", messages);
+    		}
+    			
+    		
+    	} // end if ! errors
     	
-    }
+    } 
 
     protected void include(String path, RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 
