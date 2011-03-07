@@ -93,7 +93,7 @@ public class PayPalServlet extends HttpServlet {
 					
 				}
 				catch (Exception e) {
-					_log.error("Problem updating this member record.");
+					_log.error("Problem updating this member record: Member ID = " + itemNumber);
 				}
 				
 			}

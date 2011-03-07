@@ -45,10 +45,6 @@
 	} 
 	
 	
-	
-		
-	%><P>cmd = <%=cmd %></P><P>isAdmin = <%=isAdmin %></P><% 
-	
 
 	// if user is an admin, display the member list	
 	if (cmd.equals("MEMBERLIST"))
@@ -58,7 +54,7 @@
 		List<String> messages = (List<String>) renderRequest.getAttribute("messages");
 		if (messages != null && messages.size() > 0) {
 			for (String message : messages) {
-				%><div><span class="portlet-msg-info"><%=message%></span></div><%
+				%><div><span class="portlet-msg-success"><%=message%></span></div><%
 	        }
 	    }
 		
@@ -163,8 +159,6 @@
 		else if (cmd.equals("EDIT")) {
 			formTitle = "Edit Membership Details";
 			isEdit = true;
-			%><p>memberName = <%=editMember.getFirstName()%></P><% 
-			
 
 		}
 		 
@@ -177,7 +171,7 @@
 			
 			<fieldset>
 			<legend><%=formTitle%></legend>
-			<p>Please do not use this form yet. It is still under development.</p>
+			<p><b>This form currently connects to the Paypal Sandbox site. </b></p>
 				<div>
 					<label for="title">Title</label>
 					<select name="title" id="title">
@@ -263,16 +257,16 @@
 				<div>
 				
 					<label for="newsletterPref">I would like to receive the annual newsletter in:</label>
-					<input class="inputCheckbox" type="checkbox" name="newsletterPref" value="PDF" <%= editMember.getNewsletterPref().startsWith("PDF") ? " checked" : emptyStr %>/>PDF <br>
-					<input class="inputCheckbox" type="checkbox" name="newsletterPref2" value="Hard Copy" <%= editMember.getNewsletterPref().endsWith("Hard Copy") ? " checked" : emptyStr %> />Hard Copy
+					<input class="inputCheckbox" type="checkbox" name="newsletterPref" value="PDF" <%= isEdit ? (editMember.getNewsletterPref().startsWith("PDF") ? " checked" : emptyStr) : emptyStr %>/>PDF <br>
+					<input class="inputCheckbox" type="checkbox" name="newsletterPref2" value="Hard Copy" <%= isEdit ? (editMember.getNewsletterPref().endsWith("Hard Copy") ? " checked" : emptyStr) : emptyStr %> />Hard Copy
 				 
 				</div>
 				<br>
 				<div>							
 					<label for="membershipType">Membership Type:<br><br><br></label>
-					<input class="radioCheckbox" type="radio" name="membershipType" value="Full" <%= editMember.getMembershipType().equals("Full") ? " checked" : emptyStr %>/> Full ($50.00)<br />
-					<input class="radioCheckbox" type="radio" name="membershipType" value="Student" <%= editMember.getMembershipType().equals("Student") ? " checked" : emptyStr %>/> Student ($30.00)<br />
-					<input class="radioCheckbox" type="radio" name="membershipType" value="FiveYear" <%= editMember.getMembershipType().equals("FiveYear") ? " checked" : emptyStr %>/> 5 Year Full ($200.00)<br />		
+					<input class="radioCheckbox" type="radio" name="membershipType" value="Full" <%= isEdit ? (editMember.getMembershipType().equals("Full") ? " checked" : emptyStr) : emptyStr %>/> Full ($50.00)<br />
+					<input class="radioCheckbox" type="radio" name="membershipType" value="Student" <%= isEdit ? (editMember.getMembershipType().equals("Student") ? " checked" : emptyStr) : emptyStr %>/> Student ($30.00)<br />
+					<input class="radioCheckbox" type="radio" name="membershipType" value="FiveYear" <%= isEdit ? (editMember.getMembershipType().equals("FiveYear") ? " checked" : emptyStr) : emptyStr %>/> 5 Year Full ($200.00)<br />		
 	
 				<% if (isEdit) { %>
 					<div>					
@@ -294,13 +288,13 @@
 				<div>
 					<label for="renewalFlag">&nbsp;</label>
 					<input class="inputCheckbox" type="checkbox" name="renewalFlag" value="Y" 
-					<%= editMember.getRenewalFlag().equals("Y") ? " checked" : emptyStr %>/>I am renewing my previous membership.<br>
+					<%= isEdit ? (editMember.getRenewalFlag().equals("Y") ? " checked" : emptyStr) : emptyStr %>/>I am renewing my previous membership.<br>
 				</div>
 				
 				<div>
 					<label for="acrsEmailListFlag">&nbsp;</label>
 					<input class="inputCheckbox" type="checkbox" name="acrsEmailListFlag" value="Y" 
-					<%= editMember.getAcrsEmailListFlag().equals("Y") ? " checked" : emptyStr %>/>I would like to subscribe to the ACRS Email List.<br>
+					<%= isEdit ? (editMember.getAcrsEmailListFlag().equals("Y") ? " checked" : emptyStr) : emptyStr %>/>I would like to subscribe to the ACRS Email List.<br>
 				</div>			
 				
 				<div>			
@@ -309,11 +303,14 @@
 					
 					<% if (isEdit) { %>
 
-					  <input type="submit" name="submit" value="Save" onClick="self.location = '<portlet:renderURL><portlet:param name="editMemberId" value="<%= String.valueOf(editMember.getId()) %>" /><portlet:param name="cmd" value="MEMBERLIST"/></portlet:renderURL>';"/>
+					  <input name="editMemberId" type="hidden" value="<%= String.valueOf(editMember.getId()) %>"/>
+					  <input type="submit" name="submit" value="Save" 
+					  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
 				    
 				    <%  } else {%>
 					
-					  <input type="submit" name="submit" value="Save Details and Proceed to Paypal >" onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
+					  <input type="submit" name="submit" value="Save Details and Proceed to Paypal >" 
+					  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
 
 					<%} %>
 				</div>

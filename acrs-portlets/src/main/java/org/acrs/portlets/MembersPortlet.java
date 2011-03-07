@@ -66,7 +66,19 @@ public class MembersPortlet extends GenericPortlet {
     	
     	//Process data here
     	PortletSession session = actionRequest.getPortletSession(true);
-    	String cmd = ParamUtil.getString(actionRequest, "cmd");
+    	String editMemberIdStr = actionRequest.getParameter("editMemberId");
+ 
+    	String action = "";
+    	
+    	if (editMemberIdStr == null) {   
+    		action = "ADD"  ;
+        	_log.info("adding new member");
+    	}	
+    	else {
+    		action = "EDIT";
+        	_log.info("edit member id " + editMemberIdStr);
+    	}	
+    	
     	
     	List<String> errors = new ArrayList<String>();
     	    		
@@ -112,7 +124,7 @@ public class MembersPortlet extends GenericPortlet {
     	else {
     		//check for pre-existing email
 
-    		if ((cmd.equals("ADD")) && (membersDao.getByEmail(email) != null))
+    		if ((action.equals("ADD")) && (membersDao.getByEmail(email) != null))
     		{
     			errors.add("The email address <b>" + email + "</b> is already registered with us. Please use a different email address.");
     		}
@@ -125,7 +137,7 @@ public class MembersPortlet extends GenericPortlet {
     	
     	else {
     		
-    		if (cmd.equals("ADD")) {
+    		if (action.equals("ADD")) {
     		
 	    		Member newMember = new Member();
 		    	
@@ -223,11 +235,11 @@ public class MembersPortlet extends GenericPortlet {
 		    	session.setAttribute("paypalItemName", paypalItemName, PortletSession.APPLICATION_SCOPE);
     		} // end if ADD
     		
-    		else if (cmd.equals("MEMBERLIST")) {
+    		else if (action.equals("EDIT")) {
     			
     			//String memberId = ParamUtil.getString(actionRequest, "editMemberId");
     			//Member editMember = new Member();
-    			long editMemberId = Long.parseLong(ParamUtil.getString(actionRequest, "editMemberId"));
+    			long editMemberId = Long.parseLong(editMemberIdStr);
     			Member editMember = membersDao.getById(editMemberId);
     			Double membershipAmount = Double.parseDouble(actionRequest.getParameter("membershipAmount"));
     			String paypalStatus = actionRequest.getParameter("paypalStatus");
@@ -255,7 +267,7 @@ public class MembersPortlet extends GenericPortlet {
     			
     			List<String> messages = new ArrayList<String>();
     			messages.add("Member record for " + editMember.getFirstName() + " " + editMember.getLastName() 
-    					   + "has been updated.");
+    					   + " has been updated.");
     			actionRequest.setAttribute("messages", messages);
     		}
     			
