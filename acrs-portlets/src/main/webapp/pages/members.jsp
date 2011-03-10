@@ -171,11 +171,11 @@
 			
 			<fieldset>
 			<legend><%=formTitle%></legend>
-			<p><b>This form currently connects to the Paypal Sandbox site. </b></p>
+			
 				<div>
 					<label for="title">Title</label>
 					<select name="title" id="title">
-						<option value="Mr">Mr</option>
+						<!-- >option value="Mr">Mr</option  -->
 						<option value="Ms">Ms</option>
 						<option value="Dr">Dr</option>
 						<option value="Prof">Prof</option>
@@ -267,6 +267,7 @@
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Full" <%= isEdit ? (editMember.getMembershipType().equals("Full") ? " checked" : emptyStr) : emptyStr %>/> Full ($50.00)<br />
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Student" <%= isEdit ? (editMember.getMembershipType().equals("Student") ? " checked" : emptyStr) : emptyStr %>/> Student ($30.00)<br />
 					<input class="radioCheckbox" type="radio" name="membershipType" value="FiveYear" <%= isEdit ? (editMember.getMembershipType().equals("FiveYear") ? " checked" : emptyStr) : emptyStr %>/> 5 Year Full ($200.00)<br />		
+					<input class="radioCheckbox" type="radio" name="membershipType" value="Test" <%= isEdit ? (editMember.getMembershipType().equals("Test") ? " checked" : emptyStr) : emptyStr %>/> Test ($5.00)<br />		
 	
 				<% if (isEdit) { %>
 					<div>					
@@ -298,17 +299,22 @@
 				</div>			
 				
 				<div>			
-					<label for="submit"><br></label>
+					
 					<!-- <input type="submit" name="submit" value="Save Details and Proceed to Paypal >"/> -->
 					
 					<% if (isEdit) { %>
 
+					  <label for="submit"><br></label>
 					  <input name="editMemberId" type="hidden" value="<%= String.valueOf(editMember.getId()) %>"/>
 					  <input type="submit" name="submit" value="Save" 
 					  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
 				    
 				    <%  } else {%>
 					
+					<div>
+					  For all new ACRS members your membership will need to be approved by Council. If for some reason your application is deemed inappropriate, a full refund will be given.					
+					</div>
+					  <label for="submit"><br></label>
 					  <input type="submit" name="submit" value="Save Details and Proceed to Paypal >" 
 					  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
 
@@ -353,6 +359,7 @@
 		<p>Please click the "Pay Now" button to proceed to pay for your membership via Paypal.</p>
 		<p><b><%=paypalItemName + ": $" + newMember.getMembershipAmount() + "0" %></b> </p>
 		
+<!-- 
 		<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
 		<input type="hidden" name="cmd" value="_xclick">
 		<input type="hidden" name="business" value="V7JL47XMCL6GA">
@@ -371,6 +378,26 @@
 		<input type="hidden" name="notify_url" value="http://acrs.metadata.net/acrs-portlet/paypal/">
 		<input type="image" src="https://www.sandbox.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
 		<img alt="" border="0" src="https://www.sandbox.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">				
+ -->
+ 		
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_xclick">
+		<input type="hidden" name="business" value="DWEN9JSL23L5U">
+		<input type="hidden" name="lc" value="AU">
+		<input type="hidden" name="item_number" value="<%=newMember.getId()%>">
+		<input type="hidden" name="item_name" value="<%=paypalItemName%>">
+		<input type="hidden" name="amount" value="<%=newMember.getMembershipAmount()+ "0" %>">
+		<input type="hidden" name="currency_code" value="AUD">
+		<input type="hidden" name="button_subtype" value="services">
+		<input type="hidden" name="no_note" value="0">
+		<input type="hidden" name="cn" value="Add special instructions to the seller">
+		<input type="hidden" name="no_shipping" value="2">
+		<input type="hidden" name="return" value="http://acrs.metadata.net/web/guest/end-application">
+		<input type="hidden" name="cancel_return" value="http://acrs.metadata.net/web/guest/home">		
+		<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
+		<input type="hidden" name="notify_url" value="http://acrs.metadata.net/acrs-portlet/paypal/">
+		<input type="image" src="https://www.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
+		<img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">
 		
 		<INPUT TYPE="hidden" NAME="payer_id" VALUE="<%=newMember.getId()%>">
 		<INPUT TYPE="hidden" NAME="first_name" VALUE="<%=newMember.getFirstName()%>">

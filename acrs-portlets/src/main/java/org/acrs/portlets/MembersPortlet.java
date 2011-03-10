@@ -72,7 +72,7 @@ public class MembersPortlet extends GenericPortlet {
     	
     	if (editMemberIdStr == null) {   
     		action = "ADD"  ;
-        	_log.info("adding new member");
+        	_log.info("request to add new member");
     	}	
     	else {
     		action = "EDIT";
@@ -160,6 +160,10 @@ public class MembersPortlet extends GenericPortlet {
 		    		membershipAmount=200.00;
 		    		paypalItemName = paypalItemName + "Full 5 Year Membership from " + Integer.toString(thisYear);
 		    	}
+		    	 else if (membershipType.equals("Test")) {
+		    		membershipAmount=5.00;
+		    		paypalItemName = paypalItemName + "Test Membership from " + Integer.toString(thisYear);
+		    	}
 		    	
 		    	try {
 					startDiscountDate = sdf.parse("01-01-" + Integer.toString(thisYear));
@@ -203,7 +207,7 @@ public class MembersPortlet extends GenericPortlet {
 		    	// email stuff out
 		    	String approvalEmail1="peggy.newman@uq.edu.au";
 		    	String approvalEmail2="peggy.newman@uq.edu.au";
-		    	String emailListCoordEmail = "peggy.newman@uq.edu.au";
+		    	String emailListCoordEmail = "Ross.Hill@uts.edu.au";
 		    	
 		    	String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership for your approval. \n\nKind Regards, \nThe ACRS Website\n\n";
 		    	String emailListMessage = "Hi, \n\nThe following membership applicant indicated a desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
