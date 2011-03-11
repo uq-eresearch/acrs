@@ -27,5 +27,11 @@ public interface Configuration {
 
     String getBaseUrl();
 
+    String getApprovalEmail1();
+
+    String getApprovalEmail2();
+
+    String getEmailListCoordEmail();
+
     JpaConnectorService getJpaConnectorService();
 }

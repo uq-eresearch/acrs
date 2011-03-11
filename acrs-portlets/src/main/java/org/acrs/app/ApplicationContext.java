@@ -30,6 +30,9 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final String serverProxy;
     private final String paypalIpnUrl;
     private final String baseUrl;
+    private final String approvalEmail1;
+    private final String approvalEmail2;
+    private final String emailListCoordEmail;
 
     public ApplicationContext() throws InitializationException {
         Properties properties = new Properties();
@@ -94,6 +97,10 @@ public class ApplicationContext implements Configuration, ServletContextListener
         this.serverProxy = getProperty(properties, "serverProxyName");
         this.paypalIpnUrl = getProperty(properties, "paypalIpnUrl");
         this.baseUrl = getProperty(properties, "baseUrl");
+
+        this.approvalEmail1 = getProperty(properties, "approvalEmail1");
+        this.approvalEmail2 = getProperty(properties, "approvalEmail2");
+        this.emailListCoordEmail = getProperty(properties, "emailListCoordEmail");
         this.submissionEmailConfig.setProperty("mail.smtp.host", submissionEmailServer);
     }
 
@@ -159,5 +166,17 @@ public class ApplicationContext implements Configuration, ServletContextListener
 
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    public String getApprovalEmail1() {
+        return approvalEmail1;
+    }
+
+    public String getApprovalEmail2() {
+        return approvalEmail2;
+    }
+
+    public String getEmailListCoordEmail() {
+        return emailListCoordEmail;
     }
 }
