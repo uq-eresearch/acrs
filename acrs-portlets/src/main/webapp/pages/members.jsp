@@ -6,7 +6,7 @@
 <%@ page import="org.acrs.data.access.MemberDao"%>
 <%@ page import="javax.portlet.*"%>
 <%@ page import="org.apache.poi.hssf.usermodel.*" %>
-
+<%@ page import="org.acrs.app.ACRSApplication"%>
 
 <%@ taglib prefix="portlet" uri="http://java.sun.com/portlet"%>
 <portlet:defineObjects />
@@ -18,6 +18,7 @@
 	// find out what the command is
 	String cmd = ParamUtil.getString(request, "cmd");
 	long memberId = ParamUtil.getLong(request, "memberId");
+	String baseUrl = ACRSApplication.getConfiguration().getBaseUrl();
 	
 	boolean isAdmin = (Boolean)renderRequest.getAttribute("isAdmin");
 
