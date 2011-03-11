@@ -29,7 +29,8 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final Properties submissionEmailConfig;
     private final String serverProxy;
     private final String paypalIpnUrl;
-    
+    private final String baseUrl;
+
     public ApplicationContext() throws InitializationException {
         Properties properties = new Properties();
         InputStream resourceAsStream = null;
@@ -87,11 +88,12 @@ public class ApplicationContext implements Configuration, ServletContextListener
             // ensure that there's always one user to begin with
             createDefaultUsers();
         }
-        
+
         this.submissionEmailConfig = new Properties();
         String submissionEmailServer = getProperty(properties, "emailServer");
         this.serverProxy = getProperty(properties, "serverProxyName");
         this.paypalIpnUrl = getProperty(properties, "paypalIpnUrl");
+        this.baseUrl = getProperty(properties, "baseUrl");
         this.submissionEmailConfig.setProperty("mail.smtp.host", submissionEmailServer);
     }
 
@@ -115,7 +117,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
     public MemberDao getUserDao() {
         return memberDao;
     }
-    
+
     @Override
     public Properties getSubmissionEmailConfig() {
         return submissionEmailConfig;
@@ -125,11 +127,16 @@ public class ApplicationContext implements Configuration, ServletContextListener
     public String getServerProxyName() {
         return serverProxy;
     }
-    
+
     public String getPaypalIpnUrl() {
-    	return paypalIpnUrl;
+        return paypalIpnUrl;
     }
-    
+
+    @Override
+    public JpaConnectorService getJpaConnectorService() {
+        return connectorService;
+    }
+
     private static String getProperty(Properties properties, String propertyName) throws InitializationException {
         return getProperty(properties, propertyName, false);
     }
@@ -150,4 +157,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
                 "Created new a user with email address 'john@acrs.org' and password 'acrs'.");
     }
 
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 }
