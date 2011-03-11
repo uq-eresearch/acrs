@@ -64,6 +64,9 @@ public class MembersPortlet extends GenericPortlet {
             action = "EDIT";
             _log.info("edit member id " + editMemberIdStr);
         }
+        
+        
+        
 
 
         List<String> errors = new ArrayList<String>();
@@ -181,6 +184,8 @@ public class MembersPortlet extends GenericPortlet {
                 newMember.setAcrsEmailListFlag(acrsEmailListFlag);
                 newMember.setPaypalRef("");
                 newMember.setPaypalStatus("Unverified");
+                newMember.setIsActive(true);
+                newMember.setUpdateDate(newMember.getRegistrationDate());
 
                 membersDao.save(newMember);
 
@@ -189,7 +194,7 @@ public class MembersPortlet extends GenericPortlet {
                 String approvalEmail2 = ACRSApplication.getConfiguration().getApprovalEmail2();
                 String emailListCoordEmail = ACRSApplication.getConfiguration().getEmailListCoordEmail();
 
-                String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership for your approval. \n\nKind Regards, \nThe ACRS Website\n\n";
+                String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
                 String emailListMessage = "Hi, \n\nThe following membership applicant indicated a desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
                 String applicantDetail = "\n\tName:\t\t\t\t" + title + " " + firstName + " " + lastName
                         + "\n\tAddress:\t\t\t" + streetAddress + ", " + city + " " + state + " " + postcode
@@ -226,7 +231,9 @@ public class MembersPortlet extends GenericPortlet {
                 Member editMember = membersDao.getById(editMemberId);
                 Double membershipAmount = Double.parseDouble(actionRequest.getParameter("membershipAmount"));
                 String paypalStatus = actionRequest.getParameter("paypalStatus");
-
+                String removeFlag = actionRequest.getParameter("removeFlag");
+                List<String> messages = new ArrayList<String>();
+                
                 editMember.setTitle(title);
                 editMember.setFirstName(firstName);
                 editMember.setLastName(lastName);
@@ -245,13 +252,21 @@ public class MembersPortlet extends GenericPortlet {
                 editMember.setRenewalFlag(renewalFlag);
                 editMember.setAcrsEmailListFlag(acrsEmailListFlag);
                 editMember.setPaypalStatus(paypalStatus);
+                editMember.setUpdateDate(new Date());
+                
+                if (removeFlag.equals("Y")) {
+                	editMember.setIsActive(false);
+                	messages.add("Member record for " + editMember.getFirstName() + " " + editMember.getLastName()
+                            + " has been deactivated.");
+                }
 
                 membersDao.save(editMember);
 
-                List<String> messages = new ArrayList<String>();
                 messages.add("Member record for " + editMember.getFirstName() + " " + editMember.getLastName()
                         + " has been updated.");
                 actionRequest.setAttribute("messages", messages);
+                
+                
             }
 
 

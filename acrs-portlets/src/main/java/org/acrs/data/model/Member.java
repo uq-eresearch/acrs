@@ -51,6 +51,10 @@ public class Member {
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date registrationDate;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updateDate;
+    private Boolean isActive;
 
     public Member() {
         this.registrationDate = new Date();
@@ -249,4 +253,22 @@ public class Member {
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
     }
+    
+    
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+    
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+    
 }

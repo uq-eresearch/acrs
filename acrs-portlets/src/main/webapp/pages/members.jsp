@@ -83,6 +83,7 @@
 		<th>Membership<br>Renewal Flag</th>
 		<th>Membership<br>Amount</th>
 		<th>Registration<br>Date</th>
+		<th>Last Updated<br>Date</th>
 		<th>Paypal<br>Status</th>
 		<th>Paypal<br>Reference</th>
 		<th>&nbsp;</th>
@@ -124,10 +125,12 @@
 			<td><%=member.getRenewalFlag()%></td>
 			<td><%=member.getMembershipAmount()+"0"%></td>
 			<td><%=member.getRegistrationDate()%></td>
+			<td><%=member.getUpdateDate()%></td>
 			<td><%=member.getPaypalStatus()%></td>
 			<td><%=paypalRefStr + paypalDetails%></td>
 			<td>
 			 <input type="button" value="EDIT" onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="EDIT" /><portlet:param name="memberId" value="<%= String.valueOf(member.getId()) %>" /></portlet:renderURL>';"/>
+			
 			</td>
 			</tr>
 		<%  } %>
@@ -270,7 +273,7 @@
 					<input class="radioCheckbox" type="radio" name="membershipType" value="FiveYear" <%= isEdit ? (editMember.getMembershipType().equals("FiveYear") ? " checked" : emptyStr) : emptyStr %>/> 5 Year Full ($200.00)<br />		
 					<!-- 
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Test" <%= isEdit ? (editMember.getMembershipType().equals("Test") ? " checked" : emptyStr) : emptyStr %>/> Test ($5.00)<br />		
-					 -->
+					 --> 
 	
 				<% if (isEdit) { %>
 					<div>					
@@ -309,8 +312,11 @@
 
 					  <label for="submit"><br></label>
 					  <input name="editMemberId" type="hidden" value="<%= String.valueOf(editMember.getId()) %>"/>
+					  <input id="removeFlag" name="removeFlag" type="hidden" value="N"/>
 					  <input type="submit" name="submit" value="Save" 
 					  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
+		  			  <input type="submit" name="submit" value="Remove" 
+					  onClick="document.getElementById('removeFlag').value='Y'; self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>					  
 				    
 				    <%  } else {%>
 					

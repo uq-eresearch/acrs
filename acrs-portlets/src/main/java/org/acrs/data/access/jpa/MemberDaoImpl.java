@@ -22,7 +22,7 @@ public class MemberDaoImpl extends JpaDao<Member> implements MemberDao, Serializ
 
     @Override
     public List<Member> getAll() {
-        return entityManagerSource.getEntityManager().createQuery("SELECT o FROM Member o ORDER BY o.firstName").getResultList();
+        return entityManagerSource.getEntityManager().createQuery("SELECT o FROM Member o WHERE isActive = true ORDER BY o.lastName").getResultList();
     }
 
     @Override
