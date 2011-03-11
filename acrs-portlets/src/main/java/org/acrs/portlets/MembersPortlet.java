@@ -121,14 +121,7 @@ public class MembersPortlet extends GenericPortlet {
     	if ((email == null) || email.isEmpty()) {
    		 	errors.add("Please include a valid email address.");
     	}
-    	else {
-    		//check for pre-existing email
 
-    		if ((action.equals("ADD")) && (membersDao.getByEmail(email) != null))
-    		{
-    			errors.add("The email address <b>" + email + "</b> is already registered with us. Please use a different email address.");
-    		}
-    	}
 	    	
     	if (errors.size() > 0) {
     		
