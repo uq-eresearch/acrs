@@ -271,9 +271,9 @@
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Full" <%= isEdit ? (editMember.getMembershipType().equals("Full") ? " checked" : emptyStr) : emptyStr %>/> Full ($50.00)<br />
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Student" <%= isEdit ? (editMember.getMembershipType().equals("Student") ? " checked" : emptyStr) : emptyStr %>/> Student ($30.00)<br />
 					<input class="radioCheckbox" type="radio" name="membershipType" value="FiveYear" <%= isEdit ? (editMember.getMembershipType().equals("FiveYear") ? " checked" : emptyStr) : emptyStr %>/> 5 Year Full ($200.00)<br />		
-					<!-- 
+					<!--  
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Test" <%= isEdit ? (editMember.getMembershipType().equals("Test") ? " checked" : emptyStr) : emptyStr %>/> Test ($5.00)<br />		
-					 --> 
+					-->  
 	
 				<% if (isEdit) { %>
 					<div>					

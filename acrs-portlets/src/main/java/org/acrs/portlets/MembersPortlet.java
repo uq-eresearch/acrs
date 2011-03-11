@@ -224,7 +224,7 @@ public class MembersPortlet extends GenericPortlet {
             } // end if ADD
 
             else if (action.equals("EDIT")) {
-
+            	_log.info("editing.");
                 //String memberId = ParamUtil.getString(actionRequest, "editMemberId");
                 //Member editMember = new Member();
                 long editMemberId = Long.parseLong(editMemberIdStr);
@@ -233,6 +233,7 @@ public class MembersPortlet extends GenericPortlet {
                 String paypalStatus = actionRequest.getParameter("paypalStatus");
                 String removeFlag = actionRequest.getParameter("removeFlag");
                 List<String> messages = new ArrayList<String>();
+                Date now = new Date();
                 
                 editMember.setTitle(title);
                 editMember.setFirstName(firstName);
@@ -252,16 +253,15 @@ public class MembersPortlet extends GenericPortlet {
                 editMember.setRenewalFlag(renewalFlag);
                 editMember.setAcrsEmailListFlag(acrsEmailListFlag);
                 editMember.setPaypalStatus(paypalStatus);
-                editMember.setUpdateDate(new Date());
-                
+                editMember.setUpdateDate(now);
+                _log.info("checking remove flag.");
                 if (removeFlag.equals("Y")) {
                 	editMember.setIsActive(false);
                 	messages.add("Member record for " + editMember.getFirstName() + " " + editMember.getLastName()
                             + " has been deactivated.");
                 }
-
                 membersDao.save(editMember);
-
+                _log.info("updated memeber.");
                 messages.add("Member record for " + editMember.getFirstName() + " " + editMember.getLastName()
                         + " has been updated.");
                 actionRequest.setAttribute("messages", messages);
@@ -269,9 +269,9 @@ public class MembersPortlet extends GenericPortlet {
                 
             }
 
-
+            
         } // end if ! errors
-
+      
     }
 
     protected void include(String path, RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
