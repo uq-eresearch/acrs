@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -89,10 +90,10 @@ public class MembersPortlet extends GenericPortlet {
         String acrsEmailListFlag = actionRequest.getParameter("acrsEmailListFlag");
 
         // tidy up nulls
-        if (acrsEmailListFlag == null) {
+        if ((acrsEmailListFlag == null) || (acrsEmailListFlag.isEmpty())) {
             acrsEmailListFlag = "N";
         }
-        if (renewalFlag == null) {
+        if ((renewalFlag == null) || (renewalFlag.isEmpty())){
             renewalFlag = "N";
         }
 
@@ -379,12 +380,24 @@ public class MembersPortlet extends GenericPortlet {
 
 
             r = s.createRow(allMembers.indexOf(member) + 1);
-            for (String m : a) {
-                c = r.createCell(a.indexOf(m));
+            Iterator i = a.iterator();
+            int cellNum = 0;
+            
+            while (i.hasNext()) {
+            	c = r.createCell(cellNum);
+            	HSSFRichTextString rts = new HSSFRichTextString((String)i.next());
+                c.setCellValue(rts);
+                s.autoSizeColumn((short)cellNum);
+                cellNum++;
+            }
+            
+            /*for (String m : a) {
+            
+            	c = r.createCell(a.indexOf(m));
                 HSSFRichTextString rts = new HSSFRichTextString(m);
                 c.setCellValue(rts);
                 s.autoSizeColumn((short) a.indexOf(m));
-            }
+            }*/
 
         }
 
