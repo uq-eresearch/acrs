@@ -111,6 +111,19 @@ public class MembersPortlet extends GenericPortlet {
 
             errors.add("All fields are required.");
         }
+        
+        if ((firstName.contains("<")) || (firstName.contains(">"))
+            	||	(lastName.contains("<")) || (lastName.contains(">"))
+            	||	(streetAddress.contains("<")) || (streetAddress.contains(">"))
+            	||	(city.contains("<")) || (city.contains(">"))
+            	||	(state.contains("<")) || (state.contains(">"))
+            	||	(email.contains("<")) || (email.contains(">"))
+            	||	(phone.contains("<")) || (phone.contains(">"))
+            	||	(institution.contains("<")) || (institution.contains(">"))
+            	||	(researchInterest.contains("<")) || (researchInterest.contains(">")) )
+        {
+        	errors.add("Please, remove these characters from the form before continuing: < >");
+        }
 
         if ((email == null) || email.isEmpty()) {
             errors.add("Please include a valid email address.");
