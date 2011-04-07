@@ -1,9 +1,16 @@
 package org.acrs.data.model;
 
-import org.hibernate.validator.NotNull;
-
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.validator.NotNull;
 
 /**
  * 
@@ -27,6 +34,7 @@ public class ConferenceRegistration {
     private String firstName;
     private String lastName;
     private String streetAddress;
+    private String streetAddress2;
     private String city;
     private String state;
     private String postcode;
@@ -36,21 +44,26 @@ public class ConferenceRegistration {
     
     @Column(length=500)
     private String institution;
-    @Column(length=500)
-    private String researchInterest;
     
-    private String newsletterPref;
-    private String membershipType;
+    private Boolean submittingAbstract;
     
-    private Double membershipAmount;
+    private String registrationRate;
     
-    private String renewalFlag;
-    private String acrsEmailListFlag;
+    private Boolean studentMentoringDay;
+    private Boolean coralFinderWorkshop;
+    private Integer additionalTicketsWelcome;
+    private Integer additionalTicketsDinner;
+    
+    
+    private Integer registrationAmount;
+    
+
+    
+
+    @Column(length=2500)
     private String paypalRef;
     private String paypalStatus;
     
-    private String passwordHash;
-    private String passwordResetId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
@@ -65,12 +78,11 @@ public class ConferenceRegistration {
         
     }
 
-    public ConferenceRegistration(String firstName, String lastName, String email, String passwordHash) {
+    public ConferenceRegistration(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.registrationDate = new Date();
-        this.passwordHash = passwordHash;
     }
 
     public long getId() {
@@ -112,6 +124,14 @@ public class ConferenceRegistration {
 
     public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
+    }
+    
+    public String getStreetAddress2() {
+        return streetAddress2;
+    }
+
+    public void setStreetAddress2(String streetAddress2) {
+        this.streetAddress2 = streetAddress2;
     }
     
     public String getCity() {
@@ -169,55 +189,6 @@ public class ConferenceRegistration {
         this.institution = institution;
     }
 	
-    public String getResearchInterest() {
-        return researchInterest;
-    }
-
-    public void setResearchInterest(String researchInterest) {
-        this.researchInterest = researchInterest;
-    }
-	
-    public String getNewsletterPref() {
-        return newsletterPref;
-    }
-
-    public void setNewsletterPref(String newsletterPref) {
-        this.newsletterPref = newsletterPref;
-    }
-	
-    public String getMembershipType() {
-        return membershipType;
-    }
-
-    public void setMembershipType(String membershipType) {
-        this.membershipType = membershipType;
-    }
-    
-    public Double getMembershipAmount() {
-        return membershipAmount;
-    }
-
-    public void setMembershipAmount(Double membershipAmount) {
-        this.membershipAmount = membershipAmount;
-    }
-	
-    
-    public String getRenewalFlag() {
-        return renewalFlag;
-    }
-
-    public void setRenewalFlag(String renewalFlag) {
-        this.renewalFlag = renewalFlag;
-    }
-    
-    public String getAcrsEmailListFlag() {
-        return acrsEmailListFlag;
-    }
-
-    public void setAcrsEmailListFlag(String acrsEmailListFlag) {
-        this.acrsEmailListFlag = acrsEmailListFlag;
-    }
-
     public String getPaypalRef() {
         return paypalRef;
     }
@@ -234,22 +205,6 @@ public class ConferenceRegistration {
         this.paypalStatus = paypalStatus;
     }
     
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public String getPasswordResetId() {
-        return passwordResetId;
-    }
-
-    public void setPasswordResetId(String passwordResetId) {
-        this.passwordResetId = passwordResetId;
-    }
-
     public Date getRegistrationDate() {
         return registrationDate;
     }
@@ -274,5 +229,62 @@ public class ConferenceRegistration {
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
+
+	public Boolean getSubmittingAbstract() {
+		return submittingAbstract;
+	}
+
+	public void setSubmittingAbstract(Boolean submittingAbstract) {
+		this.submittingAbstract = submittingAbstract;
+	}
+
+	public String getRegistrationRate() {
+		return registrationRate;
+	}
+
+	public void setRegistrationRate(String registrationRate) {
+		this.registrationRate = registrationRate;
+	}
+
+	public Boolean getStudentMentoringDay() {
+		return studentMentoringDay;
+	}
+
+	public void setStudentMentoringDay(Boolean studentMentoringDay) {
+		this.studentMentoringDay = studentMentoringDay;
+	}
+
+	public Boolean getCoralFinderWorkshop() {
+		return coralFinderWorkshop;
+	}
+
+	public void setCoralFinderWorkshop(Boolean coralFinderWorkshop) {
+		this.coralFinderWorkshop = coralFinderWorkshop;
+	}
+
+
+	public Integer getRegistrationAmount() {
+		return registrationAmount;
+	}
+
+	public void setRegistrationAmount(Integer registrationAmount) {
+		this.registrationAmount = registrationAmount;
+	}
+
+	public Integer getAdditionalTicketsWelcome() {
+		return additionalTicketsWelcome;
+	}
+
+	public void setAdditionalTicketsWelcome(Integer additionalTicketsWelcome) {
+		this.additionalTicketsWelcome = additionalTicketsWelcome;
+	}
+
+	public Integer getAdditionalTicketsDinner() {
+		return additionalTicketsDinner;
+	}
+
+	public void setAdditionalTicketsDinner(Integer additionalTicketsDinner) {
+		this.additionalTicketsDinner = additionalTicketsDinner;
+	}
     
 }

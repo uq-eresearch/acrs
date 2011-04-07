@@ -6,22 +6,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.mail.MessagingException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -32,7 +30,6 @@ import javax.portlet.ResourceResponse;
 import org.acrs.app.ACRSApplication;
 import org.acrs.data.access.ConferenceRegistrationDao;
 import org.acrs.data.model.ConferenceRegistration;
-import org.acrs.util.Emailer;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -44,6 +41,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * Author: alabri Date: 08/02/2011 Time: 4:26:58 PM
@@ -52,29 +51,66 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 	private static Log _log = LogFactoryUtil
 			.getLog(ConferenceRegistrationPortlet.class);
 	protected String viewJSP;
-	protected ConferenceRegistrationDao membersDao;
+	protected ConferenceRegistrationDao conferenceRegistrationDao;
 
 	public void init() throws PortletException {
 		viewJSP = getInitParameter("confreg-jsp");
-		membersDao = ACRSApplication.getConfiguration()
+		conferenceRegistrationDao = ACRSApplication.getConfiguration()
 				.getConferenceRegistrationDao();
 	}
 
 	public void doView(RenderRequest renderRequest,
 			RenderResponse renderResponse) throws IOException, PortletException {
+		
+		String editJSP = "/WEB-INF/jsp/addeditconf.jsp";
+		String registrationsListJSP = "/WEB-INF/jsp/registrations.jsp";
+		String submitVerify = "/WEB-INF/jsp/submit.jsp";
 
+		String cmd = ParamUtil.getString(renderRequest, "cmd");
 		// Do all you views here
 
-		// if the user is a liferay admin list the membership database in the
+		// if the user is a liferay admin list the registration database in the
 		// JSP.
 		boolean isAdmin = renderRequest.isUserInRole("administrator");
 		renderRequest.setAttribute("isAdmin", isAdmin);
 
-		List<ConferenceRegistration> allMembers = membersDao.getAll();
-		renderRequest.setAttribute("allMembers", allMembers);
-		renderRequest.setAttribute("membersDao", membersDao);
+		if (isAdmin) {
+			if ("EDIT".equals(cmd)) {
+				long registrationId = ParamUtil.getLong(renderRequest, "registrationId");
+				ConferenceRegistration editRegistration = conferenceRegistrationDao.getById(registrationId);
+				
+				ConferenceFormBean formBean = new ConferenceFormBean();
+				try {
+					BeanUtils.copyProperties(formBean, editRegistration);
+				} catch (IllegalAccessException e) {
+					_log.error("Error copying properties", e);
+				} catch (InvocationTargetException e) {
+					_log.error("Error copying properties", e);
+				}
 
-		include(viewJSP, renderRequest, renderResponse);
+				renderRequest.setAttribute("formBean", formBean);
+				renderRequest.setAttribute("editRegistration", editRegistration);
+				
+				include(editJSP, renderRequest, renderResponse);
+
+			} else {
+				List<ConferenceRegistration> allRegistrations = conferenceRegistrationDao.getAll();
+				renderRequest.setAttribute("allRegistrations", allRegistrations);
+	
+				include(registrationsListJSP, renderRequest, renderResponse);
+			}
+		} else {
+			ConferenceRegistration newRegistration = (ConferenceRegistration) renderRequest.getPortletSession().getAttribute("newRegistration", PortletSession.APPLICATION_SCOPE);
+			
+			if (newRegistration == null) {
+				include(editJSP, renderRequest, renderResponse);	
+			} else {
+				renderRequest.setAttribute("newRegistration", newRegistration);
+				include(submitVerify, renderRequest, renderResponse);
+			}
+			
+		}
+
 	}
 
 	public void processAction(ActionRequest actionRequest,
@@ -82,43 +118,77 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 		// Process data here
 		PortletSession session = actionRequest.getPortletSession(true);
-		String editMemberIdStr = actionRequest.getParameter("editMemberId");
+		String editRegistrationIdStr = actionRequest.getParameter("editRegistrationId");
 
 		String action = "";
+		List<String> errors = checkFormForErrors(actionRequest);
 
-		if (editMemberIdStr == null) {
+		if (editRegistrationIdStr == null) {
 			action = "ADD";
-			_log.info("request to add new member");
+			_log.info("request to add new registration");
+			try {
+				checkCaptcha(actionRequest);
+			} catch (Exception e) {
+				_log.info("Captcha exception: " + e.getMessage());
+				errors.add("Invalid Captcha text, please try again");
+			}
 		} else {
 			action = "EDIT";
-			_log.info("edit member id " + editMemberIdStr);
+			_log.info("edit registration id " + editRegistrationIdStr);
 		}
 
 		ConferenceFormBean formBean = extractRequestParameters(actionRequest);
 
-		List<String> errors = checkFormForErrors(actionRequest);
+		
 
 		if (errors.size() > 0) {
 
 			actionRequest.setAttribute("errors", errors);
+			actionRequest.setAttribute("formBean", formBean);
 		} else {
 
 			if (action.equals("ADD")) {
-				addNewMember(actionResponse, session, formBean);
+				try {
+					addNewRegistration(actionResponse, session, formBean);
+				} catch (RegistrationProcessingException e) {
+					errors.add(e.getMessage());
+				}
 			} else if (action.equals("EDIT")) {
-				editMembership(actionRequest, formBean);
+				editRegistration(actionRequest, formBean);
 			}
 
 		} // end if ! errors
 
 	}
+	private void checkCaptcha(PortletRequest request) throws Exception {
+        String enteredCaptchaText = ParamUtil.getString(request, "captchaText");
 
+        PortletSession session = request.getPortletSession();
+        String captchaText = getCaptchaValueFromSession(session);
+        if (Validator.isNull(captchaText)) {
+            throw new Exception("Internal Error! Captcha text not found in session");
+        }
+        if (!captchaText.equals(enteredCaptchaText.trim())) {
+        	_log.info("Captcha expected: " + captchaText + " Entered: " + enteredCaptchaText);
+            throw new Exception("Invalid captcha text. Please reenter.");
+        }
+    }
+
+    private String getCaptchaValueFromSession(PortletSession session) {
+        Enumeration<String> atNames = session.getAttributeNames();
+        while (atNames.hasMoreElements()) {
+            String name = atNames.nextElement();
+            if (name.contains("CAPTCHA_TEXT")) {
+                return (String) session.getAttribute(name);
+            }
+        }
+        return null;
+    }
 	private List<String> checkFormForErrors(ActionRequest actionRequest) {
 		List<String> errors = new ArrayList<String>();
 		String firstName = actionRequest.getParameter("firstName");
 		String lastName = actionRequest.getParameter("lastName");
-		String streetAddress = actionRequest.getParameter("streetAddress")
-				+ " " + actionRequest.getParameter("streetAddress2");
+		String streetAddress = actionRequest.getParameter("streetAddress");
 		String city = actionRequest.getParameter("city");
 		String state = actionRequest.getParameter("state");
 		String postcode = actionRequest.getParameter("postcode");
@@ -126,36 +196,21 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		String email = actionRequest.getParameter("email");
 		String phone = actionRequest.getParameter("phone");
 		String institution = actionRequest.getParameter("institution");
-		String researchInterest = actionRequest
-				.getParameter("researchInterest");
-		String membershipType = actionRequest.getParameter("membershipType");
+		String registrationRate = actionRequest.getParameter("registrationRate");
 
 		if ((firstName == null) || firstName.isEmpty()
+				|| (lastName == null) || lastName.isEmpty()
 				|| (streetAddress == null) || streetAddress.isEmpty()
 				|| (city == null) || city.isEmpty() || (state == null)
 				|| state.isEmpty() || (postcode == null) || postcode.isEmpty()
 				|| (country == null) || country.isEmpty() || (email == null)
 				|| email.isEmpty() || (phone == null) || phone.isEmpty()
 				|| (institution == null) || institution.isEmpty()
-				|| (researchInterest == null) || researchInterest.isEmpty()
-				|| (membershipType == null) || membershipType.isEmpty()) {
+				|| (registrationRate == null) || registrationRate.isEmpty()) {
 
 			errors.add("All fields are required.");
 		}
 
-		if ((firstName.contains("<")) || (firstName.contains(">"))
-				|| (lastName.contains("<")) || (lastName.contains(">"))
-				|| (streetAddress.contains("<"))
-				|| (streetAddress.contains(">")) || (city.contains("<"))
-				|| (city.contains(">")) || (state.contains("<"))
-				|| (state.contains(">")) || (email.contains("<"))
-				|| (email.contains(">")) || (phone.contains("<"))
-				|| (phone.contains(">")) || (institution.contains("<"))
-				|| (institution.contains(">"))
-				|| (researchInterest.contains("<"))
-				|| (researchInterest.contains(">"))) {
-			errors.add("Please, remove these characters from the form before continuing: < >");
-		}
 
 		if ((email == null) || email.isEmpty()) {
 			errors.add("Please include a valid email address.");
@@ -163,153 +218,144 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		return errors;
 	}
 
-	private void editMembership(ActionRequest actionRequest,
+	private void editRegistration(ActionRequest actionRequest,
 			ConferenceFormBean crb) {
 
 		_log.info("editing.");
 
-		long editMemberId = Long.parseLong(actionRequest
-				.getParameter("editMemberId"));
-		ConferenceRegistration editMember = membersDao.getById(editMemberId);
-		Double membershipAmount = Double.parseDouble(actionRequest
-				.getParameter("membershipAmount"));
+		long editRegistrationId = Long.parseLong(actionRequest
+				.getParameter("editRegistrationId"));
+		ConferenceRegistration editRegistration = conferenceRegistrationDao.getById(editRegistrationId);
+		
 		String paypalStatus = actionRequest.getParameter("paypalStatus");
 		String removeFlag = actionRequest.getParameter("removeFlag");
 		List<String> messages = new ArrayList<String>();
 		Date now = new Date();
 
 		try {
-			BeanUtils.copyProperties(editMember, crb);
+			BeanUtils.copyProperties(editRegistration, crb);
 		} catch (IllegalAccessException e) {
 			_log.error("Error copying properties", e);
 		} catch (InvocationTargetException e) {
 			_log.error("Error copying properties", e);
 		}
 
-		editMember.setMembershipAmount(membershipAmount);
-		editMember.setPaypalStatus(paypalStatus);
-		editMember.setUpdateDate(now);
+		editRegistration.setPaypalStatus(paypalStatus);
+		editRegistration.setUpdateDate(now);
 		_log.info("checking remove flag.");
 		if (removeFlag.equals("Y")) {
-			editMember.setIsActive(false);
-			messages.add("Member record for " + editMember.getFirstName() + " "
-					+ editMember.getLastName() + " has been deactivated.");
+			editRegistration.setIsActive(false);
+			messages.add("Registration record for " + editRegistration.getFirstName() + " "
+					+ editRegistration.getLastName() + " has been deactivated.");
 		}
-		membersDao.save(editMember);
-		_log.info("updated memeber.");
-		messages.add("Member record for " + editMember.getFirstName() + " "
-				+ editMember.getLastName() + " has been updated.");
+		conferenceRegistrationDao.save(editRegistration);
+		_log.info("updated registration.");
+		messages.add("Registration record for " + editRegistration.getFirstName() + " "
+				+ editRegistration.getLastName() + " has been updated.");
 		actionRequest.setAttribute("messages", messages);
 
 	}
 
-	private void addNewMember(ActionResponse actionResponse,
-			PortletSession session, ConferenceFormBean crb) {
+	
+	private void addNewRegistration(ActionResponse actionResponse,
+			PortletSession session, ConferenceFormBean crb) throws RegistrationProcessingException {
 
-		ConferenceRegistration newMember = new ConferenceRegistration();
-
-		String membershipType = crb.getMembershipType();
-
-		// calculate membership amount
-		Double membershipAmount = 0.00;
-		String paypalItemName = "Australian Coral Reef Society ";
-		int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		Date startDiscountDate = new Date();
-		Date endDiscountDate = new Date();
-
-		if (membershipType.equals("Full")) {
-			membershipAmount = 50.00;
-			paypalItemName = paypalItemName + "Full Membership for "
-					+ Integer.toString(thisYear);
-
-		} else if (membershipType.equals("Student")) {
-			membershipAmount = 30.00;
-			paypalItemName = paypalItemName + "Student Membership for "
-					+ Integer.toString(thisYear);
-		} else if (membershipType.equals("FiveYear")) {
-			membershipAmount = 200.00;
-			paypalItemName = paypalItemName + "Full 5 Year Membership from "
-					+ Integer.toString(thisYear);
-		} else if (membershipType.equals("Test")) {
-			membershipAmount = 5.00;
-			paypalItemName = paypalItemName + "Test Membership from "
-					+ Integer.toString(thisYear);
-		}
-
+		ConferenceRegistration newRegistration = new ConferenceRegistration();
 		try {
-			startDiscountDate = sdf
-					.parse("01-01-" + Integer.toString(thisYear));
-			endDiscountDate = sdf.parse("01-03-" + Integer.toString(thisYear));
-		} catch (ParseException e) {
-			_log.error("Error parsing date", e);
-		}
-
-		if (!(membershipType.equals("FiveYear"))
-				&& (newMember.getRegistrationDate().after(startDiscountDate))
-				&& (newMember.getRegistrationDate().before(endDiscountDate))) {
-			membershipAmount = membershipAmount - 10.00;
-			paypalItemName = paypalItemName + " (with early discount)";
-		}
-
-		// save member details
-		try {
-			BeanUtils.copyProperties(newMember, crb);
+			BeanUtils.copyProperties(newRegistration, crb);
 		} catch (Exception e1) {
 			_log.error("Error copying properties", e1);
 		}
 
-		newMember.setMembershipType(membershipType);
-		newMember.setPaypalRef("");
-		newMember.setPaypalStatus("Unverified");
-		newMember.setIsActive(true);
-		newMember.setUpdateDate(newMember.getRegistrationDate());
+		// calculate Registration amount
+		String paypalItemName = "Australian Coral Reef Society Conference 2011";
+		int registrationAmount = 0;
 
-		membersDao.save(newMember);
-
-		// email stuff out
-		String approvalEmail1 = ACRSApplication.getConfiguration()
-				.getApprovalEmail1();
-		String approvalEmail2 = ACRSApplication.getConfiguration()
-				.getApprovalEmail2();
-		String emailListCoordEmail = ACRSApplication.getConfiguration()
-				.getEmailListCoordEmail();
-
-		String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
-		String emailListMessage = "Hi, \n\nThe following membership applicant indicated a desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
-		String applicantDetail = "\n\tName:\t\t\t\t" + newMember.getTitle()
-				+ " " + newMember.getFirstName() + " "
-				+ newMember.getLastName() + "\n\tAddress:\t\t\t"
-				+ newMember.getStreetAddress() + ", " + newMember.getCity()
-				+ " " + newMember.getState() + " " + newMember.getPostcode()
-				+ "\n\tEmail:\t\t\t" + newMember.getEmail()
-				+ "\n\tPhone:\t\t\t" + newMember.getPhone()
-				+ "\n\tInstitution:\t\t" + newMember.getInstitution()
-				+ "\n\tResearch Interest:\t" + newMember.getResearchInterest()
-				+ "\n\tNewsletter Preference:\t"
-				+ newMember.getNewsletterPref() + "\n\tMembership Type: \t\t"
-				+ newMember.getMembershipType() + "\n\tMembership Amount: \t"
-				+ newMember.getMembershipAmount() + "0";
-
-		try {
-			Emailer.sendEmail(approvalEmail1, "no-reply@acrs.org",
-					"New ACRS Membership", approvalMessage + applicantDetail);
-			Emailer.sendEmail(approvalEmail2, "no-reply@acrs.org",
-					"New ACRS Membership", approvalMessage + applicantDetail);
-
-			if ("Y".equals(newMember.getAcrsEmailListFlag())) {
-				Emailer.sendEmail(emailListCoordEmail, "no-reply@acrs.org",
-						"New ACRS Mail List Subscribe Request",
-						emailListMessage + applicantDetail);
-			}
-
-		} catch (MessagingException e) {
-			_log.fatal("Could not send email.");
+		String registrationRate = newRegistration.getRegistrationRate();
+		
+		if ("StudentMember".equals(registrationRate)) {
+			registrationAmount = 330;
+			paypalItemName += " Student Member Registration";
+		} else if ("StudentNonMember".equals(registrationRate)) {
+			registrationAmount = 380;
+			paypalItemName += " Student Non-Member Registration";
+		} else if ("FullMember".equals(registrationRate)) {
+			registrationAmount = 440;
+			paypalItemName += " Full Member Registration";
+		} else if ("FullNonMember".equals(registrationRate)) {
+			registrationAmount = 499;
+			paypalItemName += " Full Non-Member Registration";
+		} else if ("DayOneOnly".equals(registrationRate)) {
+			registrationAmount = 240;
+			paypalItemName += " Day rate — Day 1 only";
+		} else if ("DayTwoOnly".equals(registrationRate)) {
+			registrationAmount = 240;
+			paypalItemName += " Day rate — Day 2 only";
+		} else {
+			_log.error("Invalid registration rate: '" + registrationRate + "'");
+			throw new RegistrationProcessingException("Can't calculate registration rate");
+		}
+		if (newRegistration.getStudentMentoringDay()) {
+			registrationAmount -= 50;
+			paypalItemName += " + Student Mentoring Day";
+		}
+		
+		if (newRegistration.getCoralFinderWorkshop()) {
+			registrationAmount += 10;
+			paypalItemName += " + Coral Finder Workshop";
+		}
+		
+		if (newRegistration.getAdditionalTicketsWelcome() > 0) {
+			registrationAmount += newRegistration.getAdditionalTicketsWelcome() * 10;
+			paypalItemName += " + " + newRegistration.getAdditionalTicketsWelcome() + " Welcome Event Tickets";
+		}
+		
+		if (newRegistration.getAdditionalTicketsDinner() > 0) {
+			registrationAmount += newRegistration.getAdditionalTicketsDinner() * 10;
+			paypalItemName += " + " + newRegistration.getAdditionalTicketsDinner() + " Dinner Tickets";
 		}
 
-		actionResponse.setRenderParameter("newMemberId",
-				String.valueOf(newMember.getId()));
-		session.setAttribute("newMember", newMember,
+		
+		// save registration details
+
+
+		newRegistration.setPaypalRef("");
+		newRegistration.setPaypalStatus("Unverified");
+		newRegistration.setRegistrationAmount(registrationAmount);
+		newRegistration.setIsActive(true);
+		newRegistration.setUpdateDate(newRegistration.getRegistrationDate());
+
+		conferenceRegistrationDao.save(newRegistration);
+
+		// email stuff out
+//		String approvalEmail1 = ACRSApplication.getConfiguration()
+//				.getApprovalEmail1();
+//		String approvalEmail2 = ACRSApplication.getConfiguration()
+//				.getApprovalEmail2();
+//
+//		String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
+//		String applicantDetail = "\n\tName:\t\t\t\t" + newRegistration.getTitle()
+//				+ " " + newRegistration.getFirstName() + " "
+//				+ newRegistration.getLastName() + "\n\tAddress:\t\t\t"
+//				+ newRegistration.getStreetAddress() + ", " + newRegistration.getCity()
+//				+ " " + newRegistration.getState() + " " + newRegistration.getPostcode()
+//				+ "\n\tEmail:\t\t\t" + newRegistration.getEmail()
+//				+ "\n\tPhone:\t\t\t" + newRegistration.getPhone()
+//				+ "\n\tInstitution:\t\t" + newRegistration.getInstitution();
+
+//		try {
+//			Emailer.sendEmail(approvalEmail1, "no-reply@acrs.org",
+//					"New ACRS Membership", approvalMessage + applicantDetail);
+//			Emailer.sendEmail(approvalEmail2, "no-reply@acrs.org",
+//					"New ACRS Membership", approvalMessage + applicantDetail);
+//
+//		} catch (MessagingException e) {
+//			_log.fatal("Could not send email.");
+//		}
+
+		actionResponse.setRenderParameter("newRegistrationId",
+				String.valueOf(newRegistration.getId()));
+		session.setAttribute("newRegistration", newRegistration,
 				PortletSession.APPLICATION_SCOPE);
 		session.setAttribute("paypalItemName", paypalItemName,
 				PortletSession.APPLICATION_SCOPE);
@@ -328,22 +374,9 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		try {
 			BeanUtils.populate(crb, map);
 		} catch (Exception e1) {
-			_log.error("Error loading parameters", e1);
-		}
-		crb.setStreetAddress(crb.getStreetAddress() + " "
-				+ crb.getStreetAddress2());
-		crb.setNewsletterPref(crb.getNewsletterPref() + ", "
-				+ crb.getNewsletterPref2());
-
-		// tidy up nulls
-		if (crb.getAcrsEmailListFlag() == null
-				|| crb.getAcrsEmailListFlag().isEmpty()) {
-			crb.setAcrsEmailListFlag("N");
+			_log.error("Error loading parameters: " + map, e1);
 		}
 
-		if (crb.getRenewalFlag() == null || crb.getRenewalFlag().isEmpty()) {
-			crb.setAcrsEmailListFlag("N");
-		}
 		return crb;
 	}
 
@@ -378,16 +411,39 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			_log.info("Destroying portlet");
 		}
 	}
-
-	public void serveResource(ResourceRequest req, ResourceResponse res)
+	
+    /** Serve Resource used for getting captcha
+     *
+     */
+    @Override
+    public void serveResource(ResourceRequest resourceRequest,
+                             ResourceResponse resourceResponse) throws IOException, PortletException {
+    	String resourceID = resourceRequest.getResourceID();
+    	if ("captcha".equals(resourceID)) {
+    		serveResourceCaptcha(resourceRequest, resourceResponse);
+    	} else if ("spreadsheet".equals(resourceID)) {
+    		serveResourceSpreadsheet(resourceRequest, resourceResponse);
+    	}
+    }
+    
+    public void serveResourceCaptcha(ResourceRequest resourceRequest,
+                             ResourceResponse resourceResponse) throws IOException, PortletException {
+        try {
+            com.liferay.portal.kernel.captcha.CaptchaUtil.serveImage(resourceRequest, resourceResponse);
+        } catch (Exception e) {
+            _log.error(e);
+        }
+    }
+    
+	public void serveResourceSpreadsheet(ResourceRequest req, ResourceResponse res)
 			throws PortletException, IOException {
 
-		// create an excel file containing the member list for the user to
+		// create an excel file containing the registration list for the user to
 		// download
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet s = wb.createSheet("ACRS Member Database "
+		HSSFSheet s = wb.createSheet("ACRS Conference Registrations 2011 "
 				+ sdf.format(new Date()));
 		s.setFitToPage(true);
 		HSSFRow r = null;
@@ -412,13 +468,15 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		headings.add("Email");
 		headings.add("Phone");
 		headings.add("Institution");
-		headings.add("Research Interest");
-		headings.add("Newsletter Preference");
-		headings.add("ACRS Email List Flag");
-		headings.add("Membership Type");
-		headings.add("Renewal Flag");
-		headings.add("Membership Amount");
+		headings.add("Submitting Abstract");
+		headings.add("Registration Rate");
+		headings.add("Student Mentoring Day");
+		headings.add("Coral Finder Workshop");
+		headings.add("Welcome Tickets");
+		headings.add("Dinner Tickets");
+		headings.add("Registration Amount");
 		headings.add("Registration Date");
+		headings.add("Updated Date");
 		headings.add("Paypal Status");
 		headings.add("Paypal Confirmation Details");
 
@@ -430,33 +488,35 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			c.setCellStyle(thStyle);
 		}
 
-		// add members
-		List<ConferenceRegistration> allMembers = membersDao.getAll();
-		for (ConferenceRegistration member : allMembers) {
+		// add registrations
+		List<ConferenceRegistration> allRegistrations = conferenceRegistrationDao.getAll();
+		for (ConferenceRegistration registration : allRegistrations) {
 
 			ArrayList<String> a = new ArrayList<String>();
-			a.add(member.getTitle());
-			a.add(member.getFirstName());
-			a.add(member.getLastName());
-			a.add(member.getStreetAddress());
-			a.add(member.getCity());
-			a.add(member.getState());
-			a.add(member.getPostcode());
-			a.add(member.getCountry());
-			a.add(member.getEmail());
-			a.add(member.getPhone());
-			a.add(member.getInstitution());
-			a.add(member.getResearchInterest());
-			a.add(member.getNewsletterPref());
-			a.add(member.getAcrsEmailListFlag());
-			a.add(member.getMembershipType());
-			a.add(member.getRenewalFlag());
-			a.add(member.getMembershipAmount() + "0");
-			a.add(member.getRegistrationDate().toString());
-			a.add(member.getPaypalStatus());
-			a.add(member.getPaypalRef());
+			a.add(registration.getTitle());
+			a.add(registration.getFirstName());
+			a.add(registration.getLastName());
+			a.add(registration.getStreetAddress());
+			a.add(registration.getCity());
+			a.add(registration.getState());
+			a.add(registration.getPostcode());
+			a.add(registration.getCountry());
+			a.add(registration.getEmail());
+			a.add(registration.getPhone());
+			a.add(registration.getInstitution());
+			a.add(registration.getSubmittingAbstract() ? "Y" : "N");
+			a.add(registration.getRegistrationRate());
+			a.add(registration.getStudentMentoringDay() ? "Y" : "N");
+			a.add(registration.getCoralFinderWorkshop() ? "Y" : "N");
+			a.add(registration.getAdditionalTicketsWelcome().toString());
+			a.add(registration.getAdditionalTicketsDinner().toString());
+			a.add(registration.getRegistrationAmount().toString());
+			a.add(registration.getRegistrationDate().toString());
+			a.add(registration.getUpdateDate().toString());
+			a.add(registration.getPaypalStatus());
+			a.add(registration.getPaypalRef());
 
-			r = s.createRow(allMembers.indexOf(member) + 1);
+			r = s.createRow(allRegistrations.indexOf(registration) + 1);
 			Iterator<String> i = a.iterator();
 			int cellNum = 0;
 
@@ -467,24 +527,15 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				s.autoSizeColumn((short) cellNum);
 				cellNum++;
 			}
-
-			/*
-			 * for (String m : a) {
-			 * 
-			 * c = r.createCell(a.indexOf(m)); HSSFRichTextString rts = new
-			 * HSSFRichTextString(m); c.setCellValue(rts);
-			 * s.autoSizeColumn((short) a.indexOf(m)); }
-			 */
-
 		}
 
 		// write workbook out to file
-		FileOutputStream fos = new FileOutputStream("MemberList.xls");
+		FileOutputStream fos = new FileOutputStream("ConferenceRegistrations2011.xls");
 		wb.write(fos);
 		fos.flush();
 		fos.close();
 
-		File file = new File("MemberList.xls");
+		File file = new File("ConferenceRegistrations2011.xls");
 		FileInputStream fileIn = new FileInputStream(file);
 		res.setContentType("application/vnd.ms-excel");
 
@@ -502,171 +553,6 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 		file.delete();
 
-	}
-
-	class ConferenceFormBean {
-		String title;
-		String firstName;
-		String lastName;
-		String streetAddress;
-		String streetAddress2;
-		String city;
-		String state;
-		String postcode;
-		String country;
-		String email;
-		String phone;
-		String institution;
-		String researchInterest;
-		String newsletterPref;
-		String newsletterPref2;
-		String membershipType;
-		String renewalFlag;
-		String acrsEmailListFlag;
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-
-		public String getStreetAddress() {
-			return streetAddress;
-		}
-
-		public void setStreetAddress(String streetAddress) {
-			this.streetAddress = streetAddress;
-		}
-
-		public String getStreetAddress2() {
-			return streetAddress2;
-		}
-
-		public void setStreetAddress2(String streetAddress2) {
-			this.streetAddress2 = streetAddress2;
-		}
-
-		public String getCity() {
-			return city;
-		}
-
-		public void setCity(String city) {
-			this.city = city;
-		}
-
-		public String getState() {
-			return state;
-		}
-
-		public void setState(String state) {
-			this.state = state;
-		}
-
-		public String getPostcode() {
-			return postcode;
-		}
-
-		public void setPostcode(String postcode) {
-			this.postcode = postcode;
-		}
-
-		public String getCountry() {
-			return country;
-		}
-
-		public void setCountry(String country) {
-			this.country = country;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public void setEmail(String email) {
-			this.email = email;
-		}
-
-		public String getPhone() {
-			return phone;
-		}
-
-		public void setPhone(String phone) {
-			this.phone = phone;
-		}
-
-		public String getInstitution() {
-			return institution;
-		}
-
-		public void setInstitution(String institution) {
-			this.institution = institution;
-		}
-
-		public String getResearchInterest() {
-			return researchInterest;
-		}
-
-		public void setResearchInterest(String researchInterest) {
-			this.researchInterest = researchInterest;
-		}
-
-		public String getNewsletterPref() {
-			return newsletterPref;
-		}
-
-		public void setNewsletterPref(String newsletterPref) {
-			this.newsletterPref = newsletterPref;
-		}
-
-		public String getNewsletterPref2() {
-			return newsletterPref2;
-		}
-
-		public void setNewsletterPref2(String newsletterPref2) {
-			this.newsletterPref2 = newsletterPref2;
-		}
-
-		public String getMembershipType() {
-			return membershipType;
-		}
-
-		public void setMembershipType(String membershipType) {
-			this.membershipType = membershipType;
-		}
-
-		public String getRenewalFlag() {
-			return renewalFlag;
-		}
-
-		public void setRenewalFlag(String renewalFlag) {
-			this.renewalFlag = renewalFlag;
-		}
-
-		public String getAcrsEmailListFlag() {
-			return acrsEmailListFlag;
-		}
-
-		public void setAcrsEmailListFlag(String acrsEmailListFlag) {
-			this.acrsEmailListFlag = acrsEmailListFlag;
-		}
 	}
 
 }
