@@ -33,5 +33,34 @@
             <role-name>user</role-name>
         </security-role-ref>
     </portlet>
-
+    <portlet>
+        <portlet-name>confreg-portlet</portlet-name>
+        <display-name>Conference Registration Portlet</display-name>
+        <portlet-class>org.acrs.portlets.ConferenceRegistrationPortlet</portlet-class>
+        <init-param>
+            <name>confreg-jsp</name>
+            <value>/pages/conferencereg.jsp</value>
+        </init-param>
+        <expiration-cache>0</expiration-cache>
+        <supports>
+            <mime-type>text/html</mime-type>
+        </supports>
+        <portlet-info>
+            <title>ACRS Conference Registration</title>
+            <short-title>ConfReg</short-title>
+            <keywords>conference,registration</keywords>
+        </portlet-info>
+        <security-role-ref>
+            <role-name>administrator</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>guest</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>power-user</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>user</role-name>
+        </security-role-ref>
+    </portlet>
 </portlet-app>

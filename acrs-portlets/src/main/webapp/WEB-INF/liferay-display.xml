@@ -4,5 +4,6 @@
 <display>
     <category name="ACRS Portlets">
         <portlet id="members-portlet"/>
+        <portlet id="confreg-portlet"/>
     </category>
 </display>

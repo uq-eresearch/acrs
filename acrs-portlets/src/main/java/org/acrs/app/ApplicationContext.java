@@ -2,7 +2,10 @@ package org.acrs.app;
 
 import au.edu.uq.itee.maenad.restlet.errorhandling.InitializationException;
 import au.edu.uq.itee.maenad.util.BCrypt;
+
+import org.acrs.data.access.ConferenceRegistrationDao;
 import org.acrs.data.access.MemberDao;
+import org.acrs.data.access.jpa.ConferenceRegistrationDaoImpl;
 import org.acrs.data.access.jpa.JpaConnectorService;
 import org.acrs.data.access.jpa.MemberDaoImpl;
 import org.acrs.data.model.Member;
@@ -33,6 +36,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final String approvalEmail1;
     private final String approvalEmail2;
     private final String emailListCoordEmail;
+	private ConferenceRegistrationDaoImpl conferenceRegDao;
 
     public ApplicationContext() throws InitializationException {
         Properties properties = new Properties();
@@ -86,6 +90,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
         }));
         this.connectorService = new JpaConnectorService(emf);
         this.memberDao = new MemberDaoImpl(this.connectorService);
+        this.conferenceRegDao = new ConferenceRegistrationDaoImpl(this.connectorService);
         //TODO remove this later. This is only an example
         if (memberDao.getAll().isEmpty()) {
             // ensure that there's always one user to begin with
@@ -179,4 +184,11 @@ public class ApplicationContext implements Configuration, ServletContextListener
     public String getEmailListCoordEmail() {
         return emailListCoordEmail;
     }
+
+	@Override
+	public ConferenceRegistrationDao getConferenceRegistrationDao() {
+		return conferenceRegDao;
+	}
+    
+    
 }

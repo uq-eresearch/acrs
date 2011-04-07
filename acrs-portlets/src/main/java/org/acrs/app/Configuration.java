@@ -1,5 +1,6 @@
 package org.acrs.app;
 
+import org.acrs.data.access.ConferenceRegistrationDao;
 import org.acrs.data.access.MemberDao;
 import org.acrs.data.access.jpa.JpaConnectorService;
 
@@ -18,6 +19,8 @@ public interface Configuration {
      * @return MemberDao
      */
     MemberDao getUserDao();
+    
+    ConferenceRegistrationDao getConferenceRegistrationDao();
 
     Properties getSubmissionEmailConfig();
 
