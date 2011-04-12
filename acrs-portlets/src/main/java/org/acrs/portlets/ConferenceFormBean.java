@@ -1,6 +1,28 @@
 package org.acrs.portlets;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+
+import javax.portlet.ActionRequest;
+
+import org.acrs.data.model.ConferenceRegistration;
+import org.apache.commons.beanutils.BeanUtils;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+/**
+ * A very simple class containing all the registration form fields, stored as
+ * strings.
+ * 
+ * Is used to populate the form fields for editing, and to return user values to
+ * them if they make an error filling in the form.
+ * 
+ * @author uqdayers
+ */
 public class ConferenceFormBean {
+	private static Log _log = LogFactoryUtil
+			.getLog(ConferenceFormBean.class);
 	private String title = "";
 	private String firstName = "";
 	private String lastName = "";
@@ -19,6 +41,30 @@ public class ConferenceFormBean {
 	private String coralFinderWorkshop = "";
 	private String additionalTicketsWelcome = "";
 	private String additionalTicketsDinner = "";
+
+	public ConferenceFormBean(ConferenceRegistration registration) {
+		try {
+			BeanUtils.copyProperties(this, registration);
+		} catch (Exception e) {
+			_log.error("Error copying properties", e);
+//			throw new RegistrationProcessingException("Error creating FormBean from existing registration", e);
+		}
+	}
+	
+	public ConferenceFormBean(ActionRequest actionRequest) {
+		HashMap<String, String[]> map = new HashMap<String, String[]>();
+		Enumeration<String> names = actionRequest.getParameterNames();
+		while (names.hasMoreElements()) {
+			String name = names.nextElement();
+			map.put(name, actionRequest.getParameterValues(name));
+		}
+		try {
+			BeanUtils.populate(this, map);
+		} catch (Exception e) {
+//			throw new RegistrationProcessingException("Error creating FormBean from actionRequest", e);
+		}
+
+	}
 
 	public String getTitle() {
 		return title;

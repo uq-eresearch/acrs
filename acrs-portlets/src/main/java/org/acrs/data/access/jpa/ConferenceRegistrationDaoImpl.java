@@ -12,13 +12,17 @@ import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
 import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 
 /**
+ * @author: Damien Ayers
+ * 
+ * Based on code from Abdul Alabri
  * Author: alabri
  * Date: 08/02/2011
  * Time: 4:29:42 PM
  */
 public class ConferenceRegistrationDaoImpl extends JpaDao<ConferenceRegistration> implements ConferenceRegistrationDao, Serializable {
+	private static final long serialVersionUID = -3831313390172953303L;
 
-    public ConferenceRegistrationDaoImpl(EntityManagerSource entityManagerSource) {
+	public ConferenceRegistrationDaoImpl(EntityManagerSource entityManagerSource) {
         super(entityManagerSource);
     }
 

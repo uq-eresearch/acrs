@@ -5,15 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
@@ -30,6 +29,7 @@ import javax.portlet.ResourceResponse;
 import org.acrs.app.ACRSApplication;
 import org.acrs.data.access.ConferenceRegistrationDao;
 import org.acrs.data.model.ConferenceRegistration;
+import org.acrs.util.Emailer;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -51,6 +51,10 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 	private static Log _log = LogFactoryUtil
 			.getLog(ConferenceRegistrationPortlet.class);
 	protected String viewJSP;
+	protected final String editJSP = "/WEB-INF/jsp/addeditconf.jsp";
+	protected final String registrationsListJSP = "/WEB-INF/jsp/registrations.jsp";
+	protected final String submitVerify = "/WEB-INF/jsp/submit.jsp";
+
 	protected ConferenceRegistrationDao conferenceRegistrationDao;
 
 	public void init() throws PortletException {
@@ -59,13 +63,13 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				.getConferenceRegistrationDao();
 	}
 
+	/**
+	 * Standard portlet function for handling view requests. Determines whether
+	 * the user is an admin, and if they are adding/editing/listing/paying,
+	 * returning the appropriate view.
+	 */
 	public void doView(RenderRequest renderRequest,
 			RenderResponse renderResponse) throws IOException, PortletException {
-		
-		String editJSP = "/WEB-INF/jsp/addeditconf.jsp";
-		String registrationsListJSP = "/WEB-INF/jsp/registrations.jsp";
-		String submitVerify = "/WEB-INF/jsp/submit.jsp";
-
 		String cmd = ParamUtil.getString(renderRequest, "cmd");
 		// Do all you views here
 
@@ -76,49 +80,98 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 		if (isAdmin) {
 			if ("EDIT".equals(cmd)) {
-				long registrationId = ParamUtil.getLong(renderRequest, "registrationId");
-				ConferenceRegistration editRegistration = conferenceRegistrationDao.getById(registrationId);
-				
-				ConferenceFormBean formBean = new ConferenceFormBean();
-				try {
-					BeanUtils.copyProperties(formBean, editRegistration);
-				} catch (IllegalAccessException e) {
-					_log.error("Error copying properties", e);
-				} catch (InvocationTargetException e) {
-					_log.error("Error copying properties", e);
-				}
-
-				renderRequest.setAttribute("formBean", formBean);
-				renderRequest.setAttribute("editRegistration", editRegistration);
-				
-				include(editJSP, renderRequest, renderResponse);
-
+				adminEditView(renderRequest, renderResponse);
 			} else {
-				List<ConferenceRegistration> allRegistrations = conferenceRegistrationDao.getAll();
-				renderRequest.setAttribute("allRegistrations", allRegistrations);
-	
-				include(registrationsListJSP, renderRequest, renderResponse);
+				adminListView(renderRequest, renderResponse);
 			}
 		} else {
-			ConferenceRegistration newRegistration = (ConferenceRegistration) renderRequest.getPortletSession().getAttribute("newRegistration", PortletSession.APPLICATION_SCOPE);
-			
-			if (newRegistration == null) {
-				include(editJSP, renderRequest, renderResponse);	
-			} else {
-				renderRequest.setAttribute("newRegistration", newRegistration);
-				include(submitVerify, renderRequest, renderResponse);
-			}
-			
+			userView(renderRequest, renderResponse);
 		}
 
 	}
 
+	/**
+	 * Renders the view for a normal user, either the registration form for them
+	 * to fill in, or the submitted form that shows their details and lets them
+	 * continue to paypal to pay.
+	 * 
+	 * @param renderRequest
+	 * @param renderResponse
+	 * @throws IOException
+	 * @throws PortletException
+	 */
+	private void userView(RenderRequest renderRequest,
+			RenderResponse renderResponse) throws IOException, PortletException {
+		ConferenceRegistration newRegistration = (ConferenceRegistration) renderRequest
+				.getPortletSession().getAttribute("newRegistration",
+						PortletSession.APPLICATION_SCOPE);
+
+		if (newRegistration == null) {
+			include(editJSP, renderRequest, renderResponse);
+		} else {
+			renderRequest.setAttribute("newRegistration", newRegistration);
+			include(submitVerify, renderRequest, renderResponse);
+		}
+	}
+
+	/**
+	 * Renders the admin list view, containing all the registrations as a table,
+	 * and allowing downloading in excel format.
+	 * 
+	 * @param renderRequest
+	 * @param renderResponse
+	 * @throws IOException
+	 * @throws PortletException
+	 */
+	private void adminListView(RenderRequest renderRequest,
+			RenderResponse renderResponse) throws IOException, PortletException {
+		List<ConferenceRegistration> allRegistrations = conferenceRegistrationDao
+				.getAll();
+		renderRequest.setAttribute("allRegistrations", allRegistrations);
+
+		include(registrationsListJSP, renderRequest, renderResponse);
+	}
+
+	/**
+	 * Renders the admin edit view, for editing any registration details after a
+	 * user has registered.
+	 * 
+	 * @param renderRequest
+	 * @param renderResponse
+	 * @throws IOException
+	 * @throws PortletException
+	 * @throws RegistrationProcessingException
+	 */
+	private void adminEditView(RenderRequest renderRequest,
+			RenderResponse renderResponse) throws IOException, PortletException {
+		long registrationId = ParamUtil
+				.getLong(renderRequest, "registrationId");
+		ConferenceRegistration editRegistration = conferenceRegistrationDao
+				.getById(registrationId);
+
+		ConferenceFormBean formBean = new ConferenceFormBean(editRegistration);
+
+		renderRequest.setAttribute("formBean", formBean);
+		renderRequest.setAttribute("editRegistration", editRegistration);
+
+		include(editJSP, renderRequest, renderResponse);
+	}
+
+	/**
+	 * Standard portlet function, for processing any form submissions. Handles
+	 * add requests from general users and edit requests from administrators.
+	 * 
+	 * Checks for errors in the submitted information, and returns an error to
+	 * the user if necessary, allowing them to fix the error. Also checks the
+	 * Captcha text if it is a new registration.
+	 */
 	public void processAction(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws IOException, PortletException {
 
 		// Process data here
 		PortletSession session = actionRequest.getPortletSession(true);
-		String editRegistrationIdStr = actionRequest.getParameter("editRegistrationId");
+		String editRegistrationIdStr = actionRequest
+				.getParameter("editRegistrationId");
 
 		String action = "";
 		List<String> errors = checkFormForErrors(actionRequest);
@@ -128,7 +181,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			_log.info("request to add new registration");
 			try {
 				checkCaptcha(actionRequest);
-			} catch (Exception e) {
+			} catch (RegistrationProcessingException e) {
 				_log.info("Captcha exception: " + e.getMessage());
 				errors.add("Invalid Captcha text, please try again");
 			}
@@ -137,9 +190,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			_log.info("edit registration id " + editRegistrationIdStr);
 		}
 
-		ConferenceFormBean formBean = extractRequestParameters(actionRequest);
-
-		
+		ConferenceFormBean formBean = new ConferenceFormBean(actionRequest);
 
 		if (errors.size() > 0) {
 
@@ -160,30 +211,50 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		} // end if ! errors
 
 	}
-	private void checkCaptcha(PortletRequest request) throws Exception {
-        String enteredCaptchaText = ParamUtil.getString(request, "captchaText");
 
-        PortletSession session = request.getPortletSession();
-        String captchaText = getCaptchaValueFromSession(session);
-        if (Validator.isNull(captchaText)) {
-            throw new Exception("Internal Error! Captcha text not found in session");
-        }
-        if (!captchaText.equals(enteredCaptchaText.trim())) {
-        	_log.info("Captcha expected: " + captchaText + " Entered: " + enteredCaptchaText);
-            throw new Exception("Invalid captcha text. Please reenter.");
-        }
-    }
+	/**
+	 * Check the Liferay standard captcha text.
+	 * 
+	 * @param request
+	 * @throws RegistrationProcessingException
+	 */
+	private void checkCaptcha(PortletRequest request)
+			throws RegistrationProcessingException {
+		String enteredCaptchaText = ParamUtil.getString(request, "captchaText");
 
-    private String getCaptchaValueFromSession(PortletSession session) {
-        Enumeration<String> atNames = session.getAttributeNames();
-        while (atNames.hasMoreElements()) {
-            String name = atNames.nextElement();
-            if (name.contains("CAPTCHA_TEXT")) {
-                return (String) session.getAttribute(name);
-            }
-        }
-        return null;
-    }
+		PortletSession session = request.getPortletSession();
+		String captchaText = getCaptchaValueFromSession(session);
+		if (Validator.isNull(captchaText)) {
+			throw new RegistrationProcessingException(
+					"Internal Error! Captcha text not found in session");
+		}
+		if (!captchaText.equals(enteredCaptchaText.trim())) {
+			_log.info("Captcha expected: " + captchaText + " Entered: "
+					+ enteredCaptchaText);
+			throw new RegistrationProcessingException(
+					"Invalid captcha text. Please reenter.");
+		}
+	}
+
+	private String getCaptchaValueFromSession(PortletSession session) {
+		Enumeration<String> atNames = session.getAttributeNames();
+		while (atNames.hasMoreElements()) {
+			String name = atNames.nextElement();
+			if (name.contains("CAPTCHA_TEXT")) {
+				return (String) session.getAttribute(name);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Check that all required fields have been filled. Operates directly on the
+	 * actionRequest, instead of on the FormBean like it should. Returns a list
+	 * of error strings, or an empty list if no errors.
+	 * 
+	 * @param actionRequest
+	 * @return empty list if no errors, list of errors strings if errors.
+	 */
 	private List<String> checkFormForErrors(ActionRequest actionRequest) {
 		List<String> errors = new ArrayList<String>();
 		String firstName = actionRequest.getParameter("firstName");
@@ -196,21 +267,21 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		String email = actionRequest.getParameter("email");
 		String phone = actionRequest.getParameter("phone");
 		String institution = actionRequest.getParameter("institution");
-		String registrationRate = actionRequest.getParameter("registrationRate");
+		String registrationRate = actionRequest
+				.getParameter("registrationRate");
 
-		if ((firstName == null) || firstName.isEmpty()
-				|| (lastName == null) || lastName.isEmpty()
-				|| (streetAddress == null) || streetAddress.isEmpty()
-				|| (city == null) || city.isEmpty() || (state == null)
-				|| state.isEmpty() || (postcode == null) || postcode.isEmpty()
-				|| (country == null) || country.isEmpty() || (email == null)
-				|| email.isEmpty() || (phone == null) || phone.isEmpty()
-				|| (institution == null) || institution.isEmpty()
-				|| (registrationRate == null) || registrationRate.isEmpty()) {
+		if ((firstName == null) || firstName.isEmpty() || (lastName == null)
+				|| lastName.isEmpty() || (streetAddress == null)
+				|| streetAddress.isEmpty() || (city == null) || city.isEmpty()
+				|| (state == null) || state.isEmpty() || (postcode == null)
+				|| postcode.isEmpty() || (country == null) || country.isEmpty()
+				|| (email == null) || email.isEmpty() || (phone == null)
+				|| phone.isEmpty() || (institution == null)
+				|| institution.isEmpty() || (registrationRate == null)
+				|| registrationRate.isEmpty()) {
 
 			errors.add("All fields are required.");
 		}
-
 
 		if ((email == null) || email.isEmpty()) {
 			errors.add("Please include a valid email address.");
@@ -218,6 +289,13 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		return errors;
 	}
 
+	/**
+	 * Processes an admin request to edit a registration. Includes the ability
+	 * to remove a registration and update the paypal status.
+	 * 
+	 * @param actionRequest
+	 * @param crb
+	 */
 	private void editRegistration(ActionRequest actionRequest,
 			ConferenceFormBean crb) {
 
@@ -225,8 +303,9 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 		long editRegistrationId = Long.parseLong(actionRequest
 				.getParameter("editRegistrationId"));
-		ConferenceRegistration editRegistration = conferenceRegistrationDao.getById(editRegistrationId);
-		
+		ConferenceRegistration editRegistration = conferenceRegistrationDao
+				.getById(editRegistrationId);
+
 		String paypalStatus = actionRequest.getParameter("paypalStatus");
 		String removeFlag = actionRequest.getParameter("removeFlag");
 		List<String> messages = new ArrayList<String>();
@@ -234,9 +313,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 		try {
 			BeanUtils.copyProperties(editRegistration, crb);
-		} catch (IllegalAccessException e) {
-			_log.error("Error copying properties", e);
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			_log.error("Error copying properties", e);
 		}
 
@@ -245,139 +322,93 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		_log.info("checking remove flag.");
 		if (removeFlag.equals("Y")) {
 			editRegistration.setIsActive(false);
-			messages.add("Registration record for " + editRegistration.getFirstName() + " "
+			messages.add("Registration record for "
+					+ editRegistration.getFirstName() + " "
 					+ editRegistration.getLastName() + " has been deactivated.");
 		}
 		conferenceRegistrationDao.save(editRegistration);
 		_log.info("updated registration.");
-		messages.add("Registration record for " + editRegistration.getFirstName() + " "
+		messages.add("Registration record for "
+				+ editRegistration.getFirstName() + " "
 				+ editRegistration.getLastName() + " has been updated.");
 		actionRequest.setAttribute("messages", messages);
 
 	}
 
-	
+	/**
+	 * Add a new registration from a user submitted request. The input should
+	 * already have been checked for errors.
+	 * 
+	 * @param actionResponse
+	 * @param session
+	 * @param crb
+	 * @throws RegistrationProcessingException
+	 */
 	private void addNewRegistration(ActionResponse actionResponse,
-			PortletSession session, ConferenceFormBean crb) throws RegistrationProcessingException {
+			PortletSession session, ConferenceFormBean crb)
+			throws RegistrationProcessingException {
 
-		ConferenceRegistration newRegistration = new ConferenceRegistration();
-		try {
-			BeanUtils.copyProperties(newRegistration, crb);
-		} catch (Exception e1) {
-			_log.error("Error copying properties", e1);
-		}
+		ConferenceRegistration newRegistration = new ConferenceRegistration(crb);
 
-		// calculate Registration amount
-		String paypalItemName = "Australian Coral Reef Society Conference 2011";
-		int registrationAmount = 0;
+		// calculate and save registration details
 
-		String registrationRate = newRegistration.getRegistrationRate();
-		
-		if ("StudentMember".equals(registrationRate)) {
-			registrationAmount = 330;
-			paypalItemName += " Student Member Registration";
-		} else if ("StudentNonMember".equals(registrationRate)) {
-			registrationAmount = 380;
-			paypalItemName += " Student Non-Member Registration";
-		} else if ("FullMember".equals(registrationRate)) {
-			registrationAmount = 440;
-			paypalItemName += " Full Member Registration";
-		} else if ("FullNonMember".equals(registrationRate)) {
-			registrationAmount = 499;
-			paypalItemName += " Full Non-Member Registration";
-		} else if ("DayOneOnly".equals(registrationRate)) {
-			registrationAmount = 240;
-			paypalItemName += " Day rate — Day 1 only";
-		} else if ("DayTwoOnly".equals(registrationRate)) {
-			registrationAmount = 240;
-			paypalItemName += " Day rate — Day 2 only";
-		} else {
-			_log.error("Invalid registration rate: '" + registrationRate + "'");
-			throw new RegistrationProcessingException("Can't calculate registration rate");
-		}
-		if (newRegistration.getStudentMentoringDay()) {
-			registrationAmount -= 50;
-			paypalItemName += " + Student Mentoring Day";
-		}
-		
-		if (newRegistration.getCoralFinderWorkshop()) {
-			registrationAmount += 10;
-			paypalItemName += " + Coral Finder Workshop";
-		}
-		
-		if (newRegistration.getAdditionalTicketsWelcome() > 0) {
-			registrationAmount += newRegistration.getAdditionalTicketsWelcome() * 10;
-			paypalItemName += " + " + newRegistration.getAdditionalTicketsWelcome() + " Welcome Event Tickets";
-		}
-		
-		if (newRegistration.getAdditionalTicketsDinner() > 0) {
-			registrationAmount += newRegistration.getAdditionalTicketsDinner() * 10;
-			paypalItemName += " + " + newRegistration.getAdditionalTicketsDinner() + " Dinner Tickets";
-		}
-
-		
-		// save registration details
-
+		newRegistration.calculateRegistration();
 
 		newRegistration.setPaypalRef("");
 		newRegistration.setPaypalStatus("Unverified");
-		newRegistration.setRegistrationAmount(registrationAmount);
 		newRegistration.setIsActive(true);
 		newRegistration.setUpdateDate(newRegistration.getRegistrationDate());
 
 		conferenceRegistrationDao.save(newRegistration);
 
-		// email stuff out
-//		String approvalEmail1 = ACRSApplication.getConfiguration()
-//				.getApprovalEmail1();
-//		String approvalEmail2 = ACRSApplication.getConfiguration()
-//				.getApprovalEmail2();
-//
-//		String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
-//		String applicantDetail = "\n\tName:\t\t\t\t" + newRegistration.getTitle()
-//				+ " " + newRegistration.getFirstName() + " "
-//				+ newRegistration.getLastName() + "\n\tAddress:\t\t\t"
-//				+ newRegistration.getStreetAddress() + ", " + newRegistration.getCity()
-//				+ " " + newRegistration.getState() + " " + newRegistration.getPostcode()
-//				+ "\n\tEmail:\t\t\t" + newRegistration.getEmail()
-//				+ "\n\tPhone:\t\t\t" + newRegistration.getPhone()
-//				+ "\n\tInstitution:\t\t" + newRegistration.getInstitution();
-
-//		try {
-//			Emailer.sendEmail(approvalEmail1, "no-reply@acrs.org",
-//					"New ACRS Membership", approvalMessage + applicantDetail);
-//			Emailer.sendEmail(approvalEmail2, "no-reply@acrs.org",
-//					"New ACRS Membership", approvalMessage + applicantDetail);
-//
-//		} catch (MessagingException e) {
-//			_log.fatal("Could not send email.");
-//		}
+		// email notifications
+		sendEmailNotifications(newRegistration);
 
 		actionResponse.setRenderParameter("newRegistrationId",
 				String.valueOf(newRegistration.getId()));
 		session.setAttribute("newRegistration", newRegistration,
 				PortletSession.APPLICATION_SCOPE);
-		session.setAttribute("paypalItemName", paypalItemName,
+		session.setAttribute("paypalItemName",
+				newRegistration.getPaypalItemName(),
 				PortletSession.APPLICATION_SCOPE);
 
 	}
 
-	private ConferenceFormBean extractRequestParameters(
-			ActionRequest actionRequest) {
-		ConferenceFormBean crb = new ConferenceFormBean();
-		HashMap<String, String[]> map = new HashMap<String, String[]>();
-		Enumeration<String> names = actionRequest.getParameterNames();
-		while (names.hasMoreElements()) {
-			String name = names.nextElement();
-			map.put(name, actionRequest.getParameterValues(name));
-		}
-		try {
-			BeanUtils.populate(crb, map);
-		} catch (Exception e1) {
-			_log.error("Error loading parameters: " + map, e1);
-		}
+	/**
+	 * Send email notification to the configured addresses when a new
+	 * registration is recorded
+	 * 
+	 * @param newRegistration
+	 *            The new conference registration, that has been saved in the
+	 *            database
+	 */
+	private void sendEmailNotifications(ConferenceRegistration newRegistration) {
+		String approvalEmail1 = ACRSApplication.getConfiguration()
+				.getApprovalEmail1();
+		String approvalEmail2 = ACRSApplication.getConfiguration()
+				.getApprovalEmail2();
 
-		return crb;
+		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2011 Conference Registration that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
+		String applicantDetail = "\n\tName:\t\t\t\t"
+				+ newRegistration.getTitle() + " "
+				+ newRegistration.getFirstName() + " "
+				+ newRegistration.getLastName() + "\n\tAddress:\t\t\t"
+				+ newRegistration.getStreetAddress() + ", "
+				+ newRegistration.getCity() + " " + newRegistration.getState()
+				+ " " + newRegistration.getPostcode() + "\n\tEmail:\t\t\t"
+				+ newRegistration.getEmail() + "\n\tPhone:\t\t\t"
+				+ newRegistration.getPhone() + "\n\tInstitution:\t\t"
+				+ newRegistration.getInstitution();
+
+		try {
+			Emailer.sendEmail(approvalEmail1, "no-reply@acrs.org",
+					"New ACRS Membership", approvalMessage + applicantDetail);
+			Emailer.sendEmail(approvalEmail2, "no-reply@acrs.org",
+					"New ACRS Membership", approvalMessage + applicantDetail);
+
+		} catch (MessagingException e) {
+			_log.fatal("Could not send email.");
+		}
 	}
 
 	protected void include(String path, RenderRequest renderRequest,
@@ -411,31 +442,46 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			_log.info("Destroying portlet");
 		}
 	}
-	
-    /** Serve Resource used for getting captcha
-     *
-     */
-    @Override
-    public void serveResource(ResourceRequest resourceRequest,
-                             ResourceResponse resourceResponse) throws IOException, PortletException {
-    	String resourceID = resourceRequest.getResourceID();
-    	if ("captcha".equals(resourceID)) {
-    		serveResourceCaptcha(resourceRequest, resourceResponse);
-    	} else if ("spreadsheet".equals(resourceID)) {
-    		serveResourceSpreadsheet(resourceRequest, resourceResponse);
-    	}
-    }
-    
-    public void serveResourceCaptcha(ResourceRequest resourceRequest,
-                             ResourceResponse resourceResponse) throws IOException, PortletException {
-        try {
-            com.liferay.portal.kernel.captcha.CaptchaUtil.serveImage(resourceRequest, resourceResponse);
-        } catch (Exception e) {
-            _log.error(e);
-        }
-    }
-    
-	public void serveResourceSpreadsheet(ResourceRequest req, ResourceResponse res)
+
+	/**
+	 * Standard portlet function for serving resources, chooses between a
+	 * spreadsheet or a captcha image
+	 */
+	@Override
+	public void serveResource(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws IOException,
+			PortletException {
+		String resourceID = resourceRequest.getResourceID();
+		if ("captcha".equals(resourceID)) {
+			serveResourceCaptcha(resourceRequest, resourceResponse);
+		} else if ("spreadsheet".equals(resourceID)) {
+			serveResourceSpreadsheet(resourceResponse);
+		}
+	}
+
+	/**
+	 * Serve Resource used for getting captcha, provided by Liferay
+	 */
+	public void serveResourceCaptcha(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws IOException,
+			PortletException {
+		try {
+			com.liferay.portal.kernel.captcha.CaptchaUtil.serveImage(
+					resourceRequest, resourceResponse);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+	}
+
+	/**
+	 * Create and serve an excel spreadsheet containing all conference
+	 * registrations.
+	 * 
+	 * @param res
+	 * @throws PortletException
+	 * @throws IOException
+	 */
+	public void serveResourceSpreadsheet(ResourceResponse res)
 			throws PortletException, IOException {
 
 		// create an excel file containing the registration list for the user to
@@ -489,7 +535,8 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		}
 
 		// add registrations
-		List<ConferenceRegistration> allRegistrations = conferenceRegistrationDao.getAll();
+		List<ConferenceRegistration> allRegistrations = conferenceRegistrationDao
+				.getAll();
 		for (ConferenceRegistration registration : allRegistrations) {
 
 			ArrayList<String> a = new ArrayList<String>();
@@ -530,7 +577,8 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		}
 
 		// write workbook out to file
-		FileOutputStream fos = new FileOutputStream("ConferenceRegistrations2011.xls");
+		FileOutputStream fos = new FileOutputStream(
+				"ConferenceRegistrations2011.xls");
 		wb.write(fos);
 		fos.flush();
 		fos.close();
@@ -552,7 +600,6 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		out.close();
 
 		file.delete();
-
 	}
 
 }
