@@ -20,7 +20,7 @@
 <% 
 	// find out what the command is
 	String cmd = ParamUtil.getString(request, "cmd");
-	ConferenceRegistration editMember = (ConferenceRegistration) renderRequest.getAttribute("editRegistration");
+	ConferenceRegistration editRegistration = (ConferenceRegistration) renderRequest.getAttribute("editRegistration");
 	ConferenceFormBean formBean = (ConferenceFormBean)renderRequest.getAttribute("formBean");
 	
 	
@@ -91,37 +91,37 @@ jQuery(window).load( function() {
 <div>
 
 
-<form id="membershipForm" action="<portlet:actionURL/>" method="post" name="<portlet:namespace />fm">
+<form id="registrationForm" action="<portlet:actionURL/>" method="post" name="<portlet:namespace />fm">
 
 <fieldset>
 <legend>ACRS Conference Registration 2011</legend>
 
 	<div>
-		<label for="title">Title</label>
+		<label for="title">Title: <span class="required">*</span></label>
 		<select name="title" id="title">
 			<!-- >option value="Mr">Mr</option  -->
 			<option value="Ms">Ms</option>
 			<option value="Dr">Dr</option>
 			<option value="Prof">Prof</option>
 			<option selected="selected" 
-			value="<%= isEdit ? StringEscapeUtils.escapeHtml(editMember.getTitle()) : "Mr" %>">
-			<%= isEdit ? StringEscapeUtils.escapeHtml(editMember.getTitle()) : "Mr" %></option>
+			value="<%= isEdit ? StringEscapeUtils.escapeHtml(editRegistration.getTitle()) : "Mr" %>">
+			<%= isEdit ? StringEscapeUtils.escapeHtml(editRegistration.getTitle()) : "Mr" %></option>
 		</select>
 	</div>
 
 	<div>
-		<label for="firstName">First Name:</label>
+		<label for="firstName">First Name: <span class="required">*</span></label>
 		<input type="text" name="firstName" id="firstName" class="required" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getFirstName()) : emptyStr %>">
 	</div>
     <div>
-		<label for="lastName">Last Name:</label>
+		<label for="lastName">Last Name: <span class="required">*</span></label>
 		<input type="text" name="lastName" id="lastName" class="required" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getLastName()) : emptyStr %>">
 	</div>
 
     <div>
-		<label for="streetAddress">Street Address:</label>
+		<label for="streetAddress">Street Address: <span class="required">*</span></label>
 		<input type="text" name="streetAddress" id="streetAddress" 
 			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getStreetAddress()) : emptyStr %>">
 		<label for="streetAddress2">&nbsp;</label>
@@ -130,25 +130,25 @@ jQuery(window).load( function() {
 	</div>		
 
     <div>			
-		<label for="city">Town or Suburb:</label>
+		<label for="city">Town or Suburb: <span class="required">*</span></label>
 		<input type="text" name="city" id="city" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getCity()) : emptyStr %>">
 	</div>				
 	
     <div>			
-		<label for="state">State:</label>
+		<label for="state">State: <span class="required">*</span></label>
 		<input type="text" name="state" id="state" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getState()) : emptyStr %>">
 	</div>				
 	
     <div>	
-		<label for="postcode">Postcode:</label>
+		<label for="postcode">Postcode: <span class="required">*</span></label>
 		<input type="text" name="postcode" id="postcode" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getPostcode()) : emptyStr %>">
 	</div>				
 		
     <div>					
-		<label for="country">Country:</label>
+		<label for="country">Country: <span class="required">*</span></label>
 		<select name="country" id="country">
 			<option selected="selected" 
 			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getCountry()) : "Australia" %>">
@@ -158,13 +158,13 @@ jQuery(window).load( function() {
 	</div>				
 
     <div>					
-		<label for="email">Email:</label>
+		<label for="email">Email: <span class="required">*</span></label>
 		<input type="text" name="email" id="email" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getEmail()) : emptyStr %>">
 	</div>
 	
 	<div>					
-		<label for="phone">Phone Number:</label>
+		<label for="phone">Phone Number: <span class="required">*</span></label>
 		<input type="text" name="phone" id="phone" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getPhone()) : emptyStr %>">
 	</div>
@@ -178,19 +178,22 @@ jQuery(window).load( function() {
 	<div>
 	
 		<label for="submittingAbstract">Have you submitted, or do you intend to submit an Abstract?</label>
-		<input class="radioCheckbox" type="radio" name="submittingAbstract" value="true" <%= hasFormBean ? ("true".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>Yes <br>
-	 	<input class="radioCheckbox" type="radio" name="submittingAbstract" value="false" <%= hasFormBean ? ("false".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>No <br>
+		<div class="groupedinputs">
+		<input class="radioCheckbox" type="radio" name="submittingAbstract" value="true" <%= hasFormBean ? ("true".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>Yes
+	 	<input class="radioCheckbox" type="radio" name="submittingAbstract" value="false" <%= hasFormBean ? ("false".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>No
+	 	</div>
 	</div>
 	<br>
 	<div>							
-		<label for="registrationRate">Select your registration rate:<br><br><br></label>
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMember") ? " checked" : emptyStr) : emptyStr %>/> Student member: $330<br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMember") ? " checked" : emptyStr) : emptyStr %>/> Student non-member: $380<br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMember") ? " checked" : emptyStr) : emptyStr %>/> Full member: $440<br />		
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMember") ? " checked" : emptyStr) : emptyStr %>/> Full non-member: $499<br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="DayOneOnly" <%= hasFormBean ? (formBean.getRegistrationRate().equals("DayOneOnly") ? " checked" : emptyStr) : emptyStr %>/> Day rate &mdash; Day 1 only: $240<br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="DayTwoOnly" <%= hasFormBean ? (formBean.getRegistrationRate().equals("DayTwoOnly") ? " checked" : emptyStr) : emptyStr %>/> Day rate &mdash; Day 2 only: $240<br />
-
+		<label for="registrationRate">Select your registration rate: <span class="required">*</span><br><br><br></label>
+		<div class="groupedinputs">
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMember") ? " checked" : emptyStr) : emptyStr %>/> Student member: <b>$330</b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMember") ? " checked" : emptyStr) : emptyStr %>/> Student non-member: <b>$380</b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMember") ? " checked" : emptyStr) : emptyStr %>/> Full member: <b>$440</b><br />		
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMember") ? " checked" : emptyStr) : emptyStr %>/> Full non-member: <b>$499</b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="DayOneOnly" <%= hasFormBean ? (formBean.getRegistrationRate().equals("DayOneOnly") ? " checked" : emptyStr) : emptyStr %>/> Day rate &mdash; Day 1 only: <b>$240</b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="DayTwoOnly" <%= hasFormBean ? (formBean.getRegistrationRate().equals("DayTwoOnly") ? " checked" : emptyStr) : emptyStr %>/> Day rate &mdash; Day 2 only: <b>$240</b><br />
+		</div>
 		<div>
 		These costs will cover the welcome function, conference attendance, 2 lunches, and conference dinner.
 		</div>
@@ -202,9 +205,10 @@ jQuery(window).load( function() {
 	<br>
 	<div>
 		<label for="studentMentoringDay">Do you wish to attend the ARC Centre of Excellence for Coral Reef Studies Annual National Student Mentoring Day?</label>
-		<input class="radioCheckbox" type="radio" name="studentMentoringDay" value="true" <%= hasFormBean ? ("true".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>Yes <br>
-	 	<input class="radioCheckbox" type="radio" name="studentMentoringDay" value="false" <%= hasFormBean ? ("false".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>No <br>
-	
+		<div class="groupedinputs">
+		  <input class="radioCheckbox" type="radio" name="studentMentoringDay" value="true" <%= hasFormBean ? ("true".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>Yes
+	 	  <input class="radioCheckbox" type="radio" name="studentMentoringDay" value="false" <%= hasFormBean ? ("false".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>No
+		</div>
 		<div>
 		If you are not a student, please tick No. If you are a student and want to attend, tick yes. $50 will be discounted from the total cost to assist you with accommodation fees.
 		If you tick yes, but do not attend the whole student day, you will be later charged an additional $50.
@@ -215,12 +219,10 @@ jQuery(window).load( function() {
 	<br>
 	<div>
 		<label for="coralFinderWorkshop">Would you like to attend the Coral Finder Workshop?  <b>$??.00</b></label>
-		<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralFinderWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes <br>
-	 	<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralFinderWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No <br>
-
-		<div>
-		Mention extra cost here.
-		</div>		
+		<div class="groupedinputs">
+		<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralFinderWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes
+	 	<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralFinderWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No
+		</div>	
 	</div>
 	
 	<br>
@@ -242,7 +244,7 @@ jQuery(window).load( function() {
 	<% if (!isEdit) { %>
 	<div class="captcha">
 		<portlet:resourceURL var="captchaURL" id="captcha"/>
-		<liferay-ui:captcha url="<%= captchaURL %>"/>
+		<liferay-ui:captcha url="<%= captchaURL %>"/><span class="required">*</span>
 	</div>
 	<% } %>
 	
@@ -251,12 +253,12 @@ jQuery(window).load( function() {
 		<div>					
 		<label for="registrationAmount">Registration Amount:</label>
 		<input type="text" name="registrationAmount" id="registrationAmount" 
-			value="<%= editMember.getRegistrationAmount() %>">
+			value="<%= editRegistration.getRegistrationAmount() %>">
 		</div>
 		<div>					
 		<label for="paypalStatus">PayPal Status:</label>
 		<input type="text" name="paypalStatus" id="paypalStatus" 
-			value="<%= editMember.getPaypalStatus() %>">
+			value="<%= editRegistration.getPaypalStatus() %>">
 		</div>
 	<%} %>
 
@@ -266,7 +268,7 @@ jQuery(window).load( function() {
 	<% if (isEdit) { %>
 
 		  <label for="submit"><br></label>
-		  <input name="editRegistrationId" type="hidden" value="<%= String.valueOf(editMember.getId()) %>"/>
+		  <input name="editRegistrationId" type="hidden" value="<%= String.valueOf(editRegistration.getId()) %>"/>
 		  <input id="removeFlag" name="removeFlag" type="hidden" value="N"/>
 		  <input type="submit" name="submit" value="Save" 
 			  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
