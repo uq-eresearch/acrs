@@ -309,7 +309,7 @@ public class ConferenceRegistration {
 	}
 
 	public Boolean getStudentMentoringDay() {
-		return studentMentoringDay;
+		return studentMentoringDay != null ? studentMentoringDay : false;
 	}
 
 	public void setStudentMentoringDay(Boolean studentMentoringDay) {
@@ -317,7 +317,7 @@ public class ConferenceRegistration {
 	}
 
 	public Boolean getCoralFinderWorkshop() {
-		return coralFinderWorkshop;
+		return coralFinderWorkshop != null ? coralFinderWorkshop : false;
 	}
 
 	public void setCoralFinderWorkshop(Boolean coralFinderWorkshop) {
@@ -333,7 +333,7 @@ public class ConferenceRegistration {
 	}
 
 	public Integer getAdditionalTicketsWelcome() {
-		return additionalTicketsWelcome;
+		return additionalTicketsWelcome != null ? additionalTicketsWelcome : 0;
 	}
 
 	public void setAdditionalTicketsWelcome(Integer additionalTicketsWelcome) {
@@ -341,7 +341,7 @@ public class ConferenceRegistration {
 	}
 
 	public Integer getAdditionalTicketsDinner() {
-		return additionalTicketsDinner;
+		return additionalTicketsDinner != null ? additionalTicketsDinner : 0;
 	}
 
 	public void setAdditionalTicketsDinner(Integer additionalTicketsDinner) {
