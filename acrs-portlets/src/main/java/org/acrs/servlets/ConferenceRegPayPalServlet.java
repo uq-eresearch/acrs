@@ -17,11 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.acrs.app.ACRSApplication;
-import org.acrs.app.ApplicationContext;
 import org.acrs.data.access.ConferenceRegistrationDao;
-import org.acrs.data.access.MemberDao;
 import org.acrs.data.model.ConferenceRegistration;
-import org.acrs.data.model.Member;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -41,12 +38,12 @@ public class ConferenceRegPayPalServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		// read post from PayPal system and add 'cmd'
-		Enumeration en = request.getParameterNames();
+		Enumeration<String> en = request.getParameterNames();
 		String str = "cmd=_notify-validate";
 		while(en.hasMoreElements()){
-		String paramName = (String)en.nextElement();
-		String paramValue = request.getParameter(paramName);
-		str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue);
+			String paramName = en.nextElement();
+			String paramValue = request.getParameter(paramName);
+			str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue, "UTF-8");
 		}
 		_log.info("Return to paypal str: " + str);
 		// post back to PayPal system to validate
