@@ -266,7 +266,6 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		String country = actionRequest.getParameter("country");
 		String email = actionRequest.getParameter("email");
 		String phone = actionRequest.getParameter("phone");
-		String institution = actionRequest.getParameter("institution");
 		String registrationRate = actionRequest
 				.getParameter("registrationRate");
 
@@ -276,11 +275,10 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				|| (state == null) || state.isEmpty() || (postcode == null)
 				|| postcode.isEmpty() || (country == null) || country.isEmpty()
 				|| (email == null) || email.isEmpty() || (phone == null)
-				|| phone.isEmpty() || (institution == null)
-				|| institution.isEmpty() || (registrationRate == null)
+				|| phone.isEmpty() || (registrationRate == null)
 				|| registrationRate.isEmpty()) {
 
-			errors.add("All fields are required.");
+			errors.add("Please fill all required fields.");
 		}
 
 		if ((email == null) || email.isEmpty()) {
@@ -402,9 +400,9 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 		try {
 			Emailer.sendEmail(approvalEmail1, "no-reply@acrs.org",
-					"New ACRS Membership", approvalMessage + applicantDetail);
+					"New ACRS Conference Registration", approvalMessage + applicantDetail);
 			Emailer.sendEmail(approvalEmail2, "no-reply@acrs.org",
-					"New ACRS Membership", approvalMessage + applicantDetail);
+					"New ACRS Conference Registration", approvalMessage + applicantDetail);
 
 		} catch (MessagingException e) {
 			_log.fatal("Could not send email.");
