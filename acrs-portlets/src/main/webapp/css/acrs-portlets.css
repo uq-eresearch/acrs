@@ -139,3 +139,15 @@ table#memberListTable th {
 	color:#000000;
 
 }
+
+
+.groupedinputs {
+	clear: none;
+	float: left;
+	width: 250px;
+}
+
+span.required {
+	color: #900;
+	font-weight: bold;
+}
