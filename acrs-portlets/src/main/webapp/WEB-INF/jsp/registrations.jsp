@@ -37,8 +37,7 @@
 	<a href="<portlet:resourceURL id="spreadsheet"/>" >Export - Download </a>
 </div>
 
-<%-- <div style="width: 680px; height:500px; overflow:auto">--%>
-<div style"overflow:auto">
+<div style="width: 680px; height:500px; overflow:auto">
 <table id="memberListTable">
 <tr>
 <th>Name</th>
@@ -60,21 +59,21 @@
 <th>&nbsp;</th>
 		
 </tr>
-<% for (ConferenceRegistration member : registrationsList) { 
+<% for (ConferenceRegistration registration : registrationsList) { 
 
 	String paypalRefStr = "";
 	String paypalDetails = "";
-	String tableID ="paypalDetailsTable" + member.getId();
+	String tableID ="paypalDetailsTable" + registration.getId();
 	
 	//make the paypal info readable
-	if (member.getPaypalRef() == null) {
+	if (registration.getPaypalRef() == null) {
 		paypalRefStr = "Unavailable.";
 	}
 	else {
-		String[] tokens = member.getPaypalRef().split("&");
+		String[] tokens = registration.getPaypalRef().split("&");
 		//paypalRefStr = "Paypal Details: <table border=0>";
-		paypalRefStr = "<a href=\"#\" onclick=\"toggle_visibility('paypalDetailsTable" + member.getId() + "');\"> Paypal Details </a> ";
-		paypalDetails = "<table id=\"paypalDetailsTable" + member.getId() + "\" style=\"border:0px; display:none\"> ";
+		paypalRefStr = "<a href=\"#\" onclick=\"toggle_visibility('paypalDetailsTable" + registration.getId() + "');\"> Paypal Details </a> ";
+		paypalDetails = "<table id=\"paypalDetailsTable" + registration.getId() + "\" style=\"border:0px; display:none\"> ";
 		for(int i=0; i < tokens.length; i++) {
 			paypalDetails = paypalDetails + "<tr><td>" + tokens[i] + "</td></tr>";
 		}
@@ -84,24 +83,24 @@
 
 	%>
 	<tr>
-	<td><%=StringEscapeUtils.escapeHtml(member.getTitle() + " " + member.getFirstName() + " " + member.getLastName())%></td>
-	<td><%=StringEscapeUtils.escapeHtml(member.getStreetAddress() + ", " + member.getStreetAddress2() + ", " + member.getCity()) + "<br>" + StringEscapeUtils.escapeHtml(member.getState() + " " + member.getPostcode() + " " + member.getCountry())%></td>
-	<td><%=StringEscapeUtils.escapeHtml(member.getEmail())%></td>
-	<td><%=StringEscapeUtils.escapeHtml(member.getPhone())%></td>
-	<td><%=StringEscapeUtils.escapeHtml(member.getInstitution())%></td>
-	<td><%=member.getSubmittingAbstract() ? "Y" : "N" %></td>
-	<td><%=StringEscapeUtils.escapeHtml(member.getRegistrationRate())%></td>
-	<td><%=member.getStudentMentoringDay() ? "Y" : "N" %></td>
-	<td><%=member.getCoralFinderWorkshop() ? "Y" : "N" %></td>
-	<td><%=member.getAdditionalTicketsWelcome()%></td>
-	<td><%=member.getAdditionalTicketsDinner()%></td>
-	<td><%=member.getRegistrationAmount()%></td>
-	<td><%=member.getRegistrationDate()%></td>
-	<td><%=member.getUpdateDate()%></td>
-	<td><%=member.getPaypalStatus()%></td>
+	<td><%=StringEscapeUtils.escapeHtml(registration.getTitle() + " " + registration.getFirstName() + " " + registration.getLastName())%></td>
+	<td><%=StringEscapeUtils.escapeHtml(registration.getStreetAddress() + ", " + registration.getStreetAddress2() + ", " + registration.getCity()) + "<br>" + StringEscapeUtils.escapeHtml(registration.getState() + " " + registration.getPostcode() + " " + registration.getCountry())%></td>
+	<td><%=StringEscapeUtils.escapeHtml(registration.getEmail())%></td>
+	<td><%=StringEscapeUtils.escapeHtml(registration.getPhone())%></td>
+	<td><%=StringEscapeUtils.escapeHtml(registration.getInstitution())%></td>
+	<td><%=registration.getSubmittingAbstract() ? "Y" : "N" %></td>
+	<td><%=StringEscapeUtils.escapeHtml(registration.getRegistrationRate())%></td>
+	<td><%=registration.getStudentMentoringDay() ? "Y" : "N" %></td>
+	<td><%=registration.getCoralFinderWorkshop() ? "Y" : "N" %></td>
+	<td><%=registration.getAdditionalTicketsWelcome()%></td>
+	<td><%=registration.getAdditionalTicketsDinner()%></td>
+	<td><%=registration.getRegistrationAmount()%></td>
+	<td><%=registration.getRegistrationDate()%></td>
+	<td><%=registration.getUpdateDate()%></td>
+	<td><%=registration.getPaypalStatus()%></td>
 	<td><%=paypalRefStr + paypalDetails%></td>
 	<td>
-	 <input type="button" value="EDIT" onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="EDIT" /><portlet:param name="registrationId" value="<%= String.valueOf(member.getId()) %>" /></portlet:renderURL>';"/>
+	 <input type="button" value="EDIT" onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="EDIT" /><portlet:param name="registrationId" value="<%= String.valueOf(registration.getId()) %>" /></portlet:renderURL>';"/>
 	
 	</td>
 	</tr>
