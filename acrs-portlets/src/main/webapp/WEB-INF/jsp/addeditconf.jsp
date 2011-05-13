@@ -123,7 +123,7 @@ jQuery(window).load( function() {
     <div>
 		<label for="streetAddress">Street Address: <span class="required">*</span></label>
 		<input type="text" name="streetAddress" id="streetAddress" 
-			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getStreetAddress()) : emptyStr %>">
+			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getStreetAddress()) : emptyStr %>"><br>
 		<label for="streetAddress2">&nbsp;</label>
 		<input type="text" name="streetAddress2" id="streetAddress2" 
 			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getStreetAddress2()) : emptyStr %>">
@@ -204,7 +204,8 @@ jQuery(window).load( function() {
 	</div>
 	<br>
 	<div>
-		<label for="studentMentoringDay">Do you wish to attend the ARC Centre of Excellence for Coral Reef Studies Annual National Student Mentoring Day?</label>
+		<div>Do you wish to attend the ARC Centre of Excellence for Coral Reef Studies Annual National Student Mentoring Day?</div>
+		<label for="studentMentoringDay"></label>
 		<div class="groupedinputs">
 		  <input class="radioCheckbox" type="radio" name="studentMentoringDay" value="true" <%= hasFormBean ? ("true".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>Yes
 	 	  <input class="radioCheckbox" type="radio" name="studentMentoringDay" value="false" <%= hasFormBean ? ("false".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>No
@@ -227,7 +228,8 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<label for="additionalTicketsWelcome">Would you like to purchase additional guest tickets to the welcome function? If so, please indicate how many additional tickets you would like.  <b>$??.00</b></label>
+		<div>If you would like to purchase additional guest tickets to the welcome function, please enter the number of tickets in this box. Otherwise, please leave the box blank.</div>
+		<label for="additionalTicketsWelcome"></label>
 		
 		<input type="text" name="additionalTicketsWelcome" id="additionalTicketsWelcome" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getAdditionalTicketsWelcome()) : emptyStr %>">
@@ -235,7 +237,8 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<label for="additionalTicketsDinner">Would you like to purchase additional guest tickets to the conference dinner? If so, please indicate how many additional tickets you would like. <b>$??.00</b></label>
+		<div>If you would like to purchase additional guest tickets to the conference dinner please enter the number of tickets in this box. Otherwise, please leave the box blank.</div>
+		<label for="additionalTicketsDinner"></label>
 		
 		<input type="text" name="additionalTicketsDinner" id="additionalTicketsDinner" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getAdditionalTicketsDinner()) : emptyStr %>">
@@ -287,6 +290,10 @@ jQuery(window).load( function() {
 			Registrations that are cancelled on or after 26 July 2011, but before 12 August 2011 will attract a 50% penalty.<br>
 			Registrations that are cancelled on or after 12 August 2011 will receive no refund.<br>
 					
+		</div>
+		<div>
+			Please note: When paying with PayPal, you will automatically receive a receipt to your email.
+			If you require an additional receipt from ACRS, please let us know by emailing <a href="mailto:acrs@cms.uq.edu.au">acrs@cms.uq.edu.au</a>.
 		</div>
 		  <label for="submit"><br></label>
 		  <input type="submit" name="submit" value="Save Details and Proceed to Paypal >" 

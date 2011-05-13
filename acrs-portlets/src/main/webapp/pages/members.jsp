@@ -202,7 +202,7 @@
 			    <div>
 					<label for="streetAddress">Street Address:</label>
 					<input type="text" name="streetAddress" id="streetAddress" 
-					value="<%= isEdit ? editMember.getStreetAddress() : emptyStr %>">
+					value="<%= isEdit ? editMember.getStreetAddress() : emptyStr %>"><br>
 					<label for="streetAddress2">&nbsp;</label>
 					<input type="text" name="streetAddress2" id="streetAddress2" >
 				</div>		

@@ -28,7 +28,7 @@ form fieldset {
 form div {
   clear: left;
   display: block;
-  width: 400px;
+/*  width: 400px; */
   zoom: 1;
   margin: 5px 0 0 0;
   padding: 1px 3px;
