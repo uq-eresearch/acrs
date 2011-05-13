@@ -131,18 +131,18 @@ public class ConferenceRegistration {
 		}
 
 		if (this.getCoralFinderWorkshop()) {
-			registrationAmount += 10;
+			registrationAmount += 250;
 			paypalItemName += " + Coral Finder Workshop";
 		}
 
 		if (this.getAdditionalTicketsWelcome() > 0) {
-			registrationAmount += this.getAdditionalTicketsWelcome() * 10;
+			registrationAmount += this.getAdditionalTicketsWelcome() * 35;
 			paypalItemName += " + " + this.getAdditionalTicketsWelcome()
 					+ " Welcome Event Tickets";
 		}
 
 		if (this.getAdditionalTicketsDinner() > 0) {
-			registrationAmount += this.getAdditionalTicketsDinner() * 10;
+			registrationAmount += this.getAdditionalTicketsDinner() * 60;
 			paypalItemName += " + " + this.getAdditionalTicketsDinner()
 					+ " Dinner Tickets";
 		}

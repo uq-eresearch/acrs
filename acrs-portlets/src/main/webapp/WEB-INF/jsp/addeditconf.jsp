@@ -75,7 +75,7 @@ function updateTotalCost() {
 	var welcomeTickets = parseInt(jQuery("[name='additionalTicketsWelcome']").val()) || 0;
 	var dinnerTickets = parseInt(jQuery("[name='additionalTicketsDinner']").val()) || 0;
 
-	var regTotal = rate + (studentMentoring * -50) + (coralFinder * 10) + welcomeTickets * 20 + dinnerTickets * 30; 
+	var regTotal = rate + (studentMentoring * -50) + (coralFinder * 250) + welcomeTickets * 35 + dinnerTickets * 60; 
 	jQuery("#totalRegistrationCost").text("$" + regTotal);
 
 }
@@ -219,7 +219,7 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<label for="coralFinderWorkshop">Would you like to attend the Coral Finder Workshop?  <b>$??.00</b></label>
+		<label for="coralFinderWorkshop">Would you like to attend the Coral Finder Workshop?  <b>$250</b></label>
 		<div class="groupedinputs">
 		<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralFinderWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes
 	 	<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralFinderWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No
@@ -228,7 +228,8 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<div>If you would like to purchase additional guest tickets to the welcome function, please enter the number of tickets in this box. Otherwise, please leave the box blank.</div>
+		<div>If you would like to purchase additional guest tickets to the welcome function, please 
+		enter the number of tickets in this box. Otherwise, please leave the box blank. Additional welcome function tickets are <b>$35.00&nbsp;ea</b></div>
 		<label for="additionalTicketsWelcome"></label>
 		
 		<input type="text" name="additionalTicketsWelcome" id="additionalTicketsWelcome" 
@@ -237,7 +238,8 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<div>If you would like to purchase additional guest tickets to the conference dinner please enter the number of tickets in this box. Otherwise, please leave the box blank.</div>
+		<div>If you would like to purchase additional guest tickets to the conference dinner please
+		 enter the number of tickets in this box. Otherwise, please leave the box blank. Additional tickets are <b>$60.00&nbsp;ea</b></div>
 		<label for="additionalTicketsDinner"></label>
 		
 		<input type="text" name="additionalTicketsDinner" id="additionalTicketsDinner" 
