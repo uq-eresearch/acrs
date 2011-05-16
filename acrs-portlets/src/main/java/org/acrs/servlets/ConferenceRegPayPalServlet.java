@@ -88,6 +88,15 @@ public class ConferenceRegPayPalServlet extends HttpServlet {
 
 					thisRegistration.setPaypalRef(str);
 					thisRegistration.setPaypalStatus(paymentStatus);
+					
+					String strPaymentAmount = request.getParameter("mc_gross");
+					int paymentAmount = Math.round(Float.parseFloat(strPaymentAmount));
+					int regAmount = thisRegistration.getRegistrationAmount();
+					
+					if (paymentAmount != regAmount) {
+						thisRegistration.setPaypalStatus("Incorrect Payment Amount");
+					}
+
 					conferenceRegDao.save(thisRegistration);
 					
 				}
