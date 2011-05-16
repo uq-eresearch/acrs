@@ -48,7 +48,6 @@
 		<input type="hidden" name="lc" value="AU">
 		<input type="hidden" name="item_number" value="<%=newRegistration.getId()%>">
 		<input type="hidden" name="item_name" value="<%=paypalItemName%>">
-		<input type="hidden" name="amount" value="<%=newRegistration.getRegistrationAmount()+ "0" %>">
 		<input type="hidden" name="amount" value="<%=newRegistration.getRegistrationAmount() %>">
 		<input type="hidden" name="currency_code" value="AUD">
 		<input type="hidden" name="button_subtype" value="services">
