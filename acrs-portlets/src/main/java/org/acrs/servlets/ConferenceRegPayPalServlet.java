@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 public class ConferenceRegPayPalServlet extends HttpServlet {
 
-	private static Log _log = LogFactoryUtil.getLog(PayPalServlet.class);
+	private static Log _log = LogFactoryUtil.getLog(ConferenceRegPayPalServlet.class);
 	private static final long serialVersionUID = 1L;
 	protected ConferenceRegistrationDao conferenceRegDao;
 	
@@ -33,7 +33,7 @@ public class ConferenceRegPayPalServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
 	}
-
+	
 	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
