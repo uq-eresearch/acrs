@@ -35,6 +35,10 @@ public interface Configuration {
     String getApprovalEmail2();
 
     String getEmailListCoordEmail();
+    
+    String getPaypalBusinessCode();
+    
+    String getPaypalCharset();
 
     JpaConnectorService getJpaConnectorService();
 }

@@ -14,6 +14,8 @@
 <% 
 	// find out what the command is
 	String baseUrl = ACRSApplication.getConfiguration().getBaseUrl();
+	String payPalUrl = ACRSApplication.getConfiguration().getPaypalIpnUrl();
+	String paypalBusinessCode = ACRSApplication.getConfiguration().getPaypalBusinessCode();
 
 	// maybe a submit, check for a new member
 	ConferenceRegistration newRegistration = (ConferenceRegistration) renderRequest.getPortletSession().getAttribute("newRegistration", PortletSession.APPLICATION_SCOPE);
@@ -22,9 +24,9 @@
 	%>
 				
 		<fieldset>
-		<legend>Application for Individual Membership</legend>
+		<legend>Payment for 2011 Conference Registration</legend>
 	
-		<p>Applicant Details</p>
+		<p>Registration Details</p>
 	
 		<table id="applicantDetailsTable">
 		<tr><td class="applLabel">Name</td><td class="applData"><%= StringEscapeUtils.escapeHtml(newRegistration.getTitle() + " " + newRegistration.getFirstName() + " " + newRegistration.getLastName()) %></td></tr>
@@ -36,16 +38,18 @@
 		
 		<br>
 				
-		<p>Please click the "Pay Now" button to proceed to pay for your membership via Paypal.</p>
+		<p>Please click the "Pay Now" button to proceed to pay for your registration via Paypal.</p>
 		<p><b><%=paypalItemName + ": $" + newRegistration.getRegistrationAmount() %></b> </p>
 		
-		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<form action="<%= payPalUrl %>" method="post" accept-charset="UTF-8">
+		<input type="hidden" name="charset" value="UTF-8">
 		<input type="hidden" name="cmd" value="_xclick">
-		<input type="hidden" name="business" value="DWEN9JSL23L5U">
+		<input type="hidden" name="business" value="<%= paypalBusinessCode %>">
 		<input type="hidden" name="lc" value="AU">
 		<input type="hidden" name="item_number" value="<%=newRegistration.getId()%>">
 		<input type="hidden" name="item_name" value="<%=paypalItemName%>">
 		<input type="hidden" name="amount" value="<%=newRegistration.getRegistrationAmount()+ "0" %>">
+		<input type="hidden" name="amount" value="<%=newRegistration.getRegistrationAmount() %>">
 		<input type="hidden" name="currency_code" value="AUD">
 		<input type="hidden" name="button_subtype" value="services">
 		<input type="hidden" name="no_note" value="0">
@@ -58,27 +62,6 @@
 		<input type="image" src="https://www.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
 		<img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">
 		
-<%--
-	For Testing Only!
-		<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-		<input type="hidden" name="cmd" value="_xclick">
-		<input type="hidden" name="business" value="TN5A53Q7CXRC4">
-		<input type="hidden" name="lc" value="AU">
-		<input type="hidden" name="item_number" value="<%=newRegistration.getId()%>">
-		<input type="hidden" name="item_name" value="<%=StringEscapeUtils.escapeHtml(paypalItemName)%>">
-		<input type="hidden" name="amount" value="<%=newRegistration.getRegistrationAmount()%>">
-		<input type="hidden" name="currency_code" value="AUD">
-		<input type="hidden" name="button_subtype" value="services">
-		<input type="hidden" name="no_note" value="0">
-		<input type="hidden" name="no_shipping" value="1">
-		<input type="hidden" name="rm" value="1">
-        <input type="hidden" name="return" value="<%=baseUrl%>web/guest/end-registration"> 
- 		<input type="hidden" name="cancel_return" value="<%=baseUrl%>web/guest/home"> 
- 		<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted"> 
- 		<input type="hidden" name="notify_url" value="<%=baseUrl%>acrs-portlet/confregpaypal/"> 
-		<input type="image" src="https://www.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
-		<img alt="" border="0" src="https://www.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">
- --%>
 		
 		
 		<INPUT TYPE="hidden" NAME="payer_id" VALUE="<%=newRegistration.getId()%>">

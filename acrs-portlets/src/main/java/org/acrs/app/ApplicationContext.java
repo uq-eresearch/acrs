@@ -33,6 +33,8 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final String serverProxy;
     private final String paypalIpnUrl;
     private final String baseUrl;
+    private final String paypalBusinessCode;
+    private final String paypalCharset;
     private final String approvalEmail1;
     private final String approvalEmail2;
     private final String emailListCoordEmail;
@@ -101,6 +103,8 @@ public class ApplicationContext implements Configuration, ServletContextListener
         String submissionEmailServer = getProperty(properties, "emailServer");
         this.serverProxy = getProperty(properties, "serverProxyName");
         this.paypalIpnUrl = getProperty(properties, "paypalIpnUrl");
+        this.paypalBusinessCode = getProperty(properties, "paypalBusinessCode");
+        this.paypalCharset = getProperty(properties, "paypalCharset");
         this.baseUrl = getProperty(properties, "baseUrl");
 
         this.approvalEmail1 = getProperty(properties, "approvalEmail1");
@@ -184,11 +188,20 @@ public class ApplicationContext implements Configuration, ServletContextListener
     public String getEmailListCoordEmail() {
         return emailListCoordEmail;
     }
+    
+    public String getPaypalBusinessCode() {
+    	return paypalBusinessCode;
+    }
+
+    public String getPaypalCharset() {
+    	return paypalCharset;
+    }
 
 	@Override
 	public ConferenceRegistrationDao getConferenceRegistrationDao() {
 		return conferenceRegDao;
 	}
+
     
     
 }
