@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.acrs.app.ACRSApplication;
-import org.acrs.app.ApplicationContext;
 import org.acrs.data.access.MemberDao;
 import org.acrs.data.model.Member;
 
@@ -39,12 +38,15 @@ public class PayPalServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		// read post from PayPal system and add 'cmd'
-		Enumeration en = request.getParameterNames();
 		String str = "cmd=_notify-validate";
+		String characterEncoding = ACRSApplication.getConfiguration().getPaypalCharset();
+		request.setCharacterEncoding(characterEncoding);
+		
+		Enumeration en = request.getParameterNames();
 		while(en.hasMoreElements()){
 		String paramName = (String)en.nextElement();
 		String paramValue = request.getParameter(paramName);
-		str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue);
+		str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue, characterEncoding);
 		}
 		_log.info("Return to paypal str: " + str);
 		// post back to PayPal system to validate

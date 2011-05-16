@@ -37,13 +37,33 @@ public class ConferenceRegPayPalServlet extends HttpServlet {
 	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String str = "cmd=_notify-validate";
+		
+		/*
+		 * Paypal defaults to windows-1252 character encoding, which in Java
+		 * is knows as CP1252. If this isn't set the IPN post back fails if there
+		 * are any higher CP characters.
+		 * 
+		 * It is possible to use UTF-8, but the PayPal IPN simulator only support
+		 * windows-1252, which makes testing more difficult.
+		 * 
+		 * Unfortunately, PayPal doesn't actually set the content encoding when sending
+		 * the request, so we need to just magically know it. Or alternatively store and
+		 * processes the raw bytes of the result ourselves. No thanks.
+		 * 
+		 * Refer to: http://blog.tentaclesoftware.com/archive/2010/04/09/87.aspx
+		 */
+		String characterEncoding = ACRSApplication.getConfiguration().getPaypalCharset();
+		request.setCharacterEncoding(characterEncoding);
+		
+//		logRequestDebugging(request);
+
 		// read post from PayPal system and add 'cmd'
 		Enumeration<String> en = request.getParameterNames();
-		String str = "cmd=_notify-validate";
 		while(en.hasMoreElements()){
-			String paramName = en.nextElement();
+		String paramName = en.nextElement();
 			String paramValue = request.getParameter(paramName);
-			str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue, "UTF-8");
+			str = str + "&" + paramName + "=" + URLEncoder.encode(paramValue, characterEncoding);
 		}
 		_log.info("Return to paypal str: " + str);
 		// post back to PayPal system to validate
@@ -51,6 +71,7 @@ public class ConferenceRegPayPalServlet extends HttpServlet {
 		// using HTTPS requires either Java 1.4 or greater, or Java Secure Socket Extension (JSSE)
 		// and configured for older versions.
 		URL u = new URL(ACRSApplication.getConfiguration().getPaypalIpnUrl());
+		_log.debug("Paypal IPN URL: " + u.toString());
 		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ACRSApplication.getConfiguration().getServerProxyName(), 8080));
 		URLConnection uc = u.openConnection(proxy);
 
@@ -118,5 +139,35 @@ public class ConferenceRegPayPalServlet extends HttpServlet {
 		// error
 		}
 	
+	}
+
+
+	
+	private void logRequestDebugging(HttpServletRequest request) {
+
+		String headers = "";
+		@SuppressWarnings("unchecked")
+		Enumeration<String> en = request.getHeaderNames();
+		while (en.hasMoreElements()) {
+			String headerName = en.nextElement();
+			headers += headerName + ": " + request.getHeader(headerName) + "\n";
+		}
+		_log.info("IPN Headers: " + headers);
+		
+		_log.info("IPN Content Type: " + request.getContentType());
+		
+
+		String parameters = "";
+		@SuppressWarnings("unchecked")
+		Enumeration<String> enP = request.getParameterNames();
+
+		while(enP.hasMoreElements()){
+			String paramName = enP.nextElement();
+			String paramValue = request.getParameter(paramName);
+			parameters += paramName + ": " + paramValue + "\n";
+		}
+		_log.info("IPN Parameters: " + parameters);
+			
+		
 	}
 }
