@@ -116,10 +116,10 @@ public class ConferenceRegistration {
 			paypalItemName += " Full Non-Member Registration";
 		} else if ("DayOneOnly".equals(registrationRate)) {
 			registrationAmount = 240;
-			paypalItemName += " Day rate — Day 1 only";
+			paypalItemName += " Day rate - Day 1 only";
 		} else if ("DayTwoOnly".equals(registrationRate)) {
 			registrationAmount = 240;
-			paypalItemName += " Day rate — Day 2 only";
+			paypalItemName += " Day rate - Day 2 only";
 		} else {
 			throw new RegistrationProcessingException(
 					"Can't calculate registration rate for: "
