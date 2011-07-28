@@ -365,8 +365,11 @@
 		
 		<br>
 				
-		<p>Please click the "Pay Now" button to proceed to pay for your membership via Paypal.</p>
+		<p>Please click the "Pay Now" button to proceed to pay for your membership via Paypal.<br>
+		<p><font color="red"><b>Note: </b></font>You don't need to login to Paypal to process a credit card payment. After you click the Pay Now button above, just follow the <i>Continue</i> link (as highlighted in the screenshot below).</p>
+
 		<p><b><%=paypalItemName + ": $" + newMember.getMembershipAmount() + "0" %></b> </p>
+				
 		
 <!-- 
 		<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
@@ -420,6 +423,11 @@
 		<INPUT TYPE="hidden" NAME="night_phone_a" VALUE="<%=newMember.getPhone()%>">				
 		
 		</form>
+		
+		<br>
+		<img src="<%=renderRequest.getContextPath()%>/img/paypal_screenshot.jpg" align="left" border="1"/>
+		
+		
 		</fieldset>
 	
 			
