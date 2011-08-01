@@ -39,6 +39,7 @@
 		<br>
 				
 		<p>Please click the "Pay Now" button to proceed to pay for your registration via Paypal.</p>
+                <p>Paypal allows credit card transactions; On the Paypal page please click "don't have a paypal account". if you want to pay directly with a credit card.</p>
 		<p><b><%=paypalItemName + ": $" + newRegistration.getRegistrationAmount() %></b> </p>
 		
 		<form action="<%= payPalUrl %>" method="post" accept-charset="UTF-8">
