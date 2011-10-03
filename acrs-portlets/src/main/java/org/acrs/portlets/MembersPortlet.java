@@ -2,6 +2,9 @@ package org.acrs.portlets;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import org.acrs.app.ACRSApplication;
 import org.acrs.data.access.MemberDao;
 import org.acrs.data.model.Member;
@@ -10,12 +13,14 @@ import org.apache.poi.hssf.usermodel.*;
 
 import javax.mail.MessagingException;
 import javax.portlet.*;
+
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,23 +60,25 @@ public class MembersPortlet extends GenericPortlet {
         //Process data here
         PortletSession session = actionRequest.getPortletSession(true);
         String editMemberIdStr = actionRequest.getParameter("editMemberId");
-
         String action = "";
+        List<String> errors = new ArrayList<String>();
 
         if (editMemberIdStr == null) {
             action = "ADD";
             _log.info("request to add new member");
+            
+			try {
+				checkCaptcha(actionRequest);
+			} catch (RegistrationProcessingException e) {
+				_log.info("Captcha exception: " + e.getMessage());
+				errors.add("Invalid Captcha text, please try again");
+			}
+            
         } else {
             action = "EDIT";
             _log.info("edit member id " + editMemberIdStr);
         }
         
-        
-        
-
-
-        List<String> errors = new ArrayList<String>();
-
         String title = actionRequest.getParameter("title");
         String firstName = actionRequest.getParameter("firstName");
         String lastName = actionRequest.getParameter("lastName");
@@ -316,7 +323,37 @@ public class MembersPortlet extends GenericPortlet {
         }
     }
 
-    public void serveResource(ResourceRequest req, ResourceResponse res) throws PortletException, IOException {
+	/**
+	 * Standard portlet function for serving resources, chooses between a
+	 * spreadsheet or a captcha image
+	 */
+	@Override
+	public void serveResource(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws IOException,
+			PortletException {
+		String resourceID = resourceRequest.getResourceID();
+		if ("captcha".equals(resourceID)) {
+			serveResourceCaptcha(resourceRequest, resourceResponse);
+		} else if ("spreadsheet".equals(resourceID)) {
+			serveResourceSpreadsheet(resourceResponse);
+		}
+	}
+
+	/**
+	 * Serve Resource used for getting captcha, provided by Liferay
+	 */
+	public void serveResourceCaptcha(ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse) throws IOException,
+			PortletException {
+		try {
+			com.liferay.portal.kernel.captcha.CaptchaUtil.serveImage(
+					resourceRequest, resourceResponse);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+	}
+    
+    public void serveResourceSpreadsheet(ResourceResponse res) throws PortletException, IOException {
 
         // create an excel file containing the member list for the user to download
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -441,6 +478,41 @@ public class MembersPortlet extends GenericPortlet {
 
 
     }
+    
+	/**
+	 * Check the Liferay standard captcha text.
+	 * 
+	 * @param request
+	 * @throws RegistrationProcessingException
+	 */
+	private void checkCaptcha(PortletRequest request)
+			throws RegistrationProcessingException {
+		String enteredCaptchaText = ParamUtil.getString(request, "captchaText");
+
+		PortletSession session = request.getPortletSession();
+		String captchaText = getCaptchaValueFromSession(session);
+		if (Validator.isNull(captchaText)) {
+			throw new RegistrationProcessingException(
+					"Internal Error! Captcha text not found in session");
+		}
+		if (!captchaText.equals(enteredCaptchaText.trim())) {
+			_log.info("Captcha expected: " + captchaText + " Entered: "
+					+ enteredCaptchaText);
+			throw new RegistrationProcessingException(
+					"Invalid captcha text. Please reenter.");
+		}
+	}
+
+	private String getCaptchaValueFromSession(PortletSession session) {
+		Enumeration<String> atNames = session.getAttributeNames();
+		while (atNames.hasMoreElements()) {
+			String name = atNames.nextElement();
+			if (name.contains("CAPTCHA_TEXT")) {
+				return (String) session.getAttribute(name);
+			}
+		}
+		return null;
+	}
 
 
 }

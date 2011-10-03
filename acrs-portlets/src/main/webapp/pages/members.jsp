@@ -9,6 +9,8 @@
 <%@ page import="org.acrs.app.ACRSApplication"%>
 
 <%@ taglib prefix="portlet" uri="http://java.sun.com/portlet"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
+
 <portlet:defineObjects />
 
 
@@ -65,7 +67,7 @@
 		<legend>Australian Coral Reef Society Memberships</legend>
 		
 		<div style="text-align:right;" >
-			<a href="<portlet:resourceURL/>" >Export - Download </a>
+			<a href="<portlet:resourceURL id="spreadsheet"/>" >Export - Download </a>
 		</div>
 		
 		<div style="width: 680px; height:500px; overflow:auto">
@@ -177,7 +179,7 @@
 			<legend><%=formTitle%></legend>
 			
 				<div>
-					<label for="title">Title</label>
+					<label for="title">Title: <span class="required">*</span></label>
 					<select name="title" id="title">
 						<!-- >option value="Mr">Mr</option  -->
 						<option value="Ms">Ms</option>
@@ -189,18 +191,18 @@
 				</div>
 			
 				<div>
-					<label for="firstName">First Name:</label>
+					<label for="firstName">First Name: <span class="required">*</span></label>
 					<input type="text" name="firstName" id="firstName" class="required" 
 					value="<%= isEdit ? editMember.getFirstName() : emptyStr %>">
 				</div>
 			    <div>
-					<label for="lastName">Last Name:</label>
+					<label for="lastName">Last Name: <span class="required">*</span></label>
 					<input type="text" name="lastName" id="lastName" class="required" 
 					value="<%= isEdit ? editMember.getLastName() : emptyStr %>">
 				</div>
 			
 			    <div>
-					<label for="streetAddress">Street Address:</label>
+					<label for="streetAddress">Street Address: <span class="required">*</span></label>
 					<input type="text" name="streetAddress" id="streetAddress" 
 					value="<%= isEdit ? editMember.getStreetAddress() : emptyStr %>"><br>
 					<label for="streetAddress2">&nbsp;</label>
@@ -208,25 +210,25 @@
 				</div>		
 	
 			    <div>			
-					<label for="city">Town or Suburb:</label>
+					<label for="city">Town or Suburb: <span class="required">*</span></label>
 					<input type="text" name="city" id="city" 
 					value="<%= isEdit ? editMember.getCity() : emptyStr %>">
 				</div>				
 				
 			    <div>			
-					<label for="state">State:</label>
+					<label for="state">State: <span class="required">*</span></label>
 					<input type="text" name="state" id="state" 
 					value="<%= isEdit ? editMember.getState() : emptyStr %>">
 				</div>				
 				
 			    <div>	
-					<label for="postcode">Postcode:</label>
+					<label for="postcode">Postcode: <span class="required">*</span></label>
 					<input type="text" name="postcode" id="postcode" 
 					value="<%= isEdit ? editMember.getPostcode() : emptyStr %>">
 				</div>				
 					
 			    <div>					
-					<label for="country">Country:</label>
+					<label for="country">Country: <span class="required">*</span></label>
 					<select name="country" id="country">
 						<option selected="selected" 
 						value="<%= isEdit ? editMember.getCountry() : "Australia" %>"><%= isEdit ? editMember.getCountry() : "Australia" %></option>
@@ -235,25 +237,25 @@
 				</div>				
 			
 			    <div>					
-					<label for="email">Email:</label>
+					<label for="email">Email: <span class="required">*</span></label>
 					<input type="text" name="email" id="email" 
 					value="<%= isEdit ? editMember.getEmail() : emptyStr %>">
 				</div>
 				
 				<div>					
-					<label for="phone">Phone Number:</label>
+					<label for="phone">Phone Number: <span class="required">*</span></label>
 					<input type="text" name="phone" id="phone" 
 					value="<%= isEdit ? editMember.getPhone() : emptyStr %>">
 				</div>
 				
 				<div>
-					<label for="institution">Institution or Organisation and Branch or Department (if any):</label>
+					<label for="institution">Institution or Organisation and Branch or Department (if any): <span class="required">*</span></label>
 					<textarea rows="3" cols="70" name="institution" id="institution">
 					<%= isEdit ? editMember.getInstitution() : emptyStr %></textarea>
 				</div>
 				
 				<div>				
-					<label for="researchInterest">Research or Professional or other interests in coral reefs:</label>
+					<label for="researchInterest">Research or Professional or other interests in coral reefs: <span class="required">*</span></label>
 					<textarea rows="3" cols="70" name="researchInterest" id="researchInterest">
 					<%= isEdit ? editMember.getResearchInterest() : emptyStr %></textarea>
 				</div>
@@ -267,7 +269,7 @@
 				</div>
 				<br>
 				<div>							
-					<label for="membershipType">Membership Type:<br><br><br></label>
+					<label for="membershipType">Membership Type: <span class="required">*</span><br><br><br></label>
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Full" <%= isEdit ? (editMember.getMembershipType().equals("Full") ? " checked" : emptyStr) : emptyStr %>/> Full ($50.00)<br />
 					<input class="radioCheckbox" type="radio" name="membershipType" value="Student" <%= isEdit ? (editMember.getMembershipType().equals("Student") ? " checked" : emptyStr) : emptyStr %>/> Student ($30.00)<br />
 					<input class="radioCheckbox" type="radio" name="membershipType" value="FiveYear" <%= isEdit ? (editMember.getMembershipType().equals("FiveYear") ? " checked" : emptyStr) : emptyStr %>/> 5 Year Full ($200.00)<br />		
@@ -304,21 +306,27 @@
 					<%= isEdit ? (editMember.getAcrsEmailListFlag().equals("Y") ? " checked" : emptyStr) : emptyStr %>/>I would like to subscribe to the ACRS Email List.<br>
 				</div>			
 				
-				<div>			
 					
 					<!-- <input type="submit" name="submit" value="Save Details and Proceed to Paypal >"/> -->
 					
 					<% if (isEdit) { %>
 
-					  <label for="submit"><br></label>
-					  <input name="editMemberId" type="hidden" value="<%= String.valueOf(editMember.getId()) %>"/>
-					  <input id="removeFlag" name="removeFlag" type="hidden" value="N"/>
-					  <input type="submit" name="submit" value="Save" 
-					  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
-		  			  <input type="submit" name="submit" value="Remove" 
-					  onClick="document.getElementById('removeFlag').value='Y'; self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>					  
-				    
+					  <div>
+						  <label for="submit"><br></label>
+						  <input name="editMemberId" type="hidden" value="<%= String.valueOf(editMember.getId()) %>"/>
+						  <input id="removeFlag" name="removeFlag" type="hidden" value="N"/>
+						  <input type="submit" name="submit" value="Save" 
+						  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
+			  			  <input type="submit" name="submit" value="Remove" 
+						  onClick="document.getElementById('removeFlag').value='Y'; self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>					  
+				      </div>
 				    <%  } else {%>
+					
+						
+						<div class="captcha">
+							<portlet:resourceURL var="captchaURL" id="captcha"/>
+							<liferay-ui:captcha url="<%= captchaURL %>"/><span class="required">*</span>
+						</div>
 					
 					<div>
 					  For all new ACRS members your membership will need to be approved by Council. If for some reason your application is deemed inappropriate, a full refund will be given.					
@@ -328,7 +336,6 @@
 					  onClick="self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>
 
 					<%} %>
-				</div>
 	
 			
 			</fieldset>
