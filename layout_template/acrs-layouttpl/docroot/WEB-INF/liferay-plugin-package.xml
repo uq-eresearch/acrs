@@ -14,9 +14,9 @@
 	<page-url>http://www.liferay.com</page-url>
 	<author>Liferay, Inc.</author>
 	<licenses>
-		<license osi-approved="true">MIT</license>
+		<license osi-approved="true">LGPL</license>
 	</licenses>
 	<liferay-versions>
-		<liferay-version>5.2.0+</liferay-version>
+		<liferay-version>6.0.0+</liferay-version>
 	</liferay-versions>
 </plugin-package>
