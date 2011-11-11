@@ -1,5 +1,3 @@
-
-
 <div class="acrs" id="content-wrapper">
 	<div class="lfr-grid" id="layout-grid">
 		<div class="lfr-column" id="column-1">
