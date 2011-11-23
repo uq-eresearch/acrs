@@ -2,6 +2,7 @@ package org.acrs.portlets;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -451,6 +452,13 @@ public class MembersPortlet extends GenericPortlet {
 
         }
 
+        res.setContentType("application/vnd.ms-excel");
+        res.addProperty(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"MemberList.xls\"");
+        res.setProperty(ResourceResponse.EXPIRATION_CACHE, "0");
+        wb.write(res.getPortletOutputStream());
+        res.getPortletOutputStream().close();
+        
+/*
         // write workbook out to file
         FileOutputStream fos = new FileOutputStream("MemberList.xls");
         wb.write(fos);
@@ -475,7 +483,7 @@ public class MembersPortlet extends GenericPortlet {
         out.close();
 
         file.delete();
-
+*/
 
     }
     
