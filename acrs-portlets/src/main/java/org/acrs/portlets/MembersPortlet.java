@@ -132,7 +132,16 @@ public class MembersPortlet extends GenericPortlet {
         {
         	errors.add("Please, remove these characters from the form before continuing: < >");
         }
-
+        
+        if (!(phone == null || phone.isEmpty())) {
+            
+        	String strippedPhoneNumber = phone.replaceAll("[a-zA-Z]", "");
+        	if (strippedPhoneNumber.length() < 8 ) {
+        		errors.add("Invalid phone number format.");
+        	}
+        }
+        
+        
         if ((email == null) || email.isEmpty()) {
             errors.add("Please include a valid email address.");
         }
