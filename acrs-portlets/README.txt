@@ -46,6 +46,7 @@ If you want to use another database you will need to also add a dependency to th
 driver in the "pom.xml" file.
 
 === Compiling and Deploying
-- Run the following command from the project base directory
+- Run the following command from the project base directory to build the war file and deploy it locally 
  mvn package -Dmaven.test.skip=true && cp target/acrs-portlets.war /path/to/liferay-portal-5.2.3/deploy
 - Then go into the Add Application section of liferay and drag and drop the portlet 
+On the acrs virtual machine, you can deploy the war by going to the Control Panel, Install Plugins, Upload File.
