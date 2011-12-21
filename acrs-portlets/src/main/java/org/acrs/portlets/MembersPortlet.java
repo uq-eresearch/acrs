@@ -146,46 +146,53 @@ public class MembersPortlet extends GenericPortlet {
             if (action.equals("ADD")) {
 
                 Member newMember = new Member();
-
-                // calculate membership amount
-                Double membershipAmount = 0.00;
+        		Double membershipAmount = 0.00;
                 String paypalItemName = "Australian Coral Reef Society ";
-                int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                Date startDiscountDate = new Date();
-                Date endDiscountDate = new Date();
 
+                // Establish membership registration year
+                Calendar today = Calendar.getInstance();
+                int thisYear = today.get(Calendar.YEAR);
+                int nextYear = thisYear + 1;
+                int membershipYear = thisYear;
+                
+                // if date is between November 1 and December 31, registration is for next year
+                Calendar preYearStart = Calendar.getInstance();
+                preYearStart.set(thisYear, Calendar.NOVEMBER, 1, 0, 0, 0);
+                Calendar preYearEnd = Calendar.getInstance();
+                preYearEnd.set(nextYear, Calendar.JANUARY, 1, 0, 0, 0);
+                
+                if ((today.after(preYearStart)) && (today.before(preYearEnd))) {
+                	membershipYear = nextYear;
+                }
+                
+                // if date is between November 01 and Mar 01, a discount applies
+                Calendar startDiscountDt = Calendar.getInstance();
+                startDiscountDt.set(membershipYear-1, Calendar.NOVEMBER, 1, 0, 0, 0);
+                Calendar endDiscountDt = Calendar.getInstance();
+                endDiscountDt.set(membershipYear, Calendar.MARCH, 1, 0, 0, 0);
+                
                 if (membershipType.equals("Full")) {
                     membershipAmount = 50.00;
-                    paypalItemName = paypalItemName + "Full Membership for " + Integer.toString(thisYear);
-
+                    paypalItemName = paypalItemName + "Full Membership for " + Integer.toString(membershipYear);
                 } else if (membershipType.equals("Student")) {
                     membershipAmount = 30.00;
-                    paypalItemName = paypalItemName + "Student Membership for " + Integer.toString(thisYear);
+                    paypalItemName = paypalItemName + "Student Membership for " + Integer.toString(membershipYear);
                 } else if (membershipType.equals("FiveYear")) {
                     membershipAmount = 200.00;
-                    paypalItemName = paypalItemName + "Full 5 Year Membership from " + Integer.toString(thisYear);
+                    paypalItemName = paypalItemName + "Full 5 Year Membership from " + Integer.toString(membershipYear);
                 } else if (membershipType.equals("Test")) {
                     membershipAmount = 5.00;
-                    paypalItemName = paypalItemName + "Test Membership from " + Integer.toString(thisYear);
+                    paypalItemName = paypalItemName + "Test Membership from " + Integer.toString(membershipYear);
                 }
-
-                try {
-                    startDiscountDate = sdf.parse("01-01-" + Integer.toString(thisYear));
-                    endDiscountDate = sdf.parse("01-03-" + Integer.toString(thisYear));
-                } catch (ParseException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
 
                 if (!(membershipType.equals("FiveYear"))
-                        && (newMember.getRegistrationDate().after(startDiscountDate))
-                        && (newMember.getRegistrationDate().before(endDiscountDate))) {
+                        && (today.after(startDiscountDt))
+                        && (today.before(endDiscountDt))) {
                     membershipAmount = membershipAmount - 10.00;
                     paypalItemName = paypalItemName + " (with early discount)";
                 }
-
+                
+                
                 // save member details
                 newMember.setTitle(title);
                 newMember.setFirstName(firstName);

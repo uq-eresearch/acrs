@@ -290,7 +290,7 @@
 					</div>
 				<%} else { %>
 					<div>
-					There is a $10.00 discount on Full and Student single year memberships for applications received between 1 January and 28 February each year. Memberships are valid until the end of the calendar year.</div>
+					There is a $10.00 discount on Full and Student single year memberships for applications received between 1 November (of the previous year) and 27 February. Memberships are valid until the end of the calendar year.</div>
 					</div>
 				<%} %>
 				
@@ -373,7 +373,7 @@
 		<br>
 				
 		<p>Please click the "Pay Now" button to proceed to pay for your membership via Paypal.<br>
-		<p><font color="red"><b>Note: </b></font>You don't need to login to Paypal to process a credit card payment. After you click the Pay Now button above, just follow the <i>Continue</i> link (as highlighted in the screenshot below).</p>
+		<p><font color="red"><b>Note: </b></font>You don't need to login to Paypal to process a credit card payment. After you click the Pay Now button above, you will be directed to PayPal and can pay as a Guest or you can use a PayPal account.</p>
 
 		<p><b><%=paypalItemName + ": $" + newMember.getMembershipAmount() + "0" %></b> </p>
 				
@@ -432,7 +432,6 @@
 		</form>
 		
 		<br>
-		<img src="<%=renderRequest.getContextPath()%>/img/paypal_screenshot.jpg" align="left" border="1"/>
 		
 		
 		</fieldset>
