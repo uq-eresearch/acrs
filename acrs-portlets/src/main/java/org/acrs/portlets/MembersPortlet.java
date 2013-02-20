@@ -447,14 +447,13 @@ public class MembersPortlet extends GenericPortlet {
 
 
             r = s.createRow(allMembers.indexOf(member) + 1);
-            Iterator i = a.iterator();
+            Iterator<String> i = a.iterator();
             int cellNum = 0;
             
             while (i.hasNext()) {
             	c = r.createCell(cellNum);
             	HSSFRichTextString rts = new HSSFRichTextString((String)i.next());
                 c.setCellValue(rts);
-                s.autoSizeColumn((short)cellNum);
                 cellNum++;
             }
             
@@ -466,6 +465,11 @@ public class MembersPortlet extends GenericPortlet {
                 s.autoSizeColumn((short) a.indexOf(m));
             }*/
 
+        }
+        
+        // Auto-resize all the columns
+        for (int column = 0; column < headings.size(); column++) {
+        	 s.autoSizeColumn((short)column);
         }
 
         res.setContentType("application/vnd.ms-excel");
