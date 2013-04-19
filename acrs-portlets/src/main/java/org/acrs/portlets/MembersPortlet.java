@@ -456,14 +456,6 @@ public class MembersPortlet extends GenericPortlet {
                 c.setCellValue(rts);
                 cellNum++;
             }
-            
-            /*for (String m : a) {
-            
-            	c = r.createCell(a.indexOf(m));
-                HSSFRichTextString rts = new HSSFRichTextString(m);
-                c.setCellValue(rts);
-                s.autoSizeColumn((short) a.indexOf(m));
-            }*/
 
         }
         

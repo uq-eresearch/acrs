@@ -26,19 +26,12 @@ public class ConferenceFormBean {
 	private String title = "";
 	private String firstName = "";
 	private String lastName = "";
-	private String streetAddress = "";
-	private String streetAddress2 = "";
-	private String city = "";
-	private String state = "";
-	private String postcode = "";
-	private String country = "";
 	private String email = "";
-	private String phone = "";
 	private String institution = "";
 	private String submittingAbstract = "";
 	private String registrationRate = "";
 	private String studentMentoringDay = "";
-	private String coralFinderWorkshop = "";
+	private String coralIdentificationWorkshop = "";
 	private String additionalTicketsWelcome = "";
 	private String additionalTicketsDinner = "";
 
@@ -90,68 +83,12 @@ public class ConferenceFormBean {
 		this.lastName = lastName;
 	}
 
-	public String getStreetAddress() {
-		return streetAddress;
-	}
-
-	public void setStreetAddress(String streetAddress) {
-		this.streetAddress = streetAddress;
-	}
-
-	public String getStreetAddress2() {
-		return streetAddress2;
-	}
-
-	public void setStreetAddress2(String streetAddress2) {
-		this.streetAddress2 = streetAddress2;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getPostcode() {
-		return postcode;
-	}
-
-	public void setPostcode(String postcode) {
-		this.postcode = postcode;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
 	}
 
 	public String getInstitution() {
@@ -178,12 +115,12 @@ public class ConferenceFormBean {
 		this.registrationRate = registrationRate;
 	}
 
-	public String getCoralFinderWorkshop() {
-		return coralFinderWorkshop;
+	public String getCoralIdentificationWorkshop() {
+		return coralIdentificationWorkshop;
 	}
 
-	public void setCoralFinderWorkshop(String coralFinderWorkshop) {
-		this.coralFinderWorkshop = coralFinderWorkshop;
+	public void setCoralIdentificationWorkshop(String coralIdentificationWorkshop) {
+		this.coralIdentificationWorkshop = coralIdentificationWorkshop;
 	}
 
 	public String getAdditionalTicketsWelcome() {

@@ -29,6 +29,7 @@ import javax.portlet.ResourceResponse;
 import org.acrs.app.ACRSApplication;
 import org.acrs.data.access.ConferenceRegistrationDao;
 import org.acrs.data.model.ConferenceRegistration;
+import org.acrs.data.model.SystemClock;
 import org.acrs.util.Emailer;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
+ * Author: uqdayers Date: 19/4/2013
  * Author: alabri Date: 08/02/2011 Time: 4:26:58 PM
  */
 public class ConferenceRegistrationPortlet extends GenericPortlet {
@@ -259,23 +261,14 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		List<String> errors = new ArrayList<String>();
 		String firstName = actionRequest.getParameter("firstName");
 		String lastName = actionRequest.getParameter("lastName");
-		String streetAddress = actionRequest.getParameter("streetAddress");
-		String city = actionRequest.getParameter("city");
-		String state = actionRequest.getParameter("state");
-		String postcode = actionRequest.getParameter("postcode");
-		String country = actionRequest.getParameter("country");
 		String email = actionRequest.getParameter("email");
-		String phone = actionRequest.getParameter("phone");
 		String registrationRate = actionRequest
 				.getParameter("registrationRate");
 
 		if ((firstName == null) || firstName.isEmpty() || (lastName == null)
-				|| lastName.isEmpty() || (streetAddress == null)
-				|| streetAddress.isEmpty() || (city == null) || city.isEmpty()
-				|| (state == null) || state.isEmpty() || (postcode == null)
-				|| postcode.isEmpty() || (country == null) || country.isEmpty()
-				|| (email == null) || email.isEmpty() || (phone == null)
-				|| phone.isEmpty() || (registrationRate == null)
+				|| lastName.isEmpty()
+				|| (email == null) || email.isEmpty()
+				|| (registrationRate == null)
 				|| registrationRate.isEmpty()) {
 
 			errors.add("Please fill all required fields.");
@@ -346,7 +339,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			PortletSession session, ConferenceFormBean crb)
 			throws RegistrationProcessingException {
 
-		ConferenceRegistration newRegistration = new ConferenceRegistration(crb);
+		ConferenceRegistration newRegistration = new ConferenceRegistration(crb, new SystemClock());
 
 		// calculate and save registration details
 
@@ -390,12 +383,8 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		String applicantDetail = "\n\tName:\t\t\t\t"
 				+ newRegistration.getTitle() + " "
 				+ newRegistration.getFirstName() + " "
-				+ newRegistration.getLastName() + "\n\tAddress:\t\t\t"
-				+ newRegistration.getStreetAddress() + ", "
-				+ newRegistration.getCity() + " " + newRegistration.getState()
-				+ " " + newRegistration.getPostcode() + "\n\tEmail:\t\t\t"
-				+ newRegistration.getEmail() + "\n\tPhone:\t\t\t"
-				+ newRegistration.getPhone() + "\n\tInstitution:\t\t"
+				+ newRegistration.getLastName() + "\n\tEmail:\t\t\t"
+				+ newRegistration.getEmail() + "\n\tInstitution:\t\t"
 				+ newRegistration.getInstitution();
 
 		try {
@@ -541,18 +530,12 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			a.add(registration.getTitle());
 			a.add(registration.getFirstName());
 			a.add(registration.getLastName());
-			a.add(registration.getStreetAddress());
-			a.add(registration.getCity());
-			a.add(registration.getState());
-			a.add(registration.getPostcode());
-			a.add(registration.getCountry());
 			a.add(registration.getEmail());
-			a.add(registration.getPhone());
 			a.add(registration.getInstitution());
 			a.add(registration.getSubmittingAbstract() ? "Y" : "N");
 			a.add(registration.getRegistrationRate());
 			a.add(registration.getStudentMentoringDay() ? "Y" : "N");
-			a.add(registration.getCoralFinderWorkshop() ? "Y" : "N");
+			a.add(registration.getCoralIdentificationWorkshop() ? "Y" : "N");
 			a.add(registration.getAdditionalTicketsWelcome().toString());
 			a.add(registration.getAdditionalTicketsDinner().toString());
 			a.add(registration.getRegistrationAmount().toString());
@@ -573,6 +556,11 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				cellNum++;
 			}
 		}
+        
+        // Auto-resize all the columns
+        for (int column = 0; column < headings.size(); column++) {
+        	 s.autoSizeColumn((short)column);
+        }
 
 		// write workbook out to file
 		FileOutputStream fos = new FileOutputStream(

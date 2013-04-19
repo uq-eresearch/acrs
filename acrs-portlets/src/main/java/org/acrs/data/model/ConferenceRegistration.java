@@ -25,7 +25,6 @@ import org.hibernate.validator.NotNull;
 
 @Entity
 public class ConferenceRegistration {
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,14 +33,7 @@ public class ConferenceRegistration {
 	private String title;
 	private String firstName;
 	private String lastName;
-	private String streetAddress;
-	private String streetAddress2;
-	private String city;
-	private String state;
-	private String postcode;
-	private String country;
 	private String email;
-	private String phone;
 
 	@Column(length = 500)
 	private String institution;
@@ -51,7 +43,7 @@ public class ConferenceRegistration {
 	private String registrationRate;
 
 	private Boolean studentMentoringDay;
-	private Boolean coralFinderWorkshop;
+	private Boolean coralIdentificationWorkshop;
 	private Integer additionalTicketsWelcome;
 	private Integer additionalTicketsDinner;
 
@@ -71,29 +63,26 @@ public class ConferenceRegistration {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateDate;
 	private Boolean isActive;
+	
+	private Clock clock;
 
-	public ConferenceRegistration() {
-		this.registrationDate = new Date();
+	public ConferenceRegistration(Clock clock) {
+		this.clock = clock;
+		this.registrationDate = this.clock.getCurrentDate();
 
 	}
 
-	public ConferenceRegistration(ConferenceFormBean cfb)
+	public ConferenceRegistration(ConferenceFormBean cfb, Clock clock)
 			throws RegistrationProcessingException {
-		this.registrationDate = new Date();
+		this.clock = clock;
+		this.registrationDate = this.clock.getCurrentDate();
+		
 		try {
 			BeanUtils.copyProperties(this, cfb);
 		} catch (Exception e1) {
 			throw new RegistrationProcessingException(
 					"Error creating database record" + e1);
 		}
-	}
-
-	public ConferenceRegistration(String firstName, String lastName,
-			String email) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.registrationDate = new Date();
 	}
 
 	public void calculateRegistration() throws RegistrationProcessingException {
@@ -103,7 +92,7 @@ public class ConferenceRegistration {
 
 
 		if ("StudentMember".equals(registrationRate)) {
-			registrationAmount = 330;
+			registrationAmount = 380;
 			paypalItemName += " Student Member Registration";
 		} else if ("StudentNonMember".equals(registrationRate)) {
 			registrationAmount = 380;
@@ -114,35 +103,29 @@ public class ConferenceRegistration {
 		} else if ("FullNonMember".equals(registrationRate)) {
 			registrationAmount = 499;
 			paypalItemName += " Full Non-Member Registration";
-		} else if ("DayOneOnly".equals(registrationRate)) {
-			registrationAmount = 240;
-			paypalItemName += " Day rate - Day 1 only";
-		} else if ("DayTwoOnly".equals(registrationRate)) {
-			registrationAmount = 240;
-			paypalItemName += " Day rate - Day 2 only";
 		} else {
 			throw new RegistrationProcessingException(
 					"Can't calculate registration rate for: "
 							+ registrationRate);
 		}
 		if (this.getStudentMentoringDay()) {
-			registrationAmount -= 50;
+			registrationAmount -= 70;
 			paypalItemName += " + Student Mentoring Day";
 		}
 
-		if (this.getCoralFinderWorkshop()) {
-			registrationAmount += 250;
+		if (this.getCoralIdentificationWorkshop()) {
+			registrationAmount += 330;
 			paypalItemName += " + Coral Finder Workshop";
 		}
 
 		if (this.getAdditionalTicketsWelcome() > 0) {
-			registrationAmount += this.getAdditionalTicketsWelcome() * 35;
+			registrationAmount += this.getAdditionalTicketsWelcome() * 25;
 			paypalItemName += " + " + this.getAdditionalTicketsWelcome()
 					+ " Welcome Event Tickets";
 		}
 
 		if (this.getAdditionalTicketsDinner() > 0) {
-			registrationAmount += this.getAdditionalTicketsDinner() * 60;
+			registrationAmount += this.getAdditionalTicketsDinner() * 99;
 			paypalItemName += " + " + this.getAdditionalTicketsDinner()
 					+ " Dinner Tickets";
 		}
@@ -180,53 +163,6 @@ public class ConferenceRegistration {
 		this.lastName = lastName;
 	}
 
-	public String getStreetAddress() {
-		return streetAddress;
-	}
-
-	public void setStreetAddress(String streetAddress) {
-		this.streetAddress = streetAddress;
-	}
-
-	public String getStreetAddress2() {
-		return streetAddress2;
-	}
-
-	public void setStreetAddress2(String streetAddress2) {
-		this.streetAddress2 = streetAddress2;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getPostcode() {
-		return postcode;
-	}
-
-	public void setPostcode(String postcode) {
-		this.postcode = postcode;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
 
 	public String getEmail() {
 		return email;
@@ -234,14 +170,6 @@ public class ConferenceRegistration {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
 	}
 
 	public String getInstitution() {
@@ -316,12 +244,12 @@ public class ConferenceRegistration {
 		this.studentMentoringDay = studentMentoringDay;
 	}
 
-	public Boolean getCoralFinderWorkshop() {
-		return coralFinderWorkshop != null ? coralFinderWorkshop : false;
+	public Boolean getCoralIdentificationWorkshop() {
+		return coralIdentificationWorkshop != null ? coralIdentificationWorkshop : false;
 	}
 
 	public void setCoralFinderWorkshop(Boolean coralFinderWorkshop) {
-		this.coralFinderWorkshop = coralFinderWorkshop;
+		this.coralIdentificationWorkshop = coralFinderWorkshop;
 	}
 
 	public Integer getRegistrationAmount() {

@@ -13,7 +13,6 @@ import java.util.Date;
 
 @Entity
 public class Member {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

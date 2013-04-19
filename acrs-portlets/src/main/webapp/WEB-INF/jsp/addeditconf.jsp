@@ -120,53 +120,10 @@ jQuery(window).load( function() {
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getLastName()) : emptyStr %>">
 	</div>
 
-    <div>
-		<label for="streetAddress">Street Address: <span class="required">*</span></label>
-		<input type="text" name="streetAddress" id="streetAddress" 
-			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getStreetAddress()) : emptyStr %>"><br>
-		<label for="streetAddress2">&nbsp;</label>
-		<input type="text" name="streetAddress2" id="streetAddress2" 
-			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getStreetAddress2()) : emptyStr %>">
-	</div>		
-
-    <div>			
-		<label for="city">Town or Suburb: <span class="required">*</span></label>
-		<input type="text" name="city" id="city" 
-		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getCity()) : emptyStr %>">
-	</div>				
-	
-    <div>			
-		<label for="state">State: <span class="required">*</span></label>
-		<input type="text" name="state" id="state" 
-		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getState()) : emptyStr %>">
-	</div>				
-	
-    <div>	
-		<label for="postcode">Postcode: <span class="required">*</span></label>
-		<input type="text" name="postcode" id="postcode" 
-		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getPostcode()) : emptyStr %>">
-	</div>				
-		
-    <div>					
-		<label for="country">Country: <span class="required">*</span></label>
-		<select name="country" id="country">
-			<option selected="selected" 
-			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getCountry()) : "Australia" %>">
-			<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getCountry()) : "Australia" %></option>
-		<jsp:include page="/include/countrylist.jsp"/>
-		</select>		
-	</div>				
-
     <div>					
 		<label for="email">Email: <span class="required">*</span></label>
 		<input type="text" name="email" id="email" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getEmail()) : emptyStr %>">
-	</div>
-	
-	<div>					
-		<label for="phone">Phone Number: <span class="required">*</span></label>
-		<input type="text" name="phone" id="phone" 
-		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getPhone()) : emptyStr %>">
 	</div>
 	
 	<div>
@@ -219,10 +176,10 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<label for="coralFinderWorkshop">Would you like to attend the Coral Finder Workshop?  <b>$250</b></label>
+		<label for="coralIdentificationWorkshop">Would you like to attend the Coral Identification Workshop?  <b>$250</b></label>
 		<div class="groupedinputs">
-		<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralFinderWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes
-	 	<input class="radioCheckbox" type="radio" name="coralFinderWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralFinderWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No
+		<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralIdentificationWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes
+	 	<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralIdentificationWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No
 		</div>	
 	</div>
 	

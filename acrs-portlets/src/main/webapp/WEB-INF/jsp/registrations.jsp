@@ -41,14 +41,12 @@
 <table id="memberListTable">
 <tr>
 <th>Name</th>
-<th>Address</th>
 <th>Email</th>
-<th>Phone</th>
 <th>Institution</th>
 <th>Submitting Abstract</th>
 <th>Registration<br>Rate</th>
 <th>Student Mentoring Day</th>
-<th>Coral Finder Workshop</th>
+<th>Coral Identification Workshop</th>
 <th>Welcome Tickets</th>
 <th>Dinner Tickets</th>
 <th>Registration<br>Amount</th>
@@ -84,14 +82,12 @@
 	%>
 	<tr>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getTitle() + " " + registration.getFirstName() + " " + registration.getLastName())%></td>
-	<td><%=StringEscapeUtils.escapeHtml(registration.getStreetAddress() + ", " + registration.getStreetAddress2() + ", " + registration.getCity()) + "<br>" + StringEscapeUtils.escapeHtml(registration.getState() + " " + registration.getPostcode() + " " + registration.getCountry())%></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getEmail())%></td>
-	<td><%=StringEscapeUtils.escapeHtml(registration.getPhone())%></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getInstitution())%></td>
 	<td><%=registration.getSubmittingAbstract() ? "Y" : "N" %></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getRegistrationRate())%></td>
 	<td><%=registration.getStudentMentoringDay() ? "Y" : "N" %></td>
-	<td><%=registration.getCoralFinderWorkshop() ? "Y" : "N" %></td>
+	<td><%=registration.getCoralIdentificationWorkshop() ? "Y" : "N" %></td>
 	<td><%=registration.getAdditionalTicketsWelcome()%></td>
 	<td><%=registration.getAdditionalTicketsDinner()%></td>
 	<td><%=registration.getRegistrationAmount()%></td>

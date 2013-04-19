@@ -1,19 +1,39 @@
 package org.acrs.portlets;
 
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import org.acrs.data.model.ConferenceRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ConferenceRegistrationTests {
+	
+	final int STUDENT_MEMBER_EARLY = 380;
+	final int STUDENT_NON_MEMBER_EARLY = 410;
+	final int FULL_MEMBER_EARLY = 490;
+	final int FULL_NON_MEMBER_EARLY = 530;
+	final int STUDENT_MEMBER = 400;
+	final int STUDENT_NON_MEMBER = 430;
+	final int FULL_MEMBER = 510;
+	final int FULL_NON_MEMBER = 550;
+	final int STUDENT_MENTORING_DISCOUNT = 70;
+	final int CORAL_IDENTIFICATION_WORKSHOP = 330;
+	final int WELCOME_FUNCTION = 25;
+	final int CONFERENCE_DINNER = 99;
+	Date EARLY_BIRD;
+	
 
 	ConferenceRegistrationPortlet crp;
 	ConferenceRegistration registration;
 	@Before
 	public void setUp() throws Exception {
 		this.crp = new ConferenceRegistrationPortlet();
-		this.registration = new ConferenceRegistration();
+		Date early = DateFormat.getDateInstance().parse("2013-05-14");
+		this.registration = new ConferenceRegistration(new FakeClock(early));
+		 EARLY_BIRD = DateFormat.getDateInstance().parse("2013-06-15"); // on or before
 	}
 
 	
@@ -29,7 +49,7 @@ public class ConferenceRegistrationTests {
 	}
 	
 	/**
-	 * Student registration is $330
+	 * Student registration
 	 */
 	@Test
 	public void calculateStudentMemberPrice() throws RegistrationProcessingException {
@@ -39,13 +59,13 @@ public class ConferenceRegistrationTests {
 	}
 	
 	/**
-	 * Student non-member registration is $380
+	 * Student non-member registration
 	 */
 	@Test
 	public void calculateStudentNonMemberPrice() throws RegistrationProcessingException {
 		registration.setRegistrationRate("StudentNonMember");
 		registration.calculateRegistration();
-		assertEquals(380, (int)registration.getRegistrationAmount());
+		assertEquals(STUDENT_NON_MEMBER_EARLY, (int)registration.getRegistrationAmount());
 	}
 
 	/**
@@ -68,27 +88,6 @@ public class ConferenceRegistrationTests {
 		assertEquals(499, (int)registration.getRegistrationAmount());
 	}
 
-	/**
-	 * Day one only is $240
-	 */
-	@Test
-	public void calculateDayOneOnlyPrice() throws RegistrationProcessingException {
-		registration.setRegistrationRate("DayOneOnly");
-		registration.calculateRegistration();
-		assertEquals(240, (int)registration.getRegistrationAmount());
-	}
-
-
-	/**
-	 * Day two only is $240
-	 */
-	@Test
-	public void calculateDayTwoOnlyPrice() throws RegistrationProcessingException {
-		registration.setRegistrationRate("DayTwoOnly");
-		registration.calculateRegistration();
-		assertEquals(240, (int)registration.getRegistrationAmount());
-	}
-	
 
 	/**
 	 * Full member rate is 440, dinner tickets are 60ea
@@ -125,7 +124,7 @@ public class ConferenceRegistrationTests {
 	}
 	
 	/**
-	 * Student (330), coral finder (250), 1 welcome (35), 2 dinner (60)
+	 * Student (330), 1 welcome (35), 2 dinner (60)
 	 */
 	@Test
 	public void calculateStudentCoralWelcomeDinner() throws RegistrationProcessingException {

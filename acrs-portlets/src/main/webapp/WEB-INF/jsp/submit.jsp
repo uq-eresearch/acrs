@@ -31,7 +31,6 @@
 		<table id="applicantDetailsTable">
 		<tr><td class="applLabel">Name</td><td class="applData"><%= StringEscapeUtils.escapeHtml(newRegistration.getTitle() + " " + newRegistration.getFirstName() + " " + newRegistration.getLastName()) %></td></tr>
 		<tr><td class="applLabel">Email</td><td class="applData"><%= StringEscapeUtils.escapeHtml(newRegistration.getEmail()) %></td></tr>
-		<tr><td class="applLabel">Phone</td><td class="applData"><%= StringEscapeUtils.escapeHtml(newRegistration.getPhone()) %></td></tr>
 		<tr><td class="applLabel">Registration Rate</td><td class="applData"><%= StringEscapeUtils.escapeHtml(newRegistration.getRegistrationRate()) %></td></tr>				
 		<tr><td class="applLabel">Registration Amount</td><td class="applData">$<%= newRegistration.getRegistrationAmount() %></td></tr>				
 		</table>
@@ -67,14 +66,7 @@
 		<INPUT TYPE="hidden" NAME="payer_id" VALUE="<%=newRegistration.getId()%>">
 		<INPUT TYPE="hidden" NAME="first_name" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getFirstName())%>">
 		<INPUT TYPE="hidden" NAME="last_name" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getLastName())%>">
-		<INPUT TYPE="hidden" NAME="address1" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getStreetAddress())%>">
-		<INPUT TYPE="hidden" NAME="address2" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getStreetAddress2())%>">
-		<INPUT TYPE="hidden" NAME="city" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getCity())%>">
-		<INPUT TYPE="hidden" NAME="state" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getState())%>">
-		<INPUT TYPE="hidden" NAME="zip" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getPostcode())%>">
-		<INPUT TYPE="hidden" NAME="country" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getCountry())%> ">
-		<INPUT TYPE="hidden" NAME="email" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getEmail())%>">
-		<INPUT TYPE="hidden" NAME="night_phone_a" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getPhone())%>">				
+		<INPUT TYPE="hidden" NAME="email" VALUE="<%=StringEscapeUtils.escapeHtml(newRegistration.getEmail())%>">			
 		
 		</form>
 		</fieldset>
