@@ -58,24 +58,20 @@ function updateTotalCost() {
 	var rate = 0;
 	switch (registrationRate) {
 		case 'StudentMember':
-			rate = 330; break;
+			rate = 400; break;
 		case 'StudentNonMember':
-			rate = 380; break;
+			rate = 430; break;
 		case 'FullMember':
-			rate = 440; break;
+			rate = 510; break;
 		case 'FullNonMember':
-			rate = 499; break;
-		case 'DayOneOnly':
-			rate = 240; break;
-		case 'DayTwoOnly':
-			rate = 240; break;
+			rate = 550; break;
 	}
 	var studentMentoring = (jQuery("[name='studentMentoringDay']:checked").val() === 'true') ? 1 : 0;
-	var coralFinder = (jQuery("[name='coralFinderWorkshop']:checked").val() === 'true') ? 1 : 0;
+	var coralIdentification = (jQuery("[name='coralIdentificationWorkshop']:checked").val() === 'true') ? 1 : 0;
 	var welcomeTickets = parseInt(jQuery("[name='additionalTicketsWelcome']").val()) || 0;
 	var dinnerTickets = parseInt(jQuery("[name='additionalTicketsDinner']").val()) || 0;
 
-	var regTotal = rate + (studentMentoring * -50) + (coralFinder * 250) + welcomeTickets * 35 + dinnerTickets * 60; 
+	var regTotal = rate + (studentMentoring * -70) + (coralIdentification * 250) + welcomeTickets * 35 + dinnerTickets * 60; 
 	jQuery("#totalRegistrationCost").text("$" + regTotal);
 
 }
