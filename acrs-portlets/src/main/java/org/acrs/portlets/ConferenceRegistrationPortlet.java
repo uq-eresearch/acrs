@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +43,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -56,6 +58,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 	protected final String editJSP = "/WEB-INF/jsp/addeditconf.jsp";
 	protected final String registrationsListJSP = "/WEB-INF/jsp/registrations.jsp";
 	protected final String submitVerify = "/WEB-INF/jsp/submit.jsp";
+	protected Date earlyBirdDate;
 
 	protected ConferenceRegistrationDao conferenceRegistrationDao;
 
@@ -63,6 +66,12 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		viewJSP = getInitParameter("confreg-jsp");
 		conferenceRegistrationDao = ACRSApplication.getConfiguration()
 				.getConferenceRegistrationDao();
+		try {
+			earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-16");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -109,10 +118,25 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 						PortletSession.APPLICATION_SCOPE);
 
 		if (newRegistration == null) {
+			Date today = new Date();
+			checkIsEarlybird(renderRequest, today);
+			
 			include(editJSP, renderRequest, renderResponse);
 		} else {
 			renderRequest.setAttribute("newRegistration", newRegistration);
 			include(submitVerify, renderRequest, renderResponse);
+		}
+	}
+
+	/**
+	 * @param renderRequest
+	 * @param registrationDate
+	 */
+	protected void checkIsEarlybird(RenderRequest renderRequest, Date registrationDate) {
+		if (registrationDate.before(earlyBirdDate)) {
+			renderRequest.setAttribute("isEarlybird", true);
+		} else {
+			renderRequest.setAttribute("isEarlybird", false);
 		}
 	}
 
@@ -155,6 +179,8 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 		renderRequest.setAttribute("formBean", formBean);
 		renderRequest.setAttribute("editRegistration", editRegistration);
+
+		checkIsEarlybird(renderRequest, editRegistration.getRegistrationDate());
 
 		include(editJSP, renderRequest, renderResponse);
 	}
@@ -379,7 +405,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		String approvalEmail2 = ACRSApplication.getConfiguration()
 				.getApprovalEmail2();
 
-		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2011 Conference Registration that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
+		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2013 Conference Registration that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
 		String applicantDetail = "\n\tName:\t\t\t\t"
 				+ newRegistration.getTitle() + " "
 				+ newRegistration.getFirstName() + " "
@@ -476,7 +502,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet s = wb.createSheet("ACRS Conference Registrations 2011 "
+		HSSFSheet s = wb.createSheet("ACRS Conference Registrations 2013 "
 				+ sdf.format(new Date()));
 		s.setFitToPage(true);
 		HSSFRow r = null;
@@ -493,18 +519,14 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		headings.add("Title");
 		headings.add("First Name");
 		headings.add("Last Name");
-		headings.add("Street Address");
-		headings.add("City");
-		headings.add("State");
-		headings.add("Postcode");
-		headings.add("Country");
 		headings.add("Email");
-		headings.add("Phone");
 		headings.add("Institution");
 		headings.add("Submitting Abstract");
 		headings.add("Registration Rate");
-		headings.add("Student Mentoring Day");
-		headings.add("Coral Finder Workshop");
+		headings.add("Attend Student Mentoring Day");
+		headings.add("Student Mentoring Discount");
+		headings.add("SIMS Excursion");
+		headings.add("Coral Identification Workshop");
 		headings.add("Welcome Tickets");
 		headings.add("Dinner Tickets");
 		headings.add("Registration Amount");
@@ -534,7 +556,9 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			a.add(registration.getInstitution());
 			a.add(registration.getSubmittingAbstract() ? "Y" : "N");
 			a.add(registration.getRegistrationRate());
-			a.add(registration.getStudentMentoringDay() ? "Y" : "N");
+			a.add(registration.getAttendStudentMentoringDay() ? "Y" : "N");
+			a.add(registration.getStudentMentoringDiscount() ? "Y" : "N");
+			a.add(registration.getSimsExcursion() ? "Y" : "N");
 			a.add(registration.getCoralIdentificationWorkshop() ? "Y" : "N");
 			a.add(registration.getAdditionalTicketsWelcome().toString());
 			a.add(registration.getAdditionalTicketsDinner().toString());
@@ -552,7 +576,6 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				c = r.createCell(cellNum);
 				HSSFRichTextString rts = new HSSFRichTextString(i.next());
 				c.setCellValue(rts);
-				s.autoSizeColumn((short) cellNum);
 				cellNum++;
 			}
 		}
@@ -562,16 +585,22 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
         	 s.autoSizeColumn((short)column);
         }
 
+
+		res.setContentType("application/vnd.ms-excel");
+        res.addProperty(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ConferenceRegistrations2013.xls\"");
+        res.setProperty(ResourceResponse.EXPIRATION_CACHE, "0");
+        wb.write(res.getPortletOutputStream());
+        res.getPortletOutputStream().close();
+/*        
 		// write workbook out to file
 		FileOutputStream fos = new FileOutputStream(
-				"ConferenceRegistrations2011.xls");
+				"ConferenceRegistrations2013.xls");
 		wb.write(fos);
 		fos.flush();
 		fos.close();
 
-		File file = new File("ConferenceRegistrations2011.xls");
+		File file = new File("ConferenceRegistrations2013.xls");
 		FileInputStream fileIn = new FileInputStream(file);
-		res.setContentType("application/vnd.ms-excel");
 
 		OutputStream out = res.getPortletOutputStream();
 
@@ -586,6 +615,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		out.close();
 
 		file.delete();
+	*/
 	}
 
 }

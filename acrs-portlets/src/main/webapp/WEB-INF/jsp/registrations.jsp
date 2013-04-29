@@ -31,7 +31,7 @@
 	%>
 
 <fieldset>
-<legend>ACRS Conference Registrations 2011</legend>
+<legend>ACRS Conference Registrations 2013</legend>
 
 <div style="text-align:right;" >
 	<a href="<portlet:resourceURL id="spreadsheet"/>" >Export - Download </a>
@@ -45,7 +45,9 @@
 <th>Institution</th>
 <th>Submitting Abstract</th>
 <th>Registration<br>Rate</th>
-<th>Student Mentoring Day</th>
+<th>Attend Student Mentoring Day</th>
+<th>Student Mentoring Discount</th>
+<th>SIMS Excursion</th>
 <th>Coral Identification Workshop</th>
 <th>Welcome Tickets</th>
 <th>Dinner Tickets</th>
@@ -86,7 +88,9 @@
 	<td><%=StringEscapeUtils.escapeHtml(registration.getInstitution())%></td>
 	<td><%=registration.getSubmittingAbstract() ? "Y" : "N" %></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getRegistrationRate())%></td>
-	<td><%=registration.getStudentMentoringDay() ? "Y" : "N" %></td>
+	<td><%=registration.getAttendStudentMentoringDay() ? "Y" : "N" %></td>
+	<td><%=registration.getStudentMentoringDiscount() ? "Y" : "N" %></td>
+	<td><%=registration.getSimsExcursion() ? "Y" : "N" %></td>
 	<td><%=registration.getCoralIdentificationWorkshop() ? "Y" : "N" %></td>
 	<td><%=registration.getAdditionalTicketsWelcome()%></td>
 	<td><%=registration.getAdditionalTicketsDinner()%></td>

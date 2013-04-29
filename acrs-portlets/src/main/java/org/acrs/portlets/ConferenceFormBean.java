@@ -30,7 +30,9 @@ public class ConferenceFormBean {
 	private String institution = "";
 	private String submittingAbstract = "";
 	private String registrationRate = "";
-	private String studentMentoringDay = "";
+	private String attendStudentMentoringDay = "";
+	private String studentMentoringDiscount = "";
+	private String simsExcursion = "";
 	private String coralIdentificationWorkshop = "";
 	private String additionalTicketsWelcome = "";
 	private String additionalTicketsDinner = "";
@@ -139,12 +141,28 @@ public class ConferenceFormBean {
 		this.additionalTicketsDinner = additionalTicketsDinner;
 	}
 
-	public void setStudentMentoringDay(String studentMentoringDay) {
-		this.studentMentoringDay = studentMentoringDay;
+	public void setAttendStudentMentoringDay(String attendStudentMentoringDay) {
+		this.attendStudentMentoringDay = attendStudentMentoringDay;
 	}
 
-	public String getStudentMentoringDay() {
-		return studentMentoringDay;
+	public String getAttendStudentMentoringDay() {
+		return attendStudentMentoringDay;
+	}
+
+	public void setStudentMentoringDiscount(String studentMentoringDiscount) {
+		this.studentMentoringDiscount = studentMentoringDiscount;
+	}
+
+	public String getStudentMentoringDiscount() {
+		return studentMentoringDiscount;
+	}
+
+	public String getSimsExcursion() {
+		return simsExcursion;
+	}
+
+	public void setSimsExcursion(String simsExcursion) {
+		this.simsExcursion = simsExcursion;
 	}
 
 }

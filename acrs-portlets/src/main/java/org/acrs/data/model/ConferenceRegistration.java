@@ -1,5 +1,7 @@
 package org.acrs.data.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -42,7 +44,9 @@ public class ConferenceRegistration {
 
 	private String registrationRate;
 
-	private Boolean studentMentoringDay;
+	private Boolean attendStudentMentoringDay;
+	private Boolean studentMentoringDiscount;
+	private Boolean simsExcursion;
 	private Boolean coralIdentificationWorkshop;
 	private Integer additionalTicketsWelcome;
 	private Integer additionalTicketsDinner;
@@ -64,7 +68,12 @@ public class ConferenceRegistration {
 	private Date updateDate;
 	private Boolean isActive;
 	
+	@Transient
 	private Clock clock;
+	
+	public ConferenceRegistration() {
+		// Should only be used by hibernate when loading data
+	}
 
 	public ConferenceRegistration(Clock clock) {
 		this.clock = clock;
@@ -87,7 +96,7 @@ public class ConferenceRegistration {
 
 	public void calculateRegistration() throws RegistrationProcessingException {
 		// calculate Registration amount
-		paypalItemName = "Australian Coral Reef Society Conference 2011";
+		paypalItemName = "Australian Coral Reef Society Conference 2013";
 		registrationAmount = 0;
 
 
@@ -95,22 +104,36 @@ public class ConferenceRegistration {
 			registrationAmount = 380;
 			paypalItemName += " Student Member Registration";
 		} else if ("StudentNonMember".equals(registrationRate)) {
-			registrationAmount = 380;
+			registrationAmount = 410;
 			paypalItemName += " Student Non-Member Registration";
 		} else if ("FullMember".equals(registrationRate)) {
-			registrationAmount = 440;
+			registrationAmount = 490;
 			paypalItemName += " Full Member Registration";
 		} else if ("FullNonMember".equals(registrationRate)) {
-			registrationAmount = 499;
+			registrationAmount = 530;
 			paypalItemName += " Full Non-Member Registration";
 		} else {
 			throw new RegistrationProcessingException(
 					"Can't calculate registration rate for: "
 							+ registrationRate);
 		}
-		if (this.getStudentMentoringDay()) {
+		
+		try {
+			Date earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-16");
+			if (this.registrationDate.after(earlyBirdDate)) {
+				registrationAmount += 20;
+				paypalItemName += " (Late Registration)";
+			} else {
+				paypalItemName += " (Early-bird Registration)";
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		if (this.getStudentMentoringDiscount()) {
 			registrationAmount -= 70;
-			paypalItemName += " + Student Mentoring Day";
+			paypalItemName += " - Student Mentoring Discount";
 		}
 
 		if (this.getCoralIdentificationWorkshop()) {
@@ -236,20 +259,28 @@ public class ConferenceRegistration {
 		this.registrationRate = registrationRate;
 	}
 
-	public Boolean getStudentMentoringDay() {
-		return studentMentoringDay != null ? studentMentoringDay : false;
+	public Boolean getAttendStudentMentoringDay() {
+		return attendStudentMentoringDay != null ? attendStudentMentoringDay : false;
 	}
 
-	public void setStudentMentoringDay(Boolean studentMentoringDay) {
-		this.studentMentoringDay = studentMentoringDay;
+	public void setAttendStudentMentoringDay(Boolean studentMentoringDay) {
+		this.attendStudentMentoringDay = studentMentoringDay;
+	}
+
+	public Boolean getStudentMentoringDiscount() {
+		return studentMentoringDiscount != null ? studentMentoringDiscount : false;
+	}
+
+	public void setStudentMentoringDiscount(Boolean studentMentoringDiscount) {
+		this.studentMentoringDiscount = studentMentoringDiscount;
 	}
 
 	public Boolean getCoralIdentificationWorkshop() {
 		return coralIdentificationWorkshop != null ? coralIdentificationWorkshop : false;
 	}
 
-	public void setCoralFinderWorkshop(Boolean coralFinderWorkshop) {
-		this.coralIdentificationWorkshop = coralFinderWorkshop;
+	public void setCoralIdentificationWorkshop(Boolean coralIdentificationWorkshop) {
+		this.coralIdentificationWorkshop = coralIdentificationWorkshop;
 	}
 
 	public Integer getRegistrationAmount() {
@@ -278,6 +309,14 @@ public class ConferenceRegistration {
 
 	public String getPaypalItemName() {
 		return paypalItemName;
+	}
+
+	public Boolean getSimsExcursion() {
+		return simsExcursion;
+	}
+
+	public void setSimsExcursion(Boolean simsExcursion) {
+		this.simsExcursion = simsExcursion;
 	}
 
 }

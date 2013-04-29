@@ -22,6 +22,11 @@
 	String cmd = ParamUtil.getString(request, "cmd");
 	ConferenceRegistration editRegistration = (ConferenceRegistration) renderRequest.getAttribute("editRegistration");
 	ConferenceFormBean formBean = (ConferenceFormBean)renderRequest.getAttribute("formBean");
+	boolean isEarlybird = (Boolean)renderRequest.getAttribute("isEarlybird");
+	int optionalLate = 0;
+	if (!isEarlybird) {
+		optionalLate = 20;
+	}
 	
 	
 	List<String> errors = (List<String>) renderRequest.getAttribute("errors");
@@ -56,22 +61,27 @@
 function updateTotalCost() {
 	var registrationRate = jQuery("[name='registrationRate']:checked").val();
 	var rate = 0;
+	var isEarlybird = <%= isEarlybird %>;
 	switch (registrationRate) {
 		case 'StudentMember':
-			rate = 400; break;
+			rate = 380; break;
 		case 'StudentNonMember':
-			rate = 430; break;
+			rate = 410; break;
 		case 'FullMember':
-			rate = 510; break;
+			rate = 490; break;
 		case 'FullNonMember':
-			rate = 550; break;
+			rate = 530; break;
 	}
-	var studentMentoring = (jQuery("[name='studentMentoringDay']:checked").val() === 'true') ? 1 : 0;
+	if (!isEarlybird) {
+		rate += 20
+	}
+	
+	var studentMentoringDiscount = (jQuery("[name='studentMentoringDiscount']:checked").val() === 'true') ? 1 : 0;
 	var coralIdentification = (jQuery("[name='coralIdentificationWorkshop']:checked").val() === 'true') ? 1 : 0;
 	var welcomeTickets = parseInt(jQuery("[name='additionalTicketsWelcome']").val()) || 0;
 	var dinnerTickets = parseInt(jQuery("[name='additionalTicketsDinner']").val()) || 0;
 
-	var regTotal = rate + (studentMentoring * -70) + (coralIdentification * 250) + welcomeTickets * 35 + dinnerTickets * 60; 
+	var regTotal = rate + (studentMentoringDiscount * -70) + (coralIdentification * 330) + welcomeTickets * 25 + dinnerTickets * 99; 
 	jQuery("#totalRegistrationCost").text("$" + regTotal);
 
 }
@@ -90,7 +100,39 @@ jQuery(window).load( function() {
 <form id="registrationForm" action="<portlet:actionURL/>" method="post" name="<portlet:namespace />fm">
 
 <fieldset>
-<legend>ACRS Conference Registration 2011</legend>
+<legend>ACRS Conference Registration 2013</legend>
+
+	<div class="conference-inclusions">
+		<h3>Cost of Registration</h3>
+	
+		<h4>Early Bird Registration (on or before 15th July)</h4>
+		<ul>
+			<li>Student member: $380</li>
+			<li>Student non-member: $410</li>
+			<li>Full member: $490</li>
+			<li>Full non-member: $530</li>
+		</ul>
+		 
+		
+		<h4>Late Registration (after 15th July)</h4>
+		<ul>
+			<li>Student member: $400</li>
+			<li>Student non-member: $430</li>
+			<li>Full member: $510</li>
+			<li>Full non-member: $550</li>
+		</ul>
+		
+		 
+		
+		<h3>What's included in the registration price?</h3>
+		<ul>
+			<li>Welcome Function at Sea Life Sydney Aquarium</li>
+			<li>Conference bag with Program and Abstract booklet, plus name badge</li>
+			<li>2 days of conference presentations at the Menzies Hotel, including morning tea, lunch and afternoon tea</li>
+			<li>Poster session at the Menzies Hotel</li>
+			<li>Conference Dinner at the Star Room</li>
+		</ul>
+	</div>
 
 	<div>
 		<label for="title">Title: <span class="required">*</span></label>
@@ -140,15 +182,10 @@ jQuery(window).load( function() {
 	<div>							
 		<label for="registrationRate">Select your registration rate: <span class="required">*</span><br><br><br></label>
 		<div class="groupedinputs">
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMember") ? " checked" : emptyStr) : emptyStr %>/> Student member: <b>$330</b><br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMember") ? " checked" : emptyStr) : emptyStr %>/> Student non-member: <b>$380</b><br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMember") ? " checked" : emptyStr) : emptyStr %>/> Full member: <b>$440</b><br />		
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMember") ? " checked" : emptyStr) : emptyStr %>/> Full non-member: <b>$499</b><br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="DayOneOnly" <%= hasFormBean ? (formBean.getRegistrationRate().equals("DayOneOnly") ? " checked" : emptyStr) : emptyStr %>/> Day rate &mdash; Day 1 only: <b>$240</b><br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="DayTwoOnly" <%= hasFormBean ? (formBean.getRegistrationRate().equals("DayTwoOnly") ? " checked" : emptyStr) : emptyStr %>/> Day rate &mdash; Day 2 only: <b>$240</b><br />
-		</div>
-		<div>
-		These costs will cover the welcome function, conference attendance, 2 lunches, and conference dinner.
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMember") ? " checked" : emptyStr) : emptyStr %>/> Student member: <b>$<%=380 + optionalLate %></b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMember") ? " checked" : emptyStr) : emptyStr %>/> Student non-member: <b>$<%= 410 + optionalLate %></b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMember") ? " checked" : emptyStr) : emptyStr %>/> Full member: <b>$<%= 490 + optionalLate %></b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMember") ? " checked" : emptyStr) : emptyStr %>/> Full non-member: <b>$<%= 530 + optionalLate %></b><br />
 		</div>
 		
 		<div>
@@ -157,22 +194,40 @@ jQuery(window).load( function() {
 	</div>
 	<br>
 	<div>
-		<div>Do you wish to attend the ARC Centre of Excellence for Coral Reef Studies Annual National Student Mentoring Day?</div>
-		<label for="studentMentoringDay"></label>
+		<div>Do you wish to attend the Student Mentoring Day?</div>
+		<label for="attendStudentMentoringDay"></label>
 		<div class="groupedinputs">
-		  <input class="radioCheckbox" type="radio" name="studentMentoringDay" value="true" <%= hasFormBean ? ("true".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>Yes
-	 	  <input class="radioCheckbox" type="radio" name="studentMentoringDay" value="false" <%= hasFormBean ? ("false".equals(formBean.getStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr %>/>No
+		  <input class="radioCheckbox" type="radio" name="attendStudentMentoringDay" value="true" <%=hasFormBean ? ("true".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>Yes
+	 	  <input class="radioCheckbox" type="radio" name="attendStudentMentoringDay" value="false" <%=hasFormBean ? ("false".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>No
 		</div>
 		<div>
-		If you are not a student, please tick No. If you are a student and want to attend, tick yes. $50 will be discounted from the total cost to assist you with accommodation fees.
-		If you tick yes, but do not attend the whole student day, you will be later charged an additional $50.
+		If you are not a student, please tick No.
+		</div>
+		
+		<div>If you do wish to attend the student day, are you eligible for the $70 discount?</div>
+		<label for="studentMentoringDiscount"></label>
+		<div class="groupedinputs">
+		  <input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="true" <%=hasFormBean ? ("true".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>Yes
+	 	  <input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="false" <%=hasFormBean ? ("false".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>No
+		</div>
+		<div>
+		To be eligible, you must attend the student day, and NOT be a Sydney-based student (note, there are only 40 places available).
 		</div>
 	
 	</div>
 	
 	<br>
 	<div>
-		<label for="coralIdentificationWorkshop">Would you like to attend the Coral Identification Workshop?  <b>$250</b></label>
+		<label for="simsExcursion">Would you like to attend the excursion to SIMS?  <b>(no cost)</b></label>
+		<div class="groupedinputs">
+		<input class="radioCheckbox" type="radio" name="simsExcursion" value="true" <%= hasFormBean ? ("true".equals(formBean.getSimsExcursion())  ? " checked" : emptyStr) : emptyStr %>/>Yes
+	 	<input class="radioCheckbox" type="radio" name="simsExcursion" value="false" <%= hasFormBean ? ("false".equals(formBean.getSimsExcursion()) ? " checked" : emptyStr) : emptyStr %>/>No
+		</div>	
+	</div>
+	
+	<br>
+	<div>
+		<label for="coralIdentificationWorkshop">Would you like to attend the Coral Identification Workshop?  <b>$330</b></label>
 		<div class="groupedinputs">
 		<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralIdentificationWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes
 	 	<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralIdentificationWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No
@@ -181,8 +236,8 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<div>If you would like to purchase additional guest tickets to the welcome function, please 
-		enter the number of tickets in this box. Otherwise, please leave the box blank. Additional welcome function tickets are <b>$35.00&nbsp;ea</b></div>
+		<div>If you would like to purchase additional tickets to the Welcome Function at Sea Life Sydney Aquarium, please 
+		enter the number of tickets in this box. Otherwise, please leave the box blank. Additional welcome function tickets are <b>$25.00&nbsp;ea</b></div>
 		<label for="additionalTicketsWelcome"></label>
 		
 		<input type="text" name="additionalTicketsWelcome" id="additionalTicketsWelcome" 
@@ -191,8 +246,8 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<div>If you would like to purchase additional guest tickets to the conference dinner please
-		 enter the number of tickets in this box. Otherwise, please leave the box blank. Additional tickets are <b>$60.00&nbsp;ea</b></div>
+		<div>If you would like to purchase additional guest tickets to the Conference Dinner at the Star Room please
+		 enter the number of tickets in this box. Otherwise, please leave the box blank. Additional tickets are <b>$99.00&nbsp;ea</b></div>
 		<label for="additionalTicketsDinner"></label>
 		
 		<input type="text" name="additionalTicketsDinner" id="additionalTicketsDinner" 
@@ -201,8 +256,12 @@ jQuery(window).load( function() {
 	
 	<% if (!isEdit) { %>
 	<div class="captcha">
+		<span class="required">*</span>
 		<portlet:resourceURL var="captchaURL" id="captcha"/>
-		<liferay-ui:captcha url="<%= captchaURL %>"/><span class="required">*</span>
+		<img class="captcha" src="<%= captchaURL %>"/>
+		<label for="captchaText">4 digit text verification</label>
+		<input type="text" name="captchaText">
+<%--		<liferay-ui:captcha url="<%= captchaURL %>"/>  --%>
 	</div>
 	<% } %>
 	
@@ -239,11 +298,11 @@ jQuery(window).load( function() {
 			TOTAL COST OF REGISTRATION: <b><span id="totalRegistrationCost">$xxx</span></b> 
 		</div>
 		
-		<div>
-		  CANCELLATION POLICY<br>
-			Registrations that are cancelled before 26 July 2011 will attract no penalty.<br>
-			Registrations that are cancelled on or after 26 July 2011, but before 12 August 2011 will attract a 50% penalty.<br>
-			Registrations that are cancelled on or after 12 August 2011 will receive no refund.<br>
+		<div style="color: red;">
+		  CANCELLATION AND REFUND POLICY:<br>
+Cancellations must be notified in writing to the Conference Organiser (acrs@uq.edu.au).<br>
+Cancellations before Tuesday 6 August 2013 will incur a $10.00 administration fee on their full refund.<br>
+Cancellations on or after Tuesday 6 August 2013 will receive no refund.<br>
 					
 		</div>
 		<div>
