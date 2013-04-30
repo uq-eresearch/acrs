@@ -1,10 +1,6 @@
 package org.acrs.portlets;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -529,6 +525,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		headings.add("Coral Identification Workshop");
 		headings.add("Welcome Tickets");
 		headings.add("Dinner Tickets");
+		headings.add("Special Food Requirements");
 		headings.add("Registration Amount");
 		headings.add("Registration Date");
 		headings.add("Updated Date");
@@ -562,6 +559,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			a.add(registration.getCoralIdentificationWorkshop() ? "Y" : "N");
 			a.add(registration.getAdditionalTicketsWelcome().toString());
 			a.add(registration.getAdditionalTicketsDinner().toString());
+			a.add(registration.getSpecialFoodRequirements());
 			a.add(registration.getRegistrationAmount().toString());
 			a.add(registration.getRegistrationDate().toString());
 			a.add(registration.getUpdateDate().toString());
@@ -591,31 +589,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
         res.setProperty(ResourceResponse.EXPIRATION_CACHE, "0");
         wb.write(res.getPortletOutputStream());
         res.getPortletOutputStream().close();
-/*        
-		// write workbook out to file
-		FileOutputStream fos = new FileOutputStream(
-				"ConferenceRegistrations2013.xls");
-		wb.write(fos);
-		fos.flush();
-		fos.close();
 
-		File file = new File("ConferenceRegistrations2013.xls");
-		FileInputStream fileIn = new FileInputStream(file);
-
-		OutputStream out = res.getPortletOutputStream();
-
-		byte[] outputByte = new byte[4096];
-		while (fileIn.read(outputByte, 0, 4096) != -1) {
-			out.write(outputByte, 0, 4096);
-		}
-
-		fileIn.close();
-
-		out.flush();
-		out.close();
-
-		file.delete();
-	*/
 	}
 
 }

@@ -50,6 +50,8 @@ public class ConferenceRegistration {
 	private Boolean coralIdentificationWorkshop;
 	private Integer additionalTicketsWelcome;
 	private Integer additionalTicketsDinner;
+	
+	private String specialFoodRequirements;
 
 	private Integer registrationAmount;
 
@@ -305,6 +307,14 @@ public class ConferenceRegistration {
 
 	public void setAdditionalTicketsDinner(Integer additionalTicketsDinner) {
 		this.additionalTicketsDinner = additionalTicketsDinner;
+	}
+
+	public String getSpecialFoodRequirements() {
+		return specialFoodRequirements;
+	}
+
+	public void setSpecialFoodRequirements(String specialFoodRequirements) {
+		this.specialFoodRequirements = specialFoodRequirements;
 	}
 
 	public String getPaypalItemName() {

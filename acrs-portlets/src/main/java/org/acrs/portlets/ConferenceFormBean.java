@@ -36,6 +36,7 @@ public class ConferenceFormBean {
 	private String coralIdentificationWorkshop = "";
 	private String additionalTicketsWelcome = "";
 	private String additionalTicketsDinner = "";
+	private String specialFoodRequirements = "";
 
 	public ConferenceFormBean(ConferenceRegistration registration) {
 		try {
@@ -56,6 +57,7 @@ public class ConferenceFormBean {
 		try {
 			BeanUtils.populate(this, map);
 		} catch (Exception e) {
+			_log.error("Error copying properties", e);
 //			throw new RegistrationProcessingException("Error creating FormBean from actionRequest", e);
 		}
 
@@ -163,6 +165,14 @@ public class ConferenceFormBean {
 
 	public void setSimsExcursion(String simsExcursion) {
 		this.simsExcursion = simsExcursion;
+	}
+
+	public String getSpecialFoodRequirements() {
+		return specialFoodRequirements;
+	}
+
+	public void setSpecialFoodRequirements(String specialFoodRequirements) {
+		this.specialFoodRequirements = specialFoodRequirements;
 	}
 
 }

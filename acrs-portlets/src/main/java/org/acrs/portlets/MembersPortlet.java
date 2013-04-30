@@ -1,22 +1,6 @@
 package org.acrs.portlets;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.HttpHeaders;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
-
-import org.acrs.app.ACRSApplication;
-import org.acrs.data.access.MemberDao;
-import org.acrs.data.model.Member;
-import org.acrs.util.Emailer;
-import org.apache.poi.hssf.usermodel.*;
-
-import javax.mail.MessagingException;
-import javax.portlet.*;
-
-import java.io.*;
-import java.text.ParseException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,6 +8,38 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.GenericPortlet;
+import javax.portlet.PortletContext;
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletRequestDispatcher;
+import javax.portlet.PortletSession;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+
+import org.acrs.app.ACRSApplication;
+import org.acrs.data.access.MemberDao;
+import org.acrs.data.model.Member;
+import org.acrs.util.Emailer;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 
 /**
@@ -469,34 +485,6 @@ public class MembersPortlet extends GenericPortlet {
         res.setProperty(ResourceResponse.EXPIRATION_CACHE, "0");
         wb.write(res.getPortletOutputStream());
         res.getPortletOutputStream().close();
-        
-/*
-        // write workbook out to file
-        FileOutputStream fos = new FileOutputStream("MemberList.xls");
-        wb.write(fos);
-        fos.flush();
-        fos.close();
-
-        File file = new File("MemberList.xls");
-        FileInputStream fileIn = new FileInputStream(file);
-        res.setContentType("application/vnd.ms-excel");
-
-        OutputStream out = res.getPortletOutputStream();
-
-
-        byte[] outputByte = new byte[4096];
-        while (fileIn.read(outputByte, 0, 4096) != -1) {
-            out.write(outputByte, 0, 4096);
-        }
-
-        fileIn.close();
-
-        out.flush();
-        out.close();
-
-        file.delete();
-*/
-
     }
     
 	/**

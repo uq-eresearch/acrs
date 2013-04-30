@@ -211,6 +211,7 @@ jQuery(window).load( function() {
 	 	  <input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="false" <%=hasFormBean ? ("false".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>No
 		</div>
 		<div>
+		If you are not attending the day, please tick No.<br>
 		To be eligible, you must attend the student day, and NOT be a Sydney-based student (note, there are only 40 places available).
 		</div>
 	
@@ -252,6 +253,14 @@ jQuery(window).load( function() {
 		
 		<input type="text" name="additionalTicketsDinner" id="additionalTicketsDinner" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getAdditionalTicketsDinner()) : emptyStr %>">
+	</div>
+	
+	<div>
+		<div>Please describe any special food requirements you have (e.g, vegetarian)</div>
+		<label for="specialFoodRequirements"></label>
+		
+		<input type="text" name="specialFoodRequirements" id="specialFoodRequirements" 
+		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getSpecialFoodRequirements()) : emptyStr %>">
 	</div>
 	
 	<% if (!isEdit) { %>
@@ -300,14 +309,14 @@ jQuery(window).load( function() {
 		
 		<div style="color: red;">
 		  CANCELLATION AND REFUND POLICY:<br>
-Cancellations must be notified in writing to the Conference Organiser (acrs@uq.edu.au).<br>
+Cancellations must be notified in writing to the Conference Organiser (<a href="mailto:ross.hill@unsw.edu.au">ross.hill@unsw.edu.au</a>).<br>
 Cancellations before Tuesday 6 August 2013 will incur a $10.00 administration fee on their full refund.<br>
 Cancellations on or after Tuesday 6 August 2013 will receive no refund.<br>
 					
 		</div>
 		<div>
 			Please note: When paying with PayPal, you will automatically receive a receipt to your email.
-			If you require an additional receipt from ACRS, please let us know by emailing <a href="mailto:acrs@cms.uq.edu.au">acrs@cms.uq.edu.au</a>.
+			If you require an additional receipt from ACRS, please let us know by emailing <a href="mailto:acrs@uq.edu.au">acrs@uq.edu.au</a>.
 		</div>
 		  <label for="submit"><br></label>
 		  <input type="submit" name="submit" value="Save Details and Proceed to Paypal >" 

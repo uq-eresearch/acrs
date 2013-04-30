@@ -51,6 +51,7 @@
 <th>Coral Identification Workshop</th>
 <th>Welcome Tickets</th>
 <th>Dinner Tickets</th>
+<th>Special Food Requirements</th>
 <th>Registration<br>Amount</th>
 <th>Registration<br>Date</th>
 <th>Last Updated<br>Date</th>
@@ -94,6 +95,7 @@
 	<td><%=registration.getCoralIdentificationWorkshop() ? "Y" : "N" %></td>
 	<td><%=registration.getAdditionalTicketsWelcome()%></td>
 	<td><%=registration.getAdditionalTicketsDinner()%></td>
+	<td><%=registration.getSpecialFoodRequirements()%></td>
 	<td><%=registration.getRegistrationAmount()%></td>
 	<td><%=registration.getRegistrationDate()%></td>
 	<td><%=registration.getUpdateDate()%></td>
