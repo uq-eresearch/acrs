@@ -33,7 +33,7 @@ public class ConferenceRegistrationTests {
 	@Before
 	public void setUp() throws Exception {
 		this.crp = new ConferenceRegistrationPortlet();
-		Date early = new SimpleDateFormat("yyyy-MM-dd hh:mm").parse("2013-06-15 12:33");
+		Date early = new SimpleDateFormat("yyyy-MM-dd hh:mm").parse("2013-07-15 12:33");
 		registration = new ConferenceRegistration(new FakeClock(early));
 		
 	}
@@ -50,7 +50,7 @@ public class ConferenceRegistrationTests {
 	
 	@Test
 	public void calculateLateStudentMemberPrice() throws RegistrationProcessingException, ParseException {
-		Date late = new SimpleDateFormat("yyyy-MM-dd hh:mm").parse("2013-06-16 00:33");
+		Date late = new SimpleDateFormat("yyyy-MM-dd hh:mm").parse("2013-07-16 00:33");
 		registration = new ConferenceRegistration(new FakeClock(late));
 		registration.setRegistrationRate("StudentMember");
 		registration.calculateRegistration();

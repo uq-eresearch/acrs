@@ -121,6 +121,9 @@ jQuery(window).load( function() {
 			<li>Full member: $510</li>
 			<li>Full non-member: $550</li>
 		</ul>
+		<div>
+			Current ACRS and ISRS members are eligible for the member registrations.
+		</div>
 		
 		 
 		
@@ -189,7 +192,7 @@ jQuery(window).load( function() {
 		</div>
 		
 		<div>
-		If you are not a member and wish to join, complete the <a href="http://www.australiancoralreefsociety.org/apply-individual" target="_blank">individual membership application form</a>.
+		If you are not an ACRS member and wish to join, complete the <a href="http://www.australiancoralreefsociety.org/apply-individual" target="_blank">individual membership application form</a>.
 		</div>
 	</div>
 	<br>

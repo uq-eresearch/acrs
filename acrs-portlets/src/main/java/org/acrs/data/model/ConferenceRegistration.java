@@ -121,7 +121,7 @@ public class ConferenceRegistration {
 		}
 		
 		try {
-			Date earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-16");
+			Date earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2013-07-16");
 			if (this.registrationDate.after(earlyBirdDate)) {
 				registrationAmount += 20;
 				paypalItemName += " (Late Registration)";
