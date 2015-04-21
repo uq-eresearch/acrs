@@ -63,7 +63,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		conferenceRegistrationDao = ACRSApplication.getConfiguration()
 				.getConferenceRegistrationDao();
 		try {
-			earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2013-07-16");
+			earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2015-05-28");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
