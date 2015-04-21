@@ -3,6 +3,7 @@ package org.acrs.data.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -99,32 +100,59 @@ public class ConferenceRegistration {
 
 	public void calculateRegistration() throws RegistrationProcessingException {
 		// calculate Registration amount
-		paypalItemName = "Australian Coral Reef Society Conference 2013";
+		paypalItemName = "Australian Coral Reef Society Conference 2015 ";
 		registrationAmount = 0;
 
+		HashMap<String, Integer> costs = new HashMap<String, Integer>();
+		costs.put("StudentMemberTwinShare", 648);
+		costs.put("StudentMemberSingleRoom", 888);
+		costs.put("StudentNonMemberTwinShare", 698);
+		costs.put("StudentNonMemberSingleRoom", 938);
+		costs.put("FullMemberTwinShare", 698);
+		costs.put("FullMemberSingleRoom", 938);
+		costs.put("FullNonMemberTwinShare", 748);
+		costs.put("FullNonMemberSingleRoom", 988);
 
-		if ("StudentMember".equals(registrationRate)) {
-			registrationAmount = 380;
-			paypalItemName += " Student Member Registration";
-		} else if ("StudentNonMember".equals(registrationRate)) {
-			registrationAmount = 410;
-			paypalItemName += " Student Non-Member Registration";
-		} else if ("FullMember".equals(registrationRate)) {
-			registrationAmount = 490;
-			paypalItemName += " Full Member Registration";
-		} else if ("FullNonMember".equals(registrationRate)) {
-			registrationAmount = 530;
-			paypalItemName += " Full Non-Member Registration";
-		} else {
+		registrationAmount = costs.get(registrationRate);
+
+		if(registrationAmount == null) {
 			throw new RegistrationProcessingException(
 					"Can't calculate registration rate for: "
 							+ registrationRate);
 		}
+
+		HashMap<String, String> description = new HashMap<String, String>();
+		description.put("StudentMemberTwinShare", "Student Member Twin Share Registration");
+		description.put("StudentMemberSingleRoom", "Student Member Single Room Registration");
+		description.put("StudentNonMemberTwinShare", "Student Non-member Twin Share Registration");
+		description.put("StudentNonMemberSingleRoom", "Student Non-member Single Room Registration");
+		description.put("FullMemberTwinShare", "Full Member Twin Share Registration");
+		description.put("FullMemberSingleRoom", "Full Member Single Room Registration");
+		description.put("FullNonMemberTwinShare", "Full Non-member Twin Share Registration");
+		description.put("FullNonMemberSingleRoom", "Full Non-member Single Room Registration");
+
+		paypalItemName += description.get(registrationRate);
+		// FIXME: dictionary would be better or polymorph
+		// if ("StudentMemberTwinShare".equals(registrationRate)) {
+		// 	registrationAmount = 648;
+		// 	paypalItemName += " Student Member Twin Share Registration";
+		// } else if ("StudentNonMember".equals(registrationRate)) {
+		// 	registrationAmount = 410;
+		// 	paypalItemName += " Student Non-Member Registration";
+		// } else if ("FullMember".equals(registrationRate)) {
+		// 	registrationAmount = 490;
+		// 	paypalItemName += " Full Member Registration";
+		// } else if ("FullNonMember".equals(registrationRate)) {
+		// 	registrationAmount = 530;
+		// 	paypalItemName += " Full Non-Member Registration";
+		// } else {
+			
+		// }
 		
 		try {
-			Date earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2013-07-16");
+			Date earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2015-05-28");
 			if (this.registrationDate.after(earlyBirdDate)) {
-				registrationAmount += 20;
+				registrationAmount += 30;
 				paypalItemName += " (Late Registration)";
 			} else {
 				paypalItemName += " (Early-bird Registration)";
