@@ -37,6 +37,7 @@ public class ConferenceFormBean {
 	private String additionalTicketsWelcome = "";
 	private String additionalTicketsDinner = "";
 	private String specialFoodRequirements = "";
+	private String phone = "";
 
 	public ConferenceFormBean(ConferenceRegistration registration) {
 		try {
@@ -173,6 +174,13 @@ public class ConferenceFormBean {
 
 	public void setSpecialFoodRequirements(String specialFoodRequirements) {
 		this.specialFoodRequirements = specialFoodRequirements;
+	}
+
+	public String getPhone() {
+		return this.phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 }

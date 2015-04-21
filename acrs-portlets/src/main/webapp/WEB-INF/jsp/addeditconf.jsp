@@ -183,6 +183,13 @@ jQuery(window).load( function() {
 		<textarea rows="3" cols="70" name="institution" id="institution"><%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getInstitution()) : emptyStr %></textarea>
 	</div>
 	
+		<!-- TODO: make sure this saves in the DB -->
+	<div>					
+		<label for="phone">Phone Number: <span class="required">*</span></label>
+		<input type="text" name="phone" id="phone" 
+		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getPhone()) : emptyStr %>">
+	</div>
+	
 	<br>
 	<div>
 	

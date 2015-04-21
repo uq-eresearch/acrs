@@ -36,6 +36,7 @@ public class ConferenceRegistration {
 	private String firstName;
 	private String lastName;
 	private String email;
+	private String phone;
 
 	@Column(length = 500)
 	private String institution;
@@ -197,6 +198,13 @@ public class ConferenceRegistration {
 		this.email = email;
 	}
 
+	public String getPhone() {
+		return this.phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 	public String getInstitution() {
 		return institution;
 	}
@@ -328,5 +336,7 @@ public class ConferenceRegistration {
 	public void setSimsExcursion(Boolean simsExcursion) {
 		this.simsExcursion = simsExcursion;
 	}
+
+
 
 }
