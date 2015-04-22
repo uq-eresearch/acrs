@@ -39,6 +39,7 @@ public class ConferenceFormBean {
 	private String specialFoodRequirements = "";
 	private String phone = "";
 	private String shareWith = "";
+        private String behaviourDelegate = "";
 
 	public ConferenceFormBean(ConferenceRegistration registration) {
 		try {
@@ -191,4 +192,18 @@ public class ConferenceFormBean {
 		this.shareWith = shareWith;
 	}
 
+    /**
+     * @return the behaviourDelegate
+     */
+    public String getBehaviourDelegate() {
+        return behaviourDelegate;
+    }
+
+    /**
+     * @param behaviourDelegate the behaviourDelegate to set
+     */
+    public void setBehaviourDelegate(String behaviourDelegate) {
+        this.behaviourDelegate = behaviourDelegate;
+    }
+        
 }

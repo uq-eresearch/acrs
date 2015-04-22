@@ -80,12 +80,13 @@ function updateTotalCost() {
 		rate += 30
 	}
 	
+        var behaviourDelegate = (jQuery("[name='behaviourDelegate']:checked").val() === 'true') ? 1 : 0;
 	var studentMentoringDiscount = (jQuery("[name='studentMentoringDiscount']:checked").val() === 'true') ? 1 : 0;
 	var coralIdentification = (jQuery("[name='coralIdentificationWorkshop']:checked").val() === 'true') ? 1 : 0;
 	var welcomeTickets = parseInt(jQuery("[name='additionalTicketsWelcome']").val()) || 0;
 	var dinnerTickets = parseInt(jQuery("[name='additionalTicketsDinner']").val()) || 0;
 
-	var regTotal = rate + (studentMentoringDiscount * -70) + (coralIdentification * 330) + welcomeTickets * 25 + dinnerTickets * 99; 
+	var regTotal = rate + (behaviourDelegate * -20) + (studentMentoringDiscount * -70) + (coralIdentification * 330) + welcomeTickets * 25 + dinnerTickets * 99; 
 	jQuery("#totalRegistrationCost").text("$" + regTotal);
 
 }
@@ -237,6 +238,17 @@ jQuery(window).load( function() {
 		If you are not an ACRS member and wish to join, complete the <a href="http://www.australiancoralreefsociety.org/apply-individual" target="_blank">individual membership application form</a>.
 		</div>
 	</div>
+
+                <div>
+                    <div>Delegates of the Behaviour2015 Conference (9-14 August 2015, Cairns, Australia, www.behaviour2015.org) are eligible for a $20 discount on their ACRS registration. Please select this box if you are a registered delegate of Behaviour2015.</div>
+		<label for="behaviourDelegate"></label>
+		<div class="groupedinputs">
+		  <input class="radioCheckbox" type="radio" name="behaviourDelegate" value="true" <%=hasFormBean ? ("true".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>Yes
+	 	  <input class="radioCheckbox" type="radio" name="behaviourDelegate" value="false" <%=hasFormBean ? ("false".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>No
+		</div>
+                </div> 
+               
+	
 	<br>
 	<div>
 		<div>Do you wish to attend the Student Mentoring Day?</div>

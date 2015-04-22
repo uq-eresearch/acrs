@@ -47,6 +47,8 @@ public class ConferenceRegistration {
 	private String registrationRate;
 
 	private String shareWith;
+        
+        private Boolean behaviourDelegate;
 	private Boolean attendStudentMentoringDay;
 	private Boolean studentMentoringDiscount;
 	private Boolean simsExcursion;
@@ -161,6 +163,11 @@ public class ConferenceRegistration {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+                
+                if (this.getBehaviourDelegate()) {
+			registrationAmount -= 20;
+			paypalItemName += " - Behaviour2015 Delegate Discount";
 		}
 				
 		if (this.getStudentMentoringDiscount()) {
@@ -372,6 +379,20 @@ public class ConferenceRegistration {
 	public void setSimsExcursion(Boolean simsExcursion) {
 		this.simsExcursion = simsExcursion;
 	}
+
+    /**
+     * @return the behaviourDelegate
+     */
+    public Boolean getBehaviourDelegate() {
+        return behaviourDelegate;
+    }
+
+    /**
+     * @param behaviourDelegate the behaviourDelegate to set
+     */
+    public void setBehaviourDelegate(Boolean behaviourDelegate) {
+        this.behaviourDelegate = behaviourDelegate;
+    }
 
 
 
