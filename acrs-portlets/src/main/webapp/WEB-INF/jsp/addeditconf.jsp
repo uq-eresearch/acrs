@@ -207,23 +207,32 @@ jQuery(window).load( function() {
 	<div>							
 		<label for="registrationRate">Select your registration rate: <span class="required">*</span><br><br><br></label>
 		<div class="groupedinputs">
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Student member twin: <b>$<%=648 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Student member twin: <b>$<%=648 + optionalLate %></b><br />
 
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student member single room: <b>$<%=888 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student member single room: <b>$<%=888 + optionalLate %></b><br />
 
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Student non-member twin share: <b>$<%= 698 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Student non-member twin share: <b>$<%= 698 + optionalLate %></b><br />
 
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student non-member single room: <b>$<%= 938 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student non-member single room: <b>$<%= 938 + optionalLate %></b><br />
 
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Full member twin share: <b>$<%= 698 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Full member twin share: <b>$<%= 698 + optionalLate %></b><br />
 
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full member single room: <b>$<%= 938 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full member single room: <b>$<%= 938 + optionalLate %></b><br />
 
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Full non-member twin share: <b>$<%= 748 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Full non-member twin share: <b>$<%= 748 + optionalLate %></b><br />
 
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full non-member single room: <b>$<%= 988 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full non-member single room: <b>$<%= 988 + optionalLate %></b><br />
 		
-		
+		</div>
+		<div>					
+			<div><b>If you have selected "twin share"</b>, please write the name of the person you will share with in this box. If you do not have a person to share with, but would like to chose the "twin share" option, please write, "Unknown" in the box and we will pair you with another person:</div>
+			<label for="sharewith"></label>
+			<input type="text" name="sharewith" id="sharewith" 
+			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getShareWith()) : emptyStr %>">
+		</div>
+
+		<br/>
+
 		<div>
 		If you are not an ACRS member and wish to join, complete the <a href="http://www.australiancoralreefsociety.org/apply-individual" target="_blank">individual membership application form</a>.
 		</div>

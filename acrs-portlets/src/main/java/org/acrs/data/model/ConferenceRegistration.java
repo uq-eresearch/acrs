@@ -46,6 +46,7 @@ public class ConferenceRegistration {
 
 	private String registrationRate;
 
+	private String shareWith;
 	private Boolean attendStudentMentoringDay;
 	private Boolean studentMentoringDiscount;
 	private Boolean simsExcursion;
@@ -295,6 +296,13 @@ public class ConferenceRegistration {
 
 	public void setRegistrationRate(String registrationRate) {
 		this.registrationRate = registrationRate;
+	}
+
+	public String getShareWith() {
+		return this.shareWith;
+	}
+	public void setShareWith(String shareWith) {
+		this.shareWith = shareWith;
 	}
 
 	public Boolean getAttendStudentMentoringDay() {

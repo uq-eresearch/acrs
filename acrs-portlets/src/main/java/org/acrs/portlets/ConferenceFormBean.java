@@ -38,6 +38,7 @@ public class ConferenceFormBean {
 	private String additionalTicketsDinner = "";
 	private String specialFoodRequirements = "";
 	private String phone = "";
+	private String shareWith = "";
 
 	public ConferenceFormBean(ConferenceRegistration registration) {
 		try {
@@ -181,6 +182,13 @@ public class ConferenceFormBean {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getShareWith() {
+		return this.shareWith;
+	}
+	public void setShareWith(String shareWith) {
+		this.shareWith = shareWith;
 	}
 
 }
