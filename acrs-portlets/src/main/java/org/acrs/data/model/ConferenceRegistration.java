@@ -171,7 +171,7 @@ public class ConferenceRegistration {
 		}
 				
 		if (this.getStudentMentoringDiscount()) {
-			registrationAmount -= 70;
+			registrationAmount -= 80;
 			paypalItemName += " - Student Mentoring Discount";
 		}
 

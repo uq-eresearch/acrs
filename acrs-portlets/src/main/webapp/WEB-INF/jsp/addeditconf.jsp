@@ -86,7 +86,7 @@ function updateTotalCost() {
 	var welcomeTickets = parseInt(jQuery("[name='additionalTicketsWelcome']").val()) || 0;
 	var dinnerTickets = parseInt(jQuery("[name='additionalTicketsDinner']").val()) || 0;
 
-	var regTotal = rate + (behaviourDelegate * -20) + (studentMentoringDiscount * -70) + (coralIdentification * 330) + welcomeTickets * 25 + dinnerTickets * 99; 
+	var regTotal = rate + (behaviourDelegate * -20) + (studentMentoringDiscount * -80) + (coralIdentification * 330) + welcomeTickets * 25 + dinnerTickets * 99; 
 	jQuery("#totalRegistrationCost").text("$" + regTotal);
 
 }
