@@ -517,21 +517,21 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		headings.add("Last Name");
 		headings.add("Email");
 		headings.add("Institution");
+                headings.add("Phone Number");
 		headings.add("Submitting Abstract");
 		headings.add("Registration Rate");
-		headings.add("Attend Student Mentoring Day");
 		headings.add("Student Mentoring Discount");
-		headings.add("SIMS Excursion");
-		headings.add("Coral Identification Workshop");
-		headings.add("Welcome Tickets");
-		headings.add("Dinner Tickets");
+                headings.add("Daydream Island Arrival Date");
+                headings.add("Daydream Island Departure Date");
+                headings.add("Boat Transfers");
 		headings.add("Special Food Requirements");
+                headings.add("Special Wheelchair Requirements");
 		headings.add("Registration Amount");
 		headings.add("Registration Date");
 		headings.add("Updated Date");
 		headings.add("Paypal Status");
 		headings.add("Paypal Confirmation Details");
-
+                
 		// write to sheet
 		for (String h : headings) {
 			c = th.createCell(headings.indexOf(h));
@@ -551,15 +551,15 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			a.add(registration.getLastName());
 			a.add(registration.getEmail());
 			a.add(registration.getInstitution());
+                        a.add(registration.getPhone());
 			a.add(registration.getSubmittingAbstract() ? "Y" : "N");
 			a.add(registration.getRegistrationRate());
-			a.add(registration.getAttendStudentMentoringDay() ? "Y" : "N");
 			a.add(registration.getStudentMentoringDiscount() ? "Y" : "N");
-			a.add(registration.getSimsExcursion() ? "Y" : "N");
-			a.add(registration.getCoralIdentificationWorkshop() ? "Y" : "N");
-			a.add(registration.getAdditionalTicketsWelcome().toString());
-			a.add(registration.getAdditionalTicketsDinner().toString());
+                        a.add(registration.getArrivalDateDaydreamIsland());
+                        a.add(registration.getDepartureDateDaydreamIsland());
+                        a.add(registration.getBoatTransfers());
 			a.add(registration.getSpecialFoodRequirements());
+                        a.add(registration.getSpecialWheelchairRequirements());
 			a.add(registration.getRegistrationAmount().toString());
 			a.add(registration.getRegistrationDate().toString());
 			a.add(registration.getUpdateDate().toString());
