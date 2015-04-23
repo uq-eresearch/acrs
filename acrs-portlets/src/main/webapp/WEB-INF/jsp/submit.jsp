@@ -24,7 +24,7 @@
 	%>
 				
 		<fieldset>
-		<legend>Payment for 2013 Conference Registration</legend>
+		<legend>Payment for 2015 Conference Registration</legend>
 	
 		<p>Registration Details</p>
 	

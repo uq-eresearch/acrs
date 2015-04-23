@@ -401,7 +401,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		String approvalEmail2 = ACRSApplication.getConfiguration()
 				.getApprovalEmail2();
 
-		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2013 Conference Registration that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
+		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2015 Conference Registration that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
 		String applicantDetail = "\n\tName:\t\t\t\t"
 				+ newRegistration.getTitle() + " "
 				+ newRegistration.getFirstName() + " "
@@ -498,7 +498,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet s = wb.createSheet("ACRS Conference Registrations 2013 "
+		HSSFSheet s = wb.createSheet("ACRS Conference Registrations 2015 "
 				+ sdf.format(new Date()));
 		s.setFitToPage(true);
 		HSSFRow r = null;
@@ -585,7 +585,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 
 
 		res.setContentType("application/vnd.ms-excel");
-        res.addProperty(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ConferenceRegistrations2013.xls\"");
+        res.addProperty(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ConferenceRegistrations2015.xls\"");
         res.setProperty(ResourceResponse.EXPIRATION_CACHE, "0");
         wb.write(res.getPortletOutputStream());
         res.getPortletOutputStream().close();

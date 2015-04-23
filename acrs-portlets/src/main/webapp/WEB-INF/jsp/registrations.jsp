@@ -31,7 +31,7 @@
 	%>
 
 <fieldset>
-<legend>ACRS Conference Registrations 2013</legend>
+<legend>ACRS Conference Registrations 2015</legend>
 
 <div style="text-align:right;" >
 	<a href="<portlet:resourceURL id="spreadsheet"/>" >Export - Download </a>
