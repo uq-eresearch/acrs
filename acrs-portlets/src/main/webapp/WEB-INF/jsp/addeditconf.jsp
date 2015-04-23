@@ -227,8 +227,8 @@ jQuery(window).load( function() {
 		</div>
 		<div>					
 			<div><b>If you have selected "twin share"</b>, please write the name of the person you will share with in this box. If you do not have a person to share with, but would like to chose the "twin share" option, please write, "Unknown" in the box and we will pair you with another person:</div>
-			<label for="sharewith"></label>
-			<input type="text" name="sharewith" id="sharewith" 
+			<label for="shareWith"></label>
+			<input type="text" name="shareWith" id="shareWith" 
 			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getShareWith()) : emptyStr %>">
 		</div>
 
