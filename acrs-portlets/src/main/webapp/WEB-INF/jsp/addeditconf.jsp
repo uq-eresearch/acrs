@@ -296,8 +296,8 @@ jQuery(window).load( function() {
                 <div>Boat transfers to Daydream Island depart from Airlie Beach and Hamilton Island. Select your departure location</div>
 		<label for="boatTransfers"></label>
 		<div class="groupedinputs">
-		  <input class="radioCheckbox" type="radio" name="boatTransfers" value="Airlie Beach" <%=hasFormBean ? ("Airlie Beach".equals(formBean.getBoatTransfers()) ? " checked" : emptyStr) : emptyStr%>/>Yes
-	 	  <input class="radioCheckbox" type="radio" name="boatTransfers" value="Hamilton Island" <%=hasFormBean ? ("Hamilton Island".equals(formBean.getBoatTransfers()) ? " checked" : emptyStr) : emptyStr%>/>No
+		  <input class="radioCheckbox" type="radio" name="boatTransfers" value="Airlie Beach" <%=hasFormBean ? ("Airlie Beach".equals(formBean.getBoatTransfers()) ? " checked" : emptyStr) : emptyStr%>/>Airlie Beach
+	 	  <input class="radioCheckbox" type="radio" name="boatTransfers" value="Hamilton Island" <%=hasFormBean ? ("Hamilton Island".equals(formBean.getBoatTransfers()) ? " checked" : emptyStr) : emptyStr%>/>Hamilton Island
 		</div>
                 
 <!--	<div>
