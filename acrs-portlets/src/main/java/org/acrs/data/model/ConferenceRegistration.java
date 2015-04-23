@@ -373,7 +373,8 @@ public class ConferenceRegistration {
 	}
 
 	public Boolean getSimsExcursion() {
-		return simsExcursion;
+            return simsExcursion != null ? simsExcursion : false;
+//		return simsExcursion;
 	}
 
 	public void setSimsExcursion(Boolean simsExcursion) {
