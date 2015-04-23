@@ -46,6 +46,7 @@
 <th>Phone Number</th>
 <th>Submitting Abstract</th>
 <th>Registration<br>Rate</th>
+<th>Share With</th>
 <th>Attend Student Mentoring Day</th>
 <th>Student Mentoring Discount</th>
 <th>SIMS Excursion</th>
@@ -91,6 +92,7 @@
         <td><%=StringEscapeUtils.escapeHtml(registration.getPhone())%></td>
 	<td><%=registration.getSubmittingAbstract() ? "Y" : "N" %></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getRegistrationRate())%></td>
+        <td><%=StringEscapeUtils.escapeHtml(registration.getShareWith())%></td>
 	<td><%=registration.getAttendStudentMentoringDay() ? "Y" : "N" %></td>
 	<td><%=registration.getStudentMentoringDiscount() ? "Y" : "N" %></td>
 	<td><%=registration.getSimsExcursion() ? "Y" : "N" %></td>
