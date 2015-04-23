@@ -57,6 +57,7 @@
 <th>Boat Transfers</th>
 
 <th>Special Food Requirements</th>
+<th>Special Wheelchair Requirements</th>
 <th>Registration<br>Amount</th>
 <th>Registration<br>Date</th>
 <th>Last Updated<br>Date</th>
@@ -104,7 +105,8 @@
         <td><%=StringEscapeUtils.escapeHtml(registration.getBoatTransfers())%></td>
         
         
-	<td><%=registration.getSpecialFoodRequirements()%></td>
+	<td><%=StringEscapeUtils.escapeHtml(registration.getSpecialFoodRequirements())%></td>
+        <td><%=StringEscapeUtils.escapeHtml(registration.getSpecialWheelchairRequirements())%></td>
 	<td><%=registration.getRegistrationAmount()%></td>
 	<td><%=registration.getRegistrationDate()%></td>
 	<td><%=registration.getUpdateDate()%></td>
