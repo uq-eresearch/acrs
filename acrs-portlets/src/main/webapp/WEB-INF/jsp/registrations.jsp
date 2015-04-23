@@ -54,10 +54,8 @@
 <th>Daydream Island Arrival Date</th>
 <th>Daydream Island Departure Date</th>
 
-<!--<th>SIMS Excursion</th>-->
-<!--<th>Coral Identification Workshop</th>-->
-<!--<th>Welcome Tickets</th>-->
-<!--<th>Dinner Tickets</th>-->
+<th>Boat Transfers</th>
+
 <th>Special Food Requirements</th>
 <th>Registration<br>Amount</th>
 <th>Registration<br>Date</th>
@@ -99,17 +97,13 @@
 	<td><%=StringEscapeUtils.escapeHtml(registration.getRegistrationRate())%></td>
         <td><%=StringEscapeUtils.escapeHtml(registration.getShareWith())%></td>
         <td><%=registration.getBehaviourDelegate() ? "Y" : "N" %></td>
-	<!--<td><%= //registration.getAttendStudentMentoringDay() ? "Y" : "N" %></td>-->
 	<td><%=registration.getStudentMentoringDiscount() ? "Y" : "N" %></td>
         
         <td><%=StringEscapeUtils.escapeHtml(registration.getArrivalDateDaydreamIsland())%></td>
         <td><%=StringEscapeUtils.escapeHtml(registration.getDepartureDateDaydreamIsland())%></td>
+        <td><%=StringEscapeUtils.escapeHtml(registration.getBoatTransfers())%></td>
         
         
-	<!--<td><%=registration.getSimsExcursion() ? "Y" : "N" %></td>-->
-	<!--<td><%=registration.getCoralIdentificationWorkshop() ? "Y" : "N" %></td>-->
-	<!--<td><%=registration.getAdditionalTicketsWelcome()%></td>-->
-	<!--<td><%=registration.getAdditionalTicketsDinner()%></td>-->
 	<td><%=registration.getSpecialFoodRequirements()%></td>
 	<td><%=registration.getRegistrationAmount()%></td>
 	<td><%=registration.getRegistrationDate()%></td>
