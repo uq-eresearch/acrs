@@ -270,7 +270,7 @@ jQuery(window).load( function() {
 		</div>
 		<div>
 		If you are not attending the day, please tick No.<br>
-		To be eligible, you must attend the student day, and NOT be a Sydney-based student (note, there are only 40 places available).
+		Note: there are only 40 places available.
 		</div>
 	
 	</div>
