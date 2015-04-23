@@ -136,6 +136,7 @@ jQuery(window).load( function() {
 			<li>Full non-member twin share: $778</li>
 			<li>Full non-member single occupancy: $1018</li>
 		</ul>
+                
 
 		<!--<div>
 			Current ACRS and ISRS members are eligible for the member registrations.
@@ -144,7 +145,7 @@ jQuery(window).load( function() {
 		<h3>What's included in the registration price?</h3>
 		<ul>
 			<li>Transfers from Hamilton Island or Airlie Beach to Daydream Island</li>
-			<li>3 nights accommodation in either twin share or single rooms</li>
+			<li>3 nights accommodation in either twin share or single occupancys</li>
 			<li>All meals including dinner on 28th July and breakfast on 31st July (but not dinner on 29th July)</li>
 			<li>Welcome function</li>
 			<li>Conference dinner</li>
@@ -210,19 +211,19 @@ jQuery(window).load( function() {
 		<div class="groupedinputs">
 			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Student member twin: <b>$<%=648 + optionalLate %></b><br />
 
-			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student member single room: <b>$<%=888 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student member single occupancy: <b>$<%=888 + optionalLate %></b><br />
 
 			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Student non-member twin share: <b>$<%= 698 + optionalLate %></b><br />
 
-			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student non-member single room: <b>$<%= 938 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Student non-member single occupancy: <b>$<%= 938 + optionalLate %></b><br />
 
 			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Full member twin share: <b>$<%= 698 + optionalLate %></b><br />
 
-			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full member single room: <b>$<%= 938 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full member single occupancy: <b>$<%= 938 + optionalLate %></b><br />
 
 			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMemberTwinShare" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMemberTwinShare") ? " checked" : emptyStr) : emptyStr %>/> Full non-member twin share: <b>$<%= 748 + optionalLate %></b><br />
 
-			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full non-member single room: <b>$<%= 988 + optionalLate %></b><br />
+			<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMemberSingleRoom" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMemberSingleRoom") ? " checked" : emptyStr) : emptyStr %>/> Full non-member single occupancy: <b>$<%= 988 + optionalLate %></b><br />
 		
 		</div>
 		<div>					
