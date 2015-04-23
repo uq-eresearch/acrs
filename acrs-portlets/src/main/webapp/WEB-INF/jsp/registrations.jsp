@@ -43,6 +43,7 @@
 <th>Name</th>
 <th>Email</th>
 <th>Institution</th>
+<th>Phone Number</th>
 <th>Submitting Abstract</th>
 <th>Registration<br>Rate</th>
 <th>Attend Student Mentoring Day</th>
@@ -87,6 +88,7 @@
 	<td><%=StringEscapeUtils.escapeHtml(registration.getTitle() + " " + registration.getFirstName() + " " + registration.getLastName())%></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getEmail())%></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getInstitution())%></td>
+        <td><%=StringEscapeUtils.escapeHtml(registration.getPhone())%></td>
 	<td><%=registration.getSubmittingAbstract() ? "Y" : "N" %></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getRegistrationRate())%></td>
 	<td><%=registration.getAttendStudentMentoringDay() ? "Y" : "N" %></td>
