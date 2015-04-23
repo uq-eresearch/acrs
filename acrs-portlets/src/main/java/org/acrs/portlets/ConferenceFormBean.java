@@ -40,6 +40,10 @@ public class ConferenceFormBean {
 	private String phone = "";
 	private String shareWith = "";
         private String behaviourDelegate = "";
+        private String arrivalDateDaydreamIsland = "";
+        private String departureDateDaydreamIsland = "";
+        private String boatTransfers = "";
+        private String specialWheelchairRequirements = "";
 
 	public ConferenceFormBean(ConferenceRegistration registration) {
 		try {
@@ -204,6 +208,62 @@ public class ConferenceFormBean {
      */
     public void setBehaviourDelegate(String behaviourDelegate) {
         this.behaviourDelegate = behaviourDelegate;
+    }
+
+    /**
+     * @return the arrivalDateDaydreamIsland
+     */
+    public String getArrivalDateDaydreamIsland() {
+        return arrivalDateDaydreamIsland;
+    }
+
+    /**
+     * @param arrivalDateDaydreamIsland the arrivalDateDaydreamIsland to set
+     */
+    public void setArrivalDateDaydreamIsland(String arrivalDateDaydreamIsland) {
+        this.arrivalDateDaydreamIsland = arrivalDateDaydreamIsland;
+    }
+
+    /**
+     * @return the departureDateDaydreamIsland
+     */
+    public String getDepartureDateDaydreamIsland() {
+        return departureDateDaydreamIsland;
+    }
+
+    /**
+     * @param departureDateDaydreamIsland the departureDateDaydreamIsland to set
+     */
+    public void setDepartureDateDaydreamIsland(String departureDateDaydreamIsland) {
+        this.departureDateDaydreamIsland = departureDateDaydreamIsland;
+    }
+
+    /**
+     * @return the boatTransfers
+     */
+    public String getBoatTransfers() {
+        return boatTransfers;
+    }
+
+    /**
+     * @param boatTransfers the boatTransfers to set
+     */
+    public void setBoatTransfers(String boatTransfers) {
+        this.boatTransfers = boatTransfers;
+    }
+
+    /**
+     * @return the specialWheelchairRequirements
+     */
+    public String getSpecialWheelchairRequirements() {
+        return specialWheelchairRequirements;
+    }
+
+    /**
+     * @param specialWheelchairRequirements the specialWheelchairRequirements to set
+     */
+    public void setSpecialWheelchairRequirements(String specialWheelchairRequirements) {
+        this.specialWheelchairRequirements = specialWheelchairRequirements;
     }
         
 }

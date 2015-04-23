@@ -251,7 +251,7 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-		<div>Do you wish to attend the Student Mentoring Day?</div>
+<!--		<div>Do you wish to attend the Student Mentoring Day?</div>
 		<label for="attendStudentMentoringDay"></label>
 		<div class="groupedinputs">
 		  <input class="radioCheckbox" type="radio" name="attendStudentMentoringDay" value="true" <%=hasFormBean ? ("true".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>Yes
@@ -259,9 +259,9 @@ jQuery(window).load( function() {
 		</div>
 		<div>
 		If you are not a student, please tick No.
-		</div>
+		</div>-->
 		
-		<div>If you do wish to attend the student day, are you eligible for the $70 discount?</div>
+		<div>If you are a student, do you wish to attend the Student Mentoring Day on the 28th July 2015?</div>
 		<label for="studentMentoringDiscount"></label>
 		<div class="groupedinputs">
 		  <input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="true" <%=hasFormBean ? ("true".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>Yes
@@ -275,24 +275,48 @@ jQuery(window).load( function() {
 	</div>
 	
 	<br>
-	<div>
+        
+        <div>					
+			<div>What date will you arrive on Daydream Island (DD/MM/YYYY)?</div>
+			<label for="arrivalDateDaydreamIsland"></label>
+			<input type="text" name="arrivalDateDaydreamIsland" id="arrivalDateDaydreamIsland" 
+			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getArrivalDateDaydreamIsland()) : emptyStr %>">
+		</div>
+
+        <div>					
+			<div>What date will you depart from Daydream Island? (DD/MM/YYYY)?</div>
+			<label for="departureDateDaydreamIsland"></label>
+			<input type="text" name="departureDateDaydreamIsland" id="departureDateDaydreamIsland" 
+			value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getDepartureDateDaydreamIsland()) : emptyStr %>">
+		</div>
+                
+                
+                
+                <div>Boat transfers to Daydream Island depart from Airlie Beach and Hamilton Island. Select your departure location</div>
+		<label for="boatTransfers"></label>
+		<div class="groupedinputs">
+		  <input class="radioCheckbox" type="radio" name="boatTransfers" value="Airlie Beach" <%=hasFormBean ? ("Airlie Beach".equals(formBean.getBoatTransfers()) ? " checked" : emptyStr) : emptyStr%>/>Yes
+	 	  <input class="radioCheckbox" type="radio" name="boatTransfers" value="Hamilton Island" <%=hasFormBean ? ("Hamilton Island".equals(formBean.getBoatTransfers()) ? " checked" : emptyStr) : emptyStr%>/>No
+		</div>
+                
+<!--	<div>
 		<label for="simsExcursion">Would you like to attend the excursion to SIMS?  <b>(no cost)</b></label>
 		<div class="groupedinputs">
 		<input class="radioCheckbox" type="radio" name="simsExcursion" value="true" <%= hasFormBean ? ("true".equals(formBean.getSimsExcursion())  ? " checked" : emptyStr) : emptyStr %>/>Yes
 	 	<input class="radioCheckbox" type="radio" name="simsExcursion" value="false" <%= hasFormBean ? ("false".equals(formBean.getSimsExcursion()) ? " checked" : emptyStr) : emptyStr %>/>No
 		</div>	
-	</div>
+	</div>-->
 	
-	<br>
+<!--	<br>
 	<div>
 		<label for="coralIdentificationWorkshop">Would you like to attend the Coral Identification Workshop?  <b>$330</b></label>
 		<div class="groupedinputs">
 		<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralIdentificationWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes
 	 	<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralIdentificationWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No
 		</div>	
-	</div>
+	</div>-->
 	
-	<br>
+<!--	<br>
 	<div>
 		<div>If you would like to purchase additional tickets to the Welcome Function at Sea Life Sydney Aquarium, please 
 		enter the number of tickets in this box. Otherwise, please leave the box blank. Additional welcome function tickets are <b>$25.00&nbsp;ea</b></div>
@@ -310,7 +334,7 @@ jQuery(window).load( function() {
 		
 		<input type="text" name="additionalTicketsDinner" id="additionalTicketsDinner" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getAdditionalTicketsDinner()) : emptyStr %>">
-	</div>
+	</div>-->
 	
 	<div>
 		<div>Please describe any special food requirements you have (e.g, vegetarian)</div>
@@ -318,6 +342,14 @@ jQuery(window).load( function() {
 		
 		<input type="text" name="specialFoodRequirements" id="specialFoodRequirements" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getSpecialFoodRequirements()) : emptyStr %>">
+	</div>
+        
+        <div>
+		<div>Do you require wheelchair access or do you have any other special requirements?</div>
+		<label for="specialWheelchairRequirements"></label>
+		
+		<input type="text" name="specialWheelchairRequirements" id="specialWheelchairRequirements" 
+		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getSpecialWheelchairRequirements()) : emptyStr %>">
 	</div>
 	
 	<% if (!isEdit) { %>
@@ -366,14 +398,14 @@ jQuery(window).load( function() {
 		
 		<div style="color: red;">
 		  CANCELLATION AND REFUND POLICY:<br>
-Cancellations must be notified in writing to the Conference Organiser (<a href="mailto:ross.hill@unsw.edu.au">ross.hill@unsw.edu.au</a>).<br>
-Cancellations before Tuesday 6 August 2013 will incur a $10.00 administration fee on their full refund.<br>
-Cancellations on or after Tuesday 6 August 2013 will receive no refund.<br>
+Cancellations must be notified in writing to the Conference Organiser (<a href="mailto:selinaward@uq.edu.au">Selina Ward</a>).<br>
+Cancellations before Monday 6th July 2015 will incur a $10.00 administration fee on their full refund.<br>
+Cancellations on or after Monday 6th July 2015 will receive no refund.<br>
 					
 		</div>
 		<div>
 			Please note: When paying with PayPal, you will automatically receive a receipt to your email.
-			If you require an additional receipt from ACRS, please let us know by emailing <a href="mailto:acrs@uq.edu.au">acrs@uq.edu.au</a>.
+			If you require an additional receipt from ACRS, please let us know by emailing <a href="mailto:jennifermarie.donelson@uts.edu.au">ACRS Treasurer</a>.
 		</div>
 		  <label for="submit"><br></label>
 		  <input type="submit" name="submit" value="Save Details and Proceed to Paypal >" 

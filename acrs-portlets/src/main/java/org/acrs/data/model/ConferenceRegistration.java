@@ -55,7 +55,12 @@ public class ConferenceRegistration {
 	private Boolean coralIdentificationWorkshop;
 	private Integer additionalTicketsWelcome;
 	private Integer additionalTicketsDinner;
-	
+        
+        private String arrivalDateDaydreamIsland; 
+        private String departureDateDaydreamIsland;
+        private String boatTransfers;
+	private String specialWheelchairRequirements;
+                
 	private String specialFoodRequirements;
 
 	private Integer registrationAmount;
@@ -312,6 +317,20 @@ public class ConferenceRegistration {
 		this.shareWith = shareWith;
 	}
 
+          /**
+     * @return the behaviourDelegate
+     */
+    public Boolean getBehaviourDelegate() {
+        return behaviourDelegate != null ? behaviourDelegate : false;
+    }
+
+    /**
+     * @param behaviourDelegate the behaviourDelegate to set
+     */
+    public void setBehaviourDelegate(Boolean behaviourDelegate) {
+        this.behaviourDelegate = behaviourDelegate;
+    }
+    
 	public Boolean getAttendStudentMentoringDay() {
 		return attendStudentMentoringDay != null ? attendStudentMentoringDay : false;
 	}
@@ -382,18 +401,62 @@ public class ConferenceRegistration {
 	}
 
     /**
-     * @return the behaviourDelegate
+     * @return the arrivalDateDaydreamIsland
      */
-    public Boolean getBehaviourDelegate() {
-        return behaviourDelegate;
+    public String getArrivalDateDaydreamIsland() {
+        return arrivalDateDaydreamIsland;
     }
 
     /**
-     * @param behaviourDelegate the behaviourDelegate to set
+     * @param arrivalDateDaydreamIsland the arrivalDateDaydreamIsland to set
      */
-    public void setBehaviourDelegate(Boolean behaviourDelegate) {
-        this.behaviourDelegate = behaviourDelegate;
+    public void setArrivalDateDaydreamIsland(String arrivalDateDaydreamIsland) {
+        this.arrivalDateDaydreamIsland = arrivalDateDaydreamIsland;
     }
+
+    /**
+     * @return the departureDateDaydreamIsland
+     */
+    public String getDepartureDateDaydreamIsland() {
+        return departureDateDaydreamIsland;
+    }
+
+    /**
+     * @param departureDateDaydreamIsland the departureDateDaydreamIsland to set
+     */
+    public void setDepartureDateDaydreamIsland(String departureDateDaydreamIsland) {
+        this.departureDateDaydreamIsland = departureDateDaydreamIsland;
+    }
+
+    /**
+     * @return the boatTransfers
+     */
+    public String getBoatTransfers() {
+        return boatTransfers;
+    }
+
+    /**
+     * @param boatTransfers the boatTransfers to set
+     */
+    public void setBoatTransfers(String boatTransfers) {
+        this.boatTransfers = boatTransfers;
+    }
+
+    /**
+     * @return the specialWheelchairRequirementsl
+     */
+    public String getSpecialWheelchairRequirements() {
+        return specialWheelchairRequirements;
+    }
+
+    /**
+     * @param specialWheelchairRequirements the specialWheelchairRequirementsl to set
+     */
+    public void setSpecialWheelchairRequirements(String specialWheelchairRequirements) {
+        this.specialWheelchairRequirements = specialWheelchairRequirements;
+    }
+
+  
 
 
 
