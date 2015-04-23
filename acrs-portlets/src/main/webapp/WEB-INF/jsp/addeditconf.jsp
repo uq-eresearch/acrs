@@ -241,7 +241,7 @@ jQuery(window).load( function() {
 	</div>
 
                 <div>
-                    <div>Delegates of the Behaviour2015 Conference (9-14 August 2015, Cairns, Australia, www.behaviour2015.org) are eligible for a $20 discount on their ACRS registration. Please select this box if you are a registered delegate of Behaviour2015.</div>
+                    <div>Delegates of the <a href="http://www.behaviour2015.org" target="_blank">Behaviour2015 Conference</a> (9-14 August 2015, Cairns, Australia, www.behaviour2015.org) are eligible for a $20 discount on their ACRS registration. Are you a registered delegate of Behaviour2015?</div>
 		<label for="behaviourDelegate"></label>
 		<div class="groupedinputs">
 		  <input class="radioCheckbox" type="radio" name="behaviourDelegate" value="true" <%=hasFormBean ? ("true".equals(formBean.getBehaviourDelegate()) ? " checked" : emptyStr) : emptyStr%>/>Yes
