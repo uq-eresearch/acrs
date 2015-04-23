@@ -47,6 +47,7 @@
 <th>Submitting Abstract</th>
 <th>Registration<br>Rate</th>
 <th>Share With</th>
+<th>Behaviour2015 Conference Delegate</th>
 <th>Attend Student Mentoring Day</th>
 <th>Student Mentoring Discount</th>
 <th>SIMS Excursion</th>
@@ -93,6 +94,7 @@
 	<td><%=registration.getSubmittingAbstract() ? "Y" : "N" %></td>
 	<td><%=StringEscapeUtils.escapeHtml(registration.getRegistrationRate())%></td>
         <td><%=StringEscapeUtils.escapeHtml(registration.getShareWith())%></td>
+        <td><%=registration.getBehaviourDelegate() ? "Y" : "N" %></td>
 	<td><%=registration.getAttendStudentMentoringDay() ? "Y" : "N" %></td>
 	<td><%=registration.getStudentMentoringDiscount() ? "Y" : "N" %></td>
 	<td><%=registration.getSimsExcursion() ? "Y" : "N" %></td>
