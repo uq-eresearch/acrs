@@ -127,6 +127,21 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>3.0.0.ga</version>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.15</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
 
 		<!-- TODO manage which JDBC driver we include depending on what RDBMS we 
 			really want to use -->
@@ -154,17 +169,17 @@
 		<dependency>
 			<groupId>au.edu.uq.itee.maenad</groupId>
 			<artifactId>util</artifactId>
-			<version>0.2.0</version>
+			<version>0.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>au.edu.uq.itee.maenad</groupId>
 			<artifactId>dataaccess</artifactId>
-			<version>0.2.0</version>
+			<version>0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>au.edu.uq.itee.maenad</groupId>
 			<artifactId>restlet-framework</artifactId>
-			<version>0.2.0</version>
+			<version>0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>

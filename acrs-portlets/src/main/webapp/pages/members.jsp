@@ -204,11 +204,13 @@
 			    <div>
 					<label for="streetAddress">Street Address: <span class="required">*</span></label>
 					<input type="text" name="streetAddress" id="streetAddress" 
-					value="<%= isEdit ? editMember.getStreetAddress() : emptyStr %>"><br>
+					value="<%= isEdit ? editMember.getStreetAddress() : emptyStr %>">
+               </div>
+               <div>
 					<label for="streetAddress2">&nbsp;</label>
-					<input type="text" name="streetAddress2" id="streetAddress2" >
+					<input type="text" name="streetAddress2" id="streetAddress2" value="" >
 				</div>		
-	
+
 			    <div>			
 					<label for="city">Town or Suburb: <span class="required">*</span></label>
 					<input type="text" name="city" id="city" 
@@ -321,13 +323,8 @@
 						  onClick="document.getElementById('removeFlag').value='Y'; self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>					  
 				      </div>
 				    <%  } else {%>
-					
-						
-						<div class="captcha">
-							<portlet:resourceURL var="captchaURL" id="captcha"/>
-							<liferay-ui:captcha url="<%= captchaURL %>"/><span class="required">*</span>
-						</div>
-					
+            <script src='https://www.google.com/recaptcha/api.js'></script>
+            <div class="g-recaptcha" data-sitekey="6LfoEBwTAAAAAK9fHlQVmvTOgQHEYqsnJphqG7Dp"></div>
 					<div>
 					  For all new ACRS members your membership will need to be approved by Council. If for some reason your application is deemed inappropriate, a full refund will be given.					
 					</div>
@@ -378,7 +375,7 @@
 		<p><b><%=paypalItemName + ": $" + newMember.getMembershipAmount() + "0" %></b> </p>
 				
 		
-<!-- 
+<%--
 		<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
 		<input type="hidden" name="cmd" value="_xclick">
 		<input type="hidden" name="business" value="V7JL47XMCL6GA">
@@ -397,7 +394,7 @@
 		<input type="hidden" name="notify_url" value="http://acrs.metadata.net/acrs-portlet/paypal/">
 		<input type="image" src="https://www.sandbox.paypal.com/en_AU/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
 		<img alt="" border="0" src="https://www.sandbox.paypal.com/en_AU/i/scr/pixel.gif" width="1" height="1">				
- -->
+--%>
  		
 		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 		<input type="hidden" name="cmd" value="_xclick">

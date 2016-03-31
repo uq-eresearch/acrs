@@ -1,11 +1,14 @@
 package org.acrs.portlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +30,8 @@ import org.acrs.app.ACRSApplication;
 import org.acrs.data.access.MemberDao;
 import org.acrs.data.model.Member;
 import org.acrs.util.Emailer;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -35,11 +40,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.google.gson.Gson;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 
 /**
@@ -49,6 +54,23 @@ import com.liferay.portal.kernel.util.Validator;
  */
 public class MembersPortlet extends GenericPortlet {
     private static Log _log = LogFactoryUtil.getLog(MembersPortlet.class);
+
+    public static class ReCAPTCHAResponse {
+      private Boolean success;
+      private ReCAPTCHAResponse(boolean success) {
+        this.success = success;
+      }
+      public static boolean isSuccess(ReCAPTCHAResponse response) {
+        return (response!=null) && (response.success!=null) && (response.success.booleanValue());
+      }
+      public static ReCAPTCHAResponse ok() {
+        return new ReCAPTCHAResponse(true);
+      }
+      public static ReCAPTCHAResponse failed() {
+        return new ReCAPTCHAResponse(false);
+      }
+    }
+
     protected String viewJSP;
     protected MemberDao membersDao;
 
@@ -88,7 +110,7 @@ public class MembersPortlet extends GenericPortlet {
 				checkCaptcha(actionRequest);
 			} catch (RegistrationProcessingException e) {
 				_log.info("Captcha exception: " + e.getMessage());
-				errors.add("Invalid Captcha text, please try again");
+				errors.add("Invalid Captcha, please try again");
 			}
             
         } else {
@@ -486,41 +508,40 @@ public class MembersPortlet extends GenericPortlet {
         wb.write(res.getPortletOutputStream());
         res.getPortletOutputStream().close();
     }
-    
-	/**
-	 * Check the Liferay standard captcha text.
-	 * 
-	 * @param request
-	 * @throws RegistrationProcessingException
-	 */
-	private void checkCaptcha(PortletRequest request)
-			throws RegistrationProcessingException {
-		String enteredCaptchaText = ParamUtil.getString(request, "captchaText");
 
-		PortletSession session = request.getPortletSession();
-		String captchaText = getCaptchaValueFromSession(session);
-		if (Validator.isNull(captchaText)) {
-			throw new RegistrationProcessingException(
-					"Internal Error! Captcha text not found in session");
-		}
-		if (!captchaText.equals(enteredCaptchaText.trim())) {
-			_log.info("Captcha expected: " + captchaText + " Entered: "
-					+ enteredCaptchaText);
-			throw new RegistrationProcessingException(
-					"Invalid captcha text. Please reenter.");
-		}
-	}
+  private ReCAPTCHAResponse check(PortletRequest request) {
+    try {
+      final String recaptchaResponse = ParamUtil.getString(request, "g-recaptcha-response");
+      _log.info("recaptcha user response token: " + recaptchaResponse);
+      if(StringUtils.isBlank(recaptchaResponse)) {
+        return ReCAPTCHAResponse.failed();
+      }
+      final URL url = new URL("https://www.google.com/recaptcha/api/siteverify");
+      final HttpURLConnection con = (HttpURLConnection)url.openConnection();
+      con.setConnectTimeout(5000);
+      con.setReadTimeout(5000);
+      con.setDoOutput(true);
+      con.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+      PrintWriter pw = new PrintWriter(con.getOutputStream());
+      pw.print(String.format("secret=%s&response=%s",
+          URLEncoder.encode("6LfoEBwTAAAAAKIpF_0tCxyxHMvuegxQXAo9KYYr", "UTF-8"),
+          URLEncoder.encode(recaptchaResponse, "UTF-8")));
+      pw.close();
+      _log.info("Waiting for response from google recaptcha service");
+      final String recaptchaJson = IOUtils.toString(con.getInputStream());
+      _log.info("recaptcha google response: " + recaptchaJson);
+      return new Gson().fromJson(recaptchaJson, ReCAPTCHAResponse.class);
+    } catch(Exception e) {
+      // just log that captcha processing failed but let the user through anyway.
+      _log.info("captcha processing failed", e);
+      return ReCAPTCHAResponse.ok();
+    }
+  }
 
-	private String getCaptchaValueFromSession(PortletSession session) {
-		Enumeration<String> atNames = session.getAttributeNames();
-		while (atNames.hasMoreElements()) {
-			String name = atNames.nextElement();
-			if (name.contains("CAPTCHA_TEXT")) {
-				return (String) session.getAttribute(name);
-			}
-		}
-		return null;
-	}
-
+  private void checkCaptcha(PortletRequest request) throws RegistrationProcessingException {
+    if(!ReCAPTCHAResponse.isSuccess(check(request))) {
+      throw new RegistrationProcessingException("Invalid captcha, try again.");
+    }
+  }
 
 }
