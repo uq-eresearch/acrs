@@ -497,10 +497,38 @@ public class MembersPortlet extends GenericPortlet {
 
         }
         
-        // Auto-resize all the columns
-        for (int column = 0; column < headings.size(); column++) {
-        	 s.autoSizeColumn((short)column);
-        }
+// FIXME: since switch to openjdk-1.8 the code below throws this exception.
+//        java.awt.headless is set to true so not sure why this is happening. 
+//        14 Apr 2016 09:00:18,398 ERROR [jsp:?] java.lang.NullPointerException
+//        java.lang.NullPointerException
+//                at sun.awt.FontConfiguration.getVersion(FontConfiguration.java:1264)
+//                at sun.awt.FontConfiguration.readFontConfigFile(FontConfiguration.java:219)
+//                at sun.awt.FontConfiguration.init(FontConfiguration.java:107)
+//                at sun.awt.X11FontManager.createFontConfiguration(X11FontManager.java:774)
+//                at sun.font.SunFontManager$2.run(SunFontManager.java:431)
+//                at java.security.AccessController.doPrivileged(Native Method)
+//                at sun.font.SunFontManager.<init>(SunFontManager.java:376)
+//                at sun.awt.FcFontManager.<init>(FcFontManager.java:35)
+//                at sun.awt.X11FontManager.<init>(X11FontManager.java:57)
+//                at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+//                at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+//                at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+//                at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+//                at java.lang.Class.newInstance(Class.java:442)
+//                at sun.font.FontManagerFactory$1.run(FontManagerFactory.java:83)
+//                at java.security.AccessController.doPrivileged(Native Method)
+//                at sun.font.FontManagerFactory.getInstance(FontManagerFactory.java:74)
+//                at java.awt.Font.getFont2D(Font.java:491)
+//                at java.awt.Font.canDisplayUpTo(Font.java:2060)
+//                at java.awt.font.TextLayout.singleFont(TextLayout.java:470)
+//                at java.awt.font.TextLayout.<init>(TextLayout.java:531)
+//                at org.apache.poi.hssf.usermodel.HSSFSheet.autoSizeColumn(HSSFSheet.java:1700)
+//                at org.apache.poi.hssf.usermodel.HSSFSheet.autoSizeColumn(HSSFSheet.java:1661)
+//                at org.acrs.portlets.MembersPortlet.serveResourceSpreadsheet(MembersPortlet.java:502)
+//        Auto-resize all the columns
+//        for (int column = 0; column < headings.size(); column++) {
+//        	 s.autoSizeColumn((short)column);
+//        }
 
         res.setContentType("application/vnd.ms-excel");
         res.addProperty(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"MemberList.xls\"");
