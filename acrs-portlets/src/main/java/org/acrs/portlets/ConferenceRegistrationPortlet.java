@@ -1,11 +1,9 @@
 package org.acrs.portlets;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,7 +13,6 @@ import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
@@ -41,33 +38,23 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 /**
  * Author: uqdayers Date: 19/4/2013
  * Author: alabri Date: 08/02/2011 Time: 4:26:58 PM
  */
 public class ConferenceRegistrationPortlet extends GenericPortlet {
-	private static Log _log = LogFactoryUtil
-			.getLog(ConferenceRegistrationPortlet.class);
+	private static Log _log = LogFactoryUtil.getLog(ConferenceRegistrationPortlet.class);
 	protected String viewJSP;
 	protected final String editJSP = "/WEB-INF/jsp/addeditconf.jsp";
 	protected final String registrationsListJSP = "/WEB-INF/jsp/registrations.jsp";
 	protected final String submitVerify = "/WEB-INF/jsp/submit.jsp";
-	protected Date earlyBirdDate;
 
 	protected ConferenceRegistrationDao conferenceRegistrationDao;
 
 	public void init() throws PortletException {
 		viewJSP = getInitParameter("confreg-jsp");
-		conferenceRegistrationDao = ACRSApplication.getConfiguration()
-				.getConferenceRegistrationDao();
-		try {
-			earlyBirdDate = new SimpleDateFormat("yyyy-MM-dd").parse("2013-07-16");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		conferenceRegistrationDao = ACRSApplication.getConfiguration().getConferenceRegistrationDao();
 	}
 
 	/**
@@ -112,27 +99,11 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		ConferenceRegistration newRegistration = (ConferenceRegistration) renderRequest
 				.getPortletSession().getAttribute("newRegistration",
 						PortletSession.APPLICATION_SCOPE);
-
 		if (newRegistration == null) {
-			Date today = new Date();
-			checkIsEarlybird(renderRequest, today);
-			
 			include(editJSP, renderRequest, renderResponse);
 		} else {
 			renderRequest.setAttribute("newRegistration", newRegistration);
 			include(submitVerify, renderRequest, renderResponse);
-		}
-	}
-
-	/**
-	 * @param renderRequest
-	 * @param registrationDate
-	 */
-	protected void checkIsEarlybird(RenderRequest renderRequest, Date registrationDate) {
-		if (registrationDate.before(earlyBirdDate)) {
-			renderRequest.setAttribute("isEarlybird", true);
-		} else {
-			renderRequest.setAttribute("isEarlybird", false);
 		}
 	}
 
@@ -170,14 +141,9 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				.getLong(renderRequest, "registrationId");
 		ConferenceRegistration editRegistration = conferenceRegistrationDao
 				.getById(registrationId);
-
 		ConferenceFormBean formBean = new ConferenceFormBean(editRegistration);
-
 		renderRequest.setAttribute("formBean", formBean);
 		renderRequest.setAttribute("editRegistration", editRegistration);
-
-		checkIsEarlybird(renderRequest, editRegistration.getRegistrationDate());
-
 		include(editJSP, renderRequest, renderResponse);
 	}
 
@@ -191,20 +157,16 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 	 */
 	public void processAction(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws IOException, PortletException {
-
 		// Process data here
 		PortletSession session = actionRequest.getPortletSession(true);
-		String editRegistrationIdStr = actionRequest
-				.getParameter("editRegistrationId");
-
+		String editRegistrationIdStr = actionRequest.getParameter("editRegistrationId");
 		String action = "";
 		List<String> errors = checkFormForErrors(actionRequest);
-
 		if (editRegistrationIdStr == null) {
 			action = "ADD";
 			_log.info("request to add new registration");
 			try {
-				checkCaptcha(actionRequest);
+			  ReCAPTCHAResponse.check(actionRequest);
 			} catch (RegistrationProcessingException e) {
 				_log.info("Captcha exception: " + e.getMessage());
 				errors.add("Invalid Captcha text, please try again");
@@ -213,62 +175,26 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			action = "EDIT";
 			_log.info("edit registration id " + editRegistrationIdStr);
 		}
-
 		ConferenceFormBean formBean = new ConferenceFormBean(actionRequest);
-
-		if (errors.size() > 0) {
-
+		if(errors.size() > 0) {
+		  _log.info("XXX xxx errors " + errors);
 			actionRequest.setAttribute("errors", errors);
 			actionRequest.setAttribute("formBean", formBean);
 		} else {
-
+		  _log.info("XXX xxx no errors ");
 			if (action.equals("ADD")) {
 				try {
 					addNewRegistration(actionResponse, session, formBean);
 				} catch (RegistrationProcessingException e) {
+				  _log.info("XXX xxx failed to add new registration", e);
 					errors.add(e.getMessage());
 				}
 			} else if (action.equals("EDIT")) {
 				editRegistration(actionRequest, formBean);
-			}
-
-		} // end if ! errors
-
-	}
-
-	/**
-	 * Check the Liferay standard captcha text.
-	 * 
-	 * @param request
-	 * @throws RegistrationProcessingException
-	 */
-	private void checkCaptcha(PortletRequest request)
-			throws RegistrationProcessingException {
-		String enteredCaptchaText = ParamUtil.getString(request, "captchaText");
-
-		PortletSession session = request.getPortletSession();
-		String captchaText = getCaptchaValueFromSession(session);
-		if (Validator.isNull(captchaText)) {
-			throw new RegistrationProcessingException(
-					"Internal Error! Captcha text not found in session");
-		}
-		if (!captchaText.equals(enteredCaptchaText.trim())) {
-			_log.info("Captcha expected: " + captchaText + " Entered: "
-					+ enteredCaptchaText);
-			throw new RegistrationProcessingException(
-					"Invalid captcha text. Please reenter.");
-		}
-	}
-
-	private String getCaptchaValueFromSession(PortletSession session) {
-		Enumeration<String> atNames = session.getAttributeNames();
-		while (atNames.hasMoreElements()) {
-			String name = atNames.nextElement();
-			if (name.contains("CAPTCHA_TEXT")) {
-				return (String) session.getAttribute(name);
+			} else {
+			  _log.info("XXX xxx unknown action " + action);
 			}
 		}
-		return null;
 	}
 
 	/**
@@ -345,7 +271,6 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				+ editRegistration.getFirstName() + " "
 				+ editRegistration.getLastName() + " has been updated.");
 		actionRequest.setAttribute("messages", messages);
-
 	}
 
 	/**
@@ -401,8 +326,9 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		String approvalEmail2 = ACRSApplication.getConfiguration()
 				.getApprovalEmail2();
 
-		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2013 Conference Registration that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
-		String applicantDetail = "\n\tName:\t\t\t\t"
+		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2017 Conference Registration"
+		    + " that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
+		String applicantDetail = "\n\tName:\t\t\t"
 				+ newRegistration.getTitle() + " "
 				+ newRegistration.getFirstName() + " "
 				+ newRegistration.getLastName() + "\n\tEmail:\t\t\t"
@@ -461,24 +387,8 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			ResourceResponse resourceResponse) throws IOException,
 			PortletException {
 		String resourceID = resourceRequest.getResourceID();
-		if ("captcha".equals(resourceID)) {
-			serveResourceCaptcha(resourceRequest, resourceResponse);
-		} else if ("spreadsheet".equals(resourceID)) {
+		if ("spreadsheet".equals(resourceID)) {
 			serveResourceSpreadsheet(resourceResponse);
-		}
-	}
-
-	/**
-	 * Serve Resource used for getting captcha, provided by Liferay
-	 */
-	public void serveResourceCaptcha(ResourceRequest resourceRequest,
-			ResourceResponse resourceResponse) throws IOException,
-			PortletException {
-		try {
-			com.liferay.portal.kernel.captcha.CaptchaUtil.serveImage(
-					resourceRequest, resourceResponse);
-		} catch (Exception e) {
-			_log.error(e);
 		}
 	}
 
@@ -498,7 +408,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet s = wb.createSheet("ACRS Conference Registrations 2013 "
+		HSSFSheet s = wb.createSheet("ACRS Conference Registrations 2017 "
 				+ sdf.format(new Date()));
 		s.setFitToPage(true);
 		HSSFRow r = null;
@@ -519,10 +429,13 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 		headings.add("Institution");
 		headings.add("Submitting Abstract");
 		headings.add("Registration Rate");
+		headings.add("Hotel Room");
+		headings.add("Breakfast Included");
+		headings.add("Assist Share Twin Room");
+		headings.add("Hotel Checkin");
+		headings.add("Hotel Checkout");
 		headings.add("Attend Student Mentoring Day");
 		headings.add("Student Mentoring Discount");
-		headings.add("SIMS Excursion");
-		headings.add("Coral Identification Workshop");
 		headings.add("Welcome Tickets");
 		headings.add("Dinner Tickets");
 		headings.add("Special Food Requirements");
@@ -553,10 +466,13 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 			a.add(registration.getInstitution());
 			a.add(registration.getSubmittingAbstract() ? "Y" : "N");
 			a.add(registration.getRegistrationRate());
+			a.add(registration.getHotelRoomType());
+			a.add(registration.getBreakfastIncluded()?"Y":"N");
+			a.add(registration.getAssistShareTwinRoom()?"Y":"N");
+			a.add(registration.getCheckinDate());
+			a.add(registration.getCheckoutDate());
 			a.add(registration.getAttendStudentMentoringDay() ? "Y" : "N");
 			a.add(registration.getStudentMentoringDiscount() ? "Y" : "N");
-			a.add(registration.getSimsExcursion() ? "Y" : "N");
-			a.add(registration.getCoralIdentificationWorkshop() ? "Y" : "N");
 			a.add(registration.getAdditionalTicketsWelcome().toString());
 			a.add(registration.getAdditionalTicketsDinner().toString());
 			a.add(registration.getSpecialFoodRequirements());
@@ -577,15 +493,8 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				cellNum++;
 			}
 		}
-        
-        // Auto-resize all the columns
-        for (int column = 0; column < headings.size(); column++) {
-        	 s.autoSizeColumn((short)column);
-        }
-
-
 		res.setContentType("application/vnd.ms-excel");
-        res.addProperty(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ConferenceRegistrations2013.xls\"");
+        res.addProperty(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ConferenceRegistrations2017.xls\"");
         res.setProperty(ResourceResponse.EXPIRATION_CACHE, "0");
         wb.write(res.getPortletOutputStream());
         res.getPortletOutputStream().close();

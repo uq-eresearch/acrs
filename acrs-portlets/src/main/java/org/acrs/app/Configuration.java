@@ -40,5 +40,7 @@ public interface Configuration {
     
     String getPaypalCharset();
 
+    boolean isCheckCaptcha();
+
     JpaConnectorService getJpaConnectorService();
 }

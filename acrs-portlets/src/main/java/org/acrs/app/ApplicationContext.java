@@ -38,6 +38,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final String approvalEmail1;
     private final String approvalEmail2;
     private final String emailListCoordEmail;
+    private final boolean checkCaptcha;
 	private ConferenceRegistrationDaoImpl conferenceRegDao;
 
     public ApplicationContext() throws InitializationException {
@@ -111,6 +112,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
         this.approvalEmail2 = getProperty(properties, "approvalEmail2");
         this.emailListCoordEmail = getProperty(properties, "emailListCoordEmail");
         this.submissionEmailConfig.setProperty("mail.smtp.host", submissionEmailServer);
+        this.checkCaptcha = Boolean.valueOf(getProperty(properties, "checkCaptcha"));
     }
 
     @Override
@@ -202,6 +204,7 @@ public class ApplicationContext implements Configuration, ServletContextListener
 		return conferenceRegDao;
 	}
 
-    
-    
+	public boolean isCheckCaptcha() {
+	  return checkCaptcha;
+	}
 }

@@ -21,8 +21,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
  * @author uqdayers
  */
 public class ConferenceFormBean {
-	private static Log _log = LogFactoryUtil
-			.getLog(ConferenceFormBean.class);
+
+  private static Log _log = LogFactoryUtil.getLog(ConferenceFormBean.class);
 	private String title = "";
 	private String firstName = "";
 	private String lastName = "";
@@ -37,6 +37,11 @@ public class ConferenceFormBean {
 	private String additionalTicketsWelcome = "";
 	private String additionalTicketsDinner = "";
 	private String specialFoodRequirements = "";
+	private String hotelRoomType = "";
+	private String breakfastIncluded = "";
+	private String assistShareTwinRoom = "";
+	private String checkinDate = "";
+	private String checkoutDate = "";
 
 	public ConferenceFormBean(ConferenceRegistration registration) {
 		try {
@@ -174,5 +179,45 @@ public class ConferenceFormBean {
 	public void setSpecialFoodRequirements(String specialFoodRequirements) {
 		this.specialFoodRequirements = specialFoodRequirements;
 	}
+
+  public String getHotelRoomType() {
+    return hotelRoomType;
+  }
+
+  public void setHotelRoomType(String hotelRoomType) {
+    this.hotelRoomType = hotelRoomType;
+  }
+
+  public String getBreakfastIncluded() {
+    return breakfastIncluded;
+  }
+
+  public void setBreakfastIncluded(String breakfastIncluded) {
+    this.breakfastIncluded = breakfastIncluded;
+  }
+
+  public String getAssistShareTwinRoom() {
+    return assistShareTwinRoom;
+  }
+
+  public void setAssistShareTwinRoom(String assistShareTwinRoom) {
+    this.assistShareTwinRoom = assistShareTwinRoom;
+  }
+
+  public String getCheckinDate() {
+    return checkinDate;
+  }
+
+  public void setCheckinDate(String checkinDate) {
+    this.checkinDate = checkinDate;
+  }
+
+  public String getCheckoutDate() {
+    return checkoutDate;
+  }
+
+  public void setCheckoutDate(String checkoutDate) {
+    this.checkoutDate = checkoutDate;
+  }
 
 }

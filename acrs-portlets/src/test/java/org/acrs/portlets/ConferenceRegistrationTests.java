@@ -107,7 +107,6 @@ public class ConferenceRegistrationTests {
 		int price = FULL_MEMBER_EARLY + 3 * CONFERENCE_DINNER + CORAL_IDENTIFICATION_WORKSHOP;
 		registration.setRegistrationRate("FullMember");
 		registration.setAdditionalTicketsDinner(3);
-		registration.setCoralIdentificationWorkshop(true);
 		registration.calculateRegistration();
 		assertEquals(price, (int)registration.getRegistrationAmount());
 	}
@@ -118,7 +117,6 @@ public class ConferenceRegistrationTests {
 		registration.setRegistrationRate("StudentMember");
 		registration.setAdditionalTicketsWelcome(1);
 		registration.setAdditionalTicketsDinner(2);
-		registration.setCoralIdentificationWorkshop(true);
 		registration.setStudentMentoringDiscount(true);
 		registration.calculateRegistration();
 		assertEquals(price, (int)registration.getRegistrationAmount());

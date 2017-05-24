@@ -15,20 +15,11 @@
 <portlet:defineObjects />
 
 
-
-
 <% 
 	// find out what the command is
 	String cmd = ParamUtil.getString(request, "cmd");
 	ConferenceRegistration editRegistration = (ConferenceRegistration) renderRequest.getAttribute("editRegistration");
 	ConferenceFormBean formBean = (ConferenceFormBean)renderRequest.getAttribute("formBean");
-	boolean isEarlybird = (Boolean)renderRequest.getAttribute("isEarlybird");
-	int optionalLate = 0;
-	if (!isEarlybird) {
-		optionalLate = 20;
-	}
-	
-	
 	List<String> errors = (List<String>) renderRequest.getAttribute("errors");
 	if (errors != null && errors.size() > 0) {
 		for (String error : errors) {
@@ -38,53 +29,60 @@
 	
 	String formTitle = "";
 	String emptyStr = "";
+	String selectedStr = "selected=\"selected\"";
 	boolean isEdit = false;
 	
 	boolean hasFormBean = formBean != null;
 	
 	if (cmd.equals("ADD")) {
 		formTitle = "Conference Registration";
-		
 	}
 	else if (cmd.equals("EDIT")) {
 		formTitle = "Edit Conference Registration Details";
 		isEdit = true;
-
 	}
-		 
  %>
-
 
 <script type="text/javascript">
 
+function hotelDays() {
+  var ci = moment(document.getElementById('checkinDate').value, 'DD/MM/YYYY');
+  var co = moment(document.getElementById('checkoutDate').value, 'DD/MM/YYYY');
+  var days = co.diff(ci, 'days');
+  return ((days>=0)&&(days<=31))?days:0;
+}
+
+function roomPerNight() {
+  var roomType = jQuery("[name='hotelRoomType']:checked").val();
+  if(roomType === 'hotelRoomDouble' || roomType === 'hotelRoomTwin') {
+    return 129;
+  } else {
+    return 0;
+  }
+}
 
 function updateTotalCost() {
 	var registrationRate = jQuery("[name='registrationRate']:checked").val();
 	var rate = 0;
-	var isEarlybird = <%= isEarlybird %>;
 	switch (registrationRate) {
 		case 'StudentMember':
-			rate = 380; break;
+			rate = 330; break;
 		case 'StudentNonMember':
-			rate = 410; break;
+			rate = 380; break;
 		case 'FullMember':
-			rate = 490; break;
+			rate = 380; break;
 		case 'FullNonMember':
-			rate = 530; break;
+			rate = 430; break;
 	}
-	if (!isEarlybird) {
-		rate += 20
-	}
-	
+	var breakfast = (jQuery("[name='breakfastIncluded']:checked").val() === 'true') ? 1 : 0;
 	var studentMentoringDiscount = (jQuery("[name='studentMentoringDiscount']:checked").val() === 'true') ? 1 : 0;
-	var coralIdentification = (jQuery("[name='coralIdentificationWorkshop']:checked").val() === 'true') ? 1 : 0;
 	var welcomeTickets = parseInt(jQuery("[name='additionalTicketsWelcome']").val()) || 0;
 	var dinnerTickets = parseInt(jQuery("[name='additionalTicketsDinner']").val()) || 0;
-
-	var regTotal = rate + (studentMentoringDiscount * -70) + (coralIdentification * 330) + welcomeTickets * 25 + dinnerTickets * 99; 
+	var regTotal = rate + (studentMentoringDiscount * - 60) + welcomeTickets * 30 + dinnerTickets * 70 +
+		hotelDays() * (breakfast*20 + roomPerNight()); 
 	jQuery("#totalRegistrationCost").text("$" + regTotal);
-
 }
+
 jQuery(window).load( function() {
 	jQuery("form select").change(updateTotalCost);
 	jQuery("form input").keyup(updateTotalCost);
@@ -93,60 +91,46 @@ jQuery(window).load( function() {
 });
 
 </script>
-			
-<div>
 
+<div>
 
 <form id="registrationForm" action="<portlet:actionURL/>" method="post" name="<portlet:namespace />fm">
 
 <fieldset>
-<legend>ACRS Conference Registration 2013</legend>
+<legend>ACRS Conference Registration 2017</legend>
 
 	<div class="conference-inclusions">
 		<h3>Cost of Registration</h3>
-	
-		<h4>Early Bird Registration (on or before 15th July)</h4>
+
 		<ul>
-			<li>Student member: $380</li>
-			<li>Student non-member: $410</li>
-			<li>Full member: $490</li>
-			<li>Full non-member: $530</li>
+			<li>Student member: $330</li>
+			<li>Student non-member: $380</li>
+			<li>Full member: $380</li>
+			<li>Full non-member: $430</li>
 		</ul>
-		 
-		
-		<h4>Late Registration (after 15th July)</h4>
-		<ul>
-			<li>Student member: $400</li>
-			<li>Student non-member: $430</li>
-			<li>Full member: $510</li>
-			<li>Full non-member: $550</li>
-		</ul>
-		<div>
-			Current ACRS and ISRS members are eligible for the member registrations.
-		</div>
-		
-		 
-		
+
 		<h3>What's included in the registration price?</h3>
 		<ul>
-			<li>Welcome Function at Sea Life Sydney Aquarium</li>
-			<li>Conference bag with Program and Abstract booklet, plus name badge</li>
-			<li>2 days of conference presentations at the Menzies Hotel, including morning tea, lunch and afternoon tea</li>
-			<li>Poster session at the Menzies Hotel</li>
-			<li>Conference Dinner at the Star Room</li>
+			<li>The Welcome Function on 16 July at Reef HQ, Townsville at 6 pm</li>
+			<li>Two days of inspiring presentations, workshops and discussions on 17 and 18 July at Rydges Hotel, Townsville, on Palmer St</li>
+			<li>A poster session on 17 July at 6 pm at Rydges Hotel</li>
+			<li>A beautiful live performance piece on 17 July at 7:30 - 8:30 pm at Rydges Hotel</li>
+			<li>Conference Awards dinner on 18 July at 7 pm at Rydges Hotel</li>
 		</ul>
 	</div>
 
 	<div>
 		<label for="title">Title: <span class="required">*</span></label>
 		<select name="title" id="title">
-			<!-- >option value="Mr">Mr</option  -->
-			<option value="Ms">Ms</option>
-			<option value="Dr">Dr</option>
-			<option value="Prof">Prof</option>
+			<option value="Prof" <%=hasFormBean?("Prof".equals(formBean.getTitle())?selectedStr:emptyStr):emptyStr%>>Prof</option>
+			<option value="Dr" <%=hasFormBean?("Dr".equals(formBean.getTitle())?selectedStr:emptyStr):emptyStr%>>Dr</option>
+			<option value="Ms" <%=hasFormBean?("Ms".equals(formBean.getTitle())?selectedStr:emptyStr):emptyStr%>>Ms</option>
+			<option value="Mr" <%=hasFormBean?("Mr".equals(formBean.getTitle())?selectedStr:emptyStr):emptyStr%>>Mr</option>
+<%--
 			<option selected="selected" 
 			value="<%= isEdit ? StringEscapeUtils.escapeHtml(editRegistration.getTitle()) : "Mr" %>">
 			<%= isEdit ? StringEscapeUtils.escapeHtml(editRegistration.getTitle()) : "Mr" %></option>
+--%>
 		</select>
 	</div>
 
@@ -174,87 +158,145 @@ jQuery(window).load( function() {
 	
 	<br>
 	<div>
-	
 		<label for="submittingAbstract">Have you submitted, or do you intend to submit an Abstract?</label>
 		<div class="groupedinputs">
-		<input class="radioCheckbox" type="radio" name="submittingAbstract" value="true" <%= hasFormBean ? ("true".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>Yes
-	 	<input class="radioCheckbox" type="radio" name="submittingAbstract" value="false" <%= hasFormBean ? ("false".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>No
-	 	</div>
+		<input class="radioCheckbox" type="radio" name="submittingAbstract" value="true" <%= hasFormBean ?
+			("true".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>Yes
+		<input class="radioCheckbox" type="radio" name="submittingAbstract" value="false" <%= hasFormBean ?
+			("false".equals(formBean.getSubmittingAbstract()) ? " checked" : emptyStr) : emptyStr %>/>No
+		</div>
 	</div>
 	<br>
-	<div>							
+
+	<div>
 		<label for="registrationRate">Select your registration rate: <span class="required">*</span><br><br><br></label>
 		<div class="groupedinputs">
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentMember") ? " checked" : emptyStr) : emptyStr %>/> Student member: <b>$<%=380 + optionalLate %></b><br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("StudentNonMember") ? " checked" : emptyStr) : emptyStr %>/> Student non-member: <b>$<%= 410 + optionalLate %></b><br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullMember") ? " checked" : emptyStr) : emptyStr %>/> Full member: <b>$<%= 490 + optionalLate %></b><br />
-		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMember" <%= hasFormBean ? (formBean.getRegistrationRate().equals("FullNonMember") ? " checked" : emptyStr) : emptyStr %>/> Full non-member: <b>$<%= 530 + optionalLate %></b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentMember" <%= hasFormBean ?
+			(formBean.getRegistrationRate().equals("StudentMember") ? " checked" : emptyStr) : emptyStr %>/> Student member: <b>$330</b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="StudentNonMember" <%= hasFormBean ?
+			(formBean.getRegistrationRate().equals("StudentNonMember") ? " checked" : emptyStr) : emptyStr %>/> Student non-member: <b>$380</b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullMember" <%= hasFormBean ?
+			(formBean.getRegistrationRate().equals("FullMember") ? " checked" : emptyStr) : emptyStr %>/> Full member: <b>$380</b><br />
+		<input class="radioCheckbox" type="radio" name="registrationRate" value="FullNonMember" <%= hasFormBean ?
+			(formBean.getRegistrationRate().equals("FullNonMember") ? " checked" : emptyStr) : emptyStr %>/> Full non-member: <b>$430</b><br />
 		</div>
-		
 		<div>
-		If you are not an ACRS member and wish to join, complete the <a href="http://www.australiancoralreefsociety.org/apply-individual" target="_blank">individual membership application form</a>.
+			If you are not an ACRS member and wish to join, complete the <a href="http://www.australiancoralreefsociety.org/apply-individual"
+				target="_blank">individual membership application form</a>.
 		</div>
 	</div>
 	<br>
+
+	<div>
+		<div><b>Accommodation</b></div>
+		<div>
+			<label for="hotelRoomType">If you wish to stay at Rydges Hotel, select your room type:</label>
+			<div class="groupedinputs">
+				<input class="radioCheckbox" type="radio" name="hotelRoomType" value="hotelRoomDouble"<%=hasFormBean ?
+					("hotelRoomDouble".equals(formBean.getHotelRoomType()) ? " checked" : emptyStr) : emptyStr%>/>
+					Double room: <b>$129</b> per night per room<br>
+				<input class="radioCheckbox" type="radio" name="hotelRoomType" value="hotelRoomTwin"<%=hasFormBean ? 
+					("hotelRoomTwin".equals(formBean.getHotelRoomType()) ? " checked" : emptyStr) : emptyStr%>/>
+					Twin room: <b>$129</b> per night per room<br>
+				<input class="radioCheckbox" type="radio" name="hotelRoomType" value="hotelRoomNone"<%=hasFormBean ? 
+					("hotelRoomNone".equals(formBean.getHotelRoomType()) ? " checked" : emptyStr) : emptyStr%>/>
+					I will organise my own accommodation or another delegate has paid for the twin room I will share: <b>$0</b><br>
+			</div>
+		</div>
+
+		<div><label for="breakfastIncluded">Would you like breakfast included ($20 per day)?</label>
+			<div class="groupedinputs">
+				<input class="radioCheckbox" type="radio" name="breakfastIncluded" value="true" <%=hasFormBean ?
+					("true".equals(formBean.getBreakfastIncluded()) ? " checked" : emptyStr) : emptyStr%>/>Yes<br>
+				<input class="radioCheckbox" type="radio" name="breakfastIncluded" value="false" <%=hasFormBean ?
+					("false".equals(formBean.getBreakfastIncluded()) ? " checked" : emptyStr) : emptyStr%>/>No<br>
+			</div>
+		</div>
+		<br>
+
+		<div><label for="checkinDate">What date will you check in at Rydges Hotel?</label>
+			<input type="text" id="checkinDate" name="checkinDate" value="<%=hasFormBean?formBean.getCheckinDate():emptyStr%>"/>
+		</div>
+
+		<div><label for="checkoutDate">What date will you check out of Rydges Hotel?</label>
+			<input type="text" id="checkoutDate" name="checkoutDate" value="<%=hasFormBean?formBean.getCheckoutDate():emptyStr%>"/>
+		</div>
+<script>
+	var checkInPicker = new Pikaday({
+		field: document.getElementById('checkinDate'),
+		format: 'DD/MM/YYYY',
+		defaultDate: new Date('2017-7-16'),
+		setDefaultDate: false,
+		minDate: new Date('2017-7-1'),
+		maxDate: new Date('2017-7-31')
+	});
+	var checkInPicker = new Pikaday({
+		field: document.getElementById('checkoutDate'),
+		format: 'DD/MM/YYYY',
+		defaultDate: new Date('2017-7-19'),
+		setDefaultDate: false,
+		minDate: new Date('2017-7-1'),
+		maxDate: new Date('2017-7-31')
+	});
+</script>
+
+		<div>
+			Do you need assistance from the ACRS organising committee to help find someone to share a twin room?
+			<label for="assistShareTwinRoom"></label>
+			<div class="groupedinputs">
+				<input class="radioCheckbox" type="radio" name="assistShareTwinRoom" value="true" <%=hasFormBean ?
+					("true".equals(formBean.getAssistShareTwinRoom()) ? " checked" : emptyStr) : emptyStr%>/>Yes
+				<input class="radioCheckbox" type="radio" name="assistShareTwinRoom" value="false" <%=hasFormBean ?
+					("false".equals(formBean.getAssistShareTwinRoom()) ? " checked" : emptyStr) : emptyStr%>/>No
+			</div>
+		</div>
+	</div>
+
 	<div>
 		<div>Do you wish to attend the Student Mentoring Day?</div>
 		<label for="attendStudentMentoringDay"></label>
 		<div class="groupedinputs">
-		  <input class="radioCheckbox" type="radio" name="attendStudentMentoringDay" value="true" <%=hasFormBean ? ("true".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>Yes
-	 	  <input class="radioCheckbox" type="radio" name="attendStudentMentoringDay" value="false" <%=hasFormBean ? ("false".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>No
+			<input class="radioCheckbox" type="radio" name="attendStudentMentoringDay" value="true" <%=hasFormBean ?
+				("true".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>Yes
+			<input class="radioCheckbox" type="radio" name="attendStudentMentoringDay" value="false" <%=hasFormBean ?
+				("false".equals(formBean.getAttendStudentMentoringDay()) ? " checked" : emptyStr) : emptyStr%>/>No
 		</div>
-		<div>
-		If you are not a student, please tick No.
-		</div>
-		
-		<div>If you do wish to attend the student day, are you eligible for the $70 discount?</div>
+		<div>If you are not a student, please tick No.</div>
+	</div>
+
+	<div>
+		<div>If you do wish to attend the student day, are you eligible for the $60 discount?</div>
 		<label for="studentMentoringDiscount"></label>
 		<div class="groupedinputs">
-		  <input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="true" <%=hasFormBean ? ("true".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>Yes
-	 	  <input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="false" <%=hasFormBean ? ("false".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>No
+			<input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="true" <%=hasFormBean ?
+				("true".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>Yes
+			<input class="radioCheckbox" type="radio" name="studentMentoringDiscount" value="false" <%=hasFormBean ?
+				("false".equals(formBean.getStudentMentoringDiscount()) ? " checked" : emptyStr) : emptyStr%>/>No
 		</div>
 		<div>
 		If you are not attending the day, please tick No.<br>
-		To be eligible, you must attend the student day, and NOT be a Sydney-based student (note, there are only 40 places available).
+		To be eligible, you must attend the student mentoring day,
+		and NOT be a Townsville-based student (note, there are only 40 places available).
 		</div>
-	
 	</div>
 	
 	<br>
 	<div>
-		<label for="simsExcursion">Would you like to attend the excursion to SIMS?  <b>(no cost)</b></label>
-		<div class="groupedinputs">
-		<input class="radioCheckbox" type="radio" name="simsExcursion" value="true" <%= hasFormBean ? ("true".equals(formBean.getSimsExcursion())  ? " checked" : emptyStr) : emptyStr %>/>Yes
-	 	<input class="radioCheckbox" type="radio" name="simsExcursion" value="false" <%= hasFormBean ? ("false".equals(formBean.getSimsExcursion()) ? " checked" : emptyStr) : emptyStr %>/>No
-		</div>	
-	</div>
-	
-	<br>
-	<div>
-		<label for="coralIdentificationWorkshop">Would you like to attend the Coral Identification Workshop?  <b>$330</b></label>
-		<div class="groupedinputs">
-		<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="true" <%= hasFormBean ? ("true".equals(formBean.getCoralIdentificationWorkshop())  ? " checked" : emptyStr) : emptyStr %>/>Yes
-	 	<input class="radioCheckbox" type="radio" name="coralIdentificationWorkshop" value="false" <%= hasFormBean ? ("false".equals(formBean.getCoralIdentificationWorkshop()) ? " checked" : emptyStr) : emptyStr %>/>No
-		</div>	
-	</div>
-	
-	<br>
-	<div>
-		<div>If you would like to purchase additional tickets to the Welcome Function at Sea Life Sydney Aquarium, please 
-		enter the number of tickets in this box. Otherwise, please leave the box blank. Additional welcome function tickets are <b>$25.00&nbsp;ea</b></div>
+		<div>If you would like to purchase additional tickets to the Welcome Function at Reef HQ, please 
+		enter the number of tickets in this box. Otherwise, please leave the box blank.
+		Additional welcome function tickets are <b>$30.00&nbsp;ea</b></div>
 		<label for="additionalTicketsWelcome"></label>
-		
-		<input type="text" name="additionalTicketsWelcome" id="additionalTicketsWelcome" 
+		<input type="number" min="0" max="100" name="additionalTicketsWelcome" id="additionalTicketsWelcome" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getAdditionalTicketsWelcome()) : emptyStr %>">
 	</div>
 	
 	<br>
 	<div>
-		<div>If you would like to purchase additional guest tickets to the Conference Dinner at the Star Room please
-		 enter the number of tickets in this box. Otherwise, please leave the box blank. Additional tickets are <b>$99.00&nbsp;ea</b></div>
+		<div>If you would like to purchase additional guest tickets to the Conference Dinner at 
+		Rydges Hotel, please enter the number of tickets in this box. Otherwise, please leave the
+		box blank. Additional tickets are <b>$70.00&nbsp;ea</b></div>
 		<label for="additionalTicketsDinner"></label>
-		
-		<input type="text" name="additionalTicketsDinner" id="additionalTicketsDinner" 
+		<input type="number" min="0" max="100" name="additionalTicketsDinner" id="additionalTicketsDinner" 
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getAdditionalTicketsDinner()) : emptyStr %>">
 	</div>
 	
@@ -266,17 +308,10 @@ jQuery(window).load( function() {
 		value="<%= hasFormBean ? StringEscapeUtils.escapeHtml(formBean.getSpecialFoodRequirements()) : emptyStr %>">
 	</div>
 	
-	<% if (!isEdit) { %>
-	<div class="captcha">
-		<span class="required">*</span>
-		<portlet:resourceURL var="captchaURL" id="captcha"/>
-		<img class="captcha" src="<%= captchaURL %>"/>
-		<label for="captchaText">4 digit text verification</label>
-		<input type="text" name="captchaText">
-<%--		<liferay-ui:captcha url="<%= captchaURL %>"/>  --%>
-	</div>
+	<% if (!isEdit && ACRSApplication.getConfiguration().isCheckCaptcha()) { %>
+		<script src='https://www.google.com/recaptcha/api.js'></script>
+		<div class="g-recaptcha" data-sitekey="6LfoEBwTAAAAAK9fHlQVmvTOgQHEYqsnJphqG7Dp"></div>
 	<% } %>
-	
 
 	<% if (isEdit) { %>
 		<div>					
@@ -312,14 +347,14 @@ jQuery(window).load( function() {
 		
 		<div style="color: red;">
 		  CANCELLATION AND REFUND POLICY:<br>
-Cancellations must be notified in writing to the Conference Organiser (<a href="mailto:ross.hill@unsw.edu.au">ross.hill@unsw.edu.au</a>).<br>
-Cancellations before Tuesday 6 August 2013 will incur a $10.00 administration fee on their full refund.<br>
-Cancellations on or after Tuesday 6 August 2013 will receive no refund.<br>
+Cancellations must be notified in writing to the Conference Organiser (<a href="mailto:selinaward@uq.edu.au">selinaward@uq.edu.au</a>).<br>
+Cancellations before Friday 23 June 2017 will incur a $50.00 administration fee on their full refund.<br>
+Cancellations on or after Friday 23 June 2017 will receive no refund.<br>
 					
 		</div>
 		<div>
 			Please note: When paying with PayPal, you will automatically receive a receipt to your email.
-			If you require an additional receipt from ACRS, please let us know by emailing <a href="mailto:acrs@uq.edu.au">acrs@uq.edu.au</a>.
+			If you require an additional receipt from ACRS, please let us know by emailing <a href="mailto:austcoralreefsoc@gmail.com">austcoralreefsoc@gmail.com</a>.
 		</div>
 		  <label for="submit"><br></label>
 		  <input type="submit" name="submit" value="Save Details and Proceed to Paypal >" 

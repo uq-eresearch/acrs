@@ -323,8 +323,10 @@
 						  onClick="document.getElementById('removeFlag').value='Y'; self.location = '<portlet:renderURL><portlet:param name="cmd" value="SUBMIT"/></portlet:renderURL>';"/>					  
 				      </div>
 				    <%  } else {%>
+						<% if(ACRSApplication.getConfiguration().isCheckCaptcha()) { %>
             <script src='https://www.google.com/recaptcha/api.js'></script>
             <div class="g-recaptcha" data-sitekey="6LfoEBwTAAAAAK9fHlQVmvTOgQHEYqsnJphqG7Dp"></div>
+            			<% } %>
 					<div>
 					  For all new ACRS members your membership will need to be approved by Council. If for some reason your application is deemed inappropriate, a full refund will be given.					
 					</div>
