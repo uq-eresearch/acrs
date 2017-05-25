@@ -25,6 +25,7 @@ import org.acrs.app.ACRSApplication;
 import org.acrs.data.access.MemberDao;
 import org.acrs.data.model.Member;
 import org.acrs.util.Emailer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -240,12 +241,13 @@ public class MembersPortlet extends GenericPortlet {
                 membersDao.save(newMember);
 
                 // email stuff out
-                String approvalEmail1 = ACRSApplication.getConfiguration().getApprovalEmail1();
-                String approvalEmail2 = ACRSApplication.getConfiguration().getApprovalEmail2();
+                String notificationRecipients = ACRSApplication.getConfiguration().getNotificationRecipients();
                 String emailListCoordEmail = ACRSApplication.getConfiguration().getEmailListCoordEmail();
 
-                String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application for membership that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
-                String emailListMessage = "Hi, \n\nThe following membership applicant indicated a desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
+                String approvalMessage = "Hi ACRS, \n\nPlease find below details of an application "
+                    + "for membership that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
+                String emailListMessage = "Hi, \n\nThe following membership applicant indicated a"
+                    + " desire to subscribe to the ACRS Mailing List. \n\nKind Regards, \nThe ACRS Website\n\n";
                 String applicantDetail = "\n\tName:\t\t\t\t" + title + " " + firstName + " " + lastName
                         + "\n\tAddress:\t\t\t" + streetAddress + ", " + city + " " + state + " " + postcode
                         + "\n\tEmail:\t\t\t" + email
@@ -257,13 +259,18 @@ public class MembersPortlet extends GenericPortlet {
                         + "\n\tMembership Amount: \t" + membershipAmount + "0";
 
                 try {
-                    Emailer.sendEmail(approvalEmail1, "no-reply@acrs.org", "New ACRS Membership", approvalMessage + applicantDetail);
-                    Emailer.sendEmail(approvalEmail2, "no-reply@acrs.org", "New ACRS Membership", approvalMessage + applicantDetail);
-
-                    if (acrsEmailListFlag.equals("Y")) {
-                        Emailer.sendEmail(emailListCoordEmail, "no-reply@acrs.org", "New ACRS Mail List Subscribe Request", emailListMessage + applicantDetail);
+                  for(String recipient : StringUtils.split(notificationRecipients, ';')) {
+                    final String r = StringUtils.strip(recipient);
+                    if(StringUtils.isNotBlank((r))) {
+                      Emailer.sendEmail(r, "no-reply@acrs.org", "New ACRS Membership",
+                          approvalMessage + applicantDetail);
+                      _log.info(String.format("new acrs member notification send to '%s'", r));
                     }
-
+                  }
+                  if (acrsEmailListFlag.equals("Y")) {
+                    Emailer.sendEmail(emailListCoordEmail, "no-reply@acrs.org",
+                        "New ACRS Mail List Subscribe Request", emailListMessage + applicantDetail);
+                  }
                 } catch (MessagingException e) {
                     _log.fatal("Could not send email.");
                 }

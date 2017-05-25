@@ -35,10 +35,9 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final String baseUrl;
     private final String paypalBusinessCode;
     private final String paypalCharset;
-    private final String approvalEmail1;
-    private final String approvalEmail2;
     private final String emailListCoordEmail;
     private final boolean checkCaptcha;
+    private final String notificationRecipients;
 	private ConferenceRegistrationDaoImpl conferenceRegDao;
 
     public ApplicationContext() throws InitializationException {
@@ -108,11 +107,10 @@ public class ApplicationContext implements Configuration, ServletContextListener
         this.paypalCharset = getProperty(properties, "paypalCharset");
         this.baseUrl = getProperty(properties, "baseUrl");
 
-        this.approvalEmail1 = getProperty(properties, "approvalEmail1");
-        this.approvalEmail2 = getProperty(properties, "approvalEmail2");
         this.emailListCoordEmail = getProperty(properties, "emailListCoordEmail");
         this.submissionEmailConfig.setProperty("mail.smtp.host", submissionEmailServer);
         this.checkCaptcha = Boolean.valueOf(getProperty(properties, "checkCaptcha"));
+        this.notificationRecipients = getProperty(properties, "notificationRecipients");
     }
 
     @Override
@@ -179,14 +177,6 @@ public class ApplicationContext implements Configuration, ServletContextListener
         return baseUrl;
     }
 
-    public String getApprovalEmail1() {
-        return approvalEmail1;
-    }
-
-    public String getApprovalEmail2() {
-        return approvalEmail2;
-    }
-
     public String getEmailListCoordEmail() {
         return emailListCoordEmail;
     }
@@ -207,4 +197,9 @@ public class ApplicationContext implements Configuration, ServletContextListener
 	public boolean isCheckCaptcha() {
 	  return checkCaptcha;
 	}
+
+  public String getNotificationRecipients() {
+    return notificationRecipients;
+  }
+
 }

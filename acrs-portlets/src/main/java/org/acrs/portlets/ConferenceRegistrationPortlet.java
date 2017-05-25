@@ -26,6 +26,7 @@ import org.acrs.data.model.ConferenceRegistration;
 import org.acrs.data.model.SystemClock;
 import org.acrs.util.Emailer;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -321,11 +322,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 	 *            database
 	 */
 	private void sendEmailNotifications(ConferenceRegistration newRegistration) {
-		String approvalEmail1 = ACRSApplication.getConfiguration()
-				.getApprovalEmail1();
-		String approvalEmail2 = ACRSApplication.getConfiguration()
-				.getApprovalEmail2();
-
+	  String notificationRecipients = ACRSApplication.getConfiguration().getNotificationRecipients();
 		String approvalMessage = "Hi ACRS, \n\nPlease find below details of 2017 Conference Registration"
 		    + " that has been submitted. \n\nKind Regards, \nThe ACRS Website\n\n";
 		String applicantDetail = "\n\tName:\t\t\t"
@@ -334,15 +331,17 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
 				+ newRegistration.getLastName() + "\n\tEmail:\t\t\t"
 				+ newRegistration.getEmail() + "\n\tInstitution:\t\t"
 				+ newRegistration.getInstitution();
-
 		try {
-			Emailer.sendEmail(approvalEmail1, "no-reply@acrs.org",
-					"New ACRS Conference Registration", approvalMessage + applicantDetail);
-			Emailer.sendEmail(approvalEmail2, "no-reply@acrs.org",
-					"New ACRS Conference Registration", approvalMessage + applicantDetail);
-
+      for(String recipient : StringUtils.split(notificationRecipients, ';')) {
+        final String r = StringUtils.strip(recipient);
+        if(StringUtils.isNotBlank((r))) {
+          Emailer.sendEmail(r, "no-reply@acrs.org", "New ACRS Conference Registration",
+              approvalMessage + applicantDetail);
+          _log.info(String.format("new acrs conference registration notification send to '%s'", r));
+        }
+      }
 		} catch (MessagingException e) {
-			_log.fatal("Could not send email.");
+			_log.fatal("Could not send email conference registration email", e);
 		}
 	}
 

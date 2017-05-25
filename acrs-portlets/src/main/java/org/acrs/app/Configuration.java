@@ -30,10 +30,6 @@ public interface Configuration {
 
     String getBaseUrl();
 
-    String getApprovalEmail1();
-
-    String getApprovalEmail2();
-
     String getEmailListCoordEmail();
     
     String getPaypalBusinessCode();
@@ -43,4 +39,6 @@ public interface Configuration {
     boolean isCheckCaptcha();
 
     JpaConnectorService getJpaConnectorService();
+
+    String getNotificationRecipients();
 }
