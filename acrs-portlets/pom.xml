@@ -220,9 +220,9 @@
 			<url>http://maven.restlet.org</url>
 		</repository>
 		<repository>
-      <id>coralwatch</id>
-      <name>coralwatch repository</name>
-      <url>https://swift.rc.nectar.org.au:8888/v1/AUTH_96387d3104434db5bdd0a74e17e503f5/maven</url>
+      <id>acrs</id>
+      <name>acrs repository</name>
+      <url>https://swift.rc.nectar.org.au:8888/v1/AUTH_ffc889d904964131af390cd202d8f603/maven</url>
     </repository>
 	</repositories>
 </project>
