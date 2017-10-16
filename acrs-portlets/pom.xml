@@ -49,18 +49,6 @@
 		<name>The Australian Coral Reef Society (ACRS)</name>
 		<url>http://www.australiancoralreefsociety.org/</url>
 	</organization>
-	<distributionManagement>
-		<repository>
-			<id>maenad-releases</id>
-			<name>maenad-releases</name>
-			<url>http://maven.metadata.net/artifactory/libs-releases-local</url>
-		</repository>
-		<snapshotRepository>
-			<id>maenad-snapshots</id>
-			<name>maenad-snapshots</name>
-			<url>http://maven.metadata.net/artifactory/libs-snapshots-local</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<build>
 		<finalName>acrs-portlets</finalName>
 		<plugins>
@@ -72,25 +60,6 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-            <!--
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>tomcat-maven-plugin</artifactId>
-				<configuration>
-					<url>http://localhost:8080/manager</url>
-					<server>tomcat</server>
-					<path>/acrs</path>
-					<update>true</update>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<configuration>
-					<contextPath>/acrs</contextPath>
-				</configuration>
-			</plugin>
-			-->
 		</plugins>
 	</build>
 	<dependencies>
@@ -251,10 +220,9 @@
 			<url>http://maven.restlet.org</url>
 		</repository>
 		<repository>
-			<id>eresearch</id>
-			<name>eResearch repository for releases</name>
-			<url>http://maven.metadata.net/artifactory/repo</url>
-		</repository>
+      <id>coralwatch</id>
+      <name>coralwatch repository</name>
+      <url>https://swift.rc.nectar.org.au:8888/v1/AUTH_96387d3104434db5bdd0a74e17e503f5/maven</url>
+    </repository>
 	</repositories>
-
 </project>
