@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -54,8 +52,7 @@ public class PayPalServlet extends HttpServlet {
 		// using HTTPS requires either Java 1.4 or greater, or Java Secure Socket Extension (JSSE)
 		// and configured for older versions.
 		URL u = new URL(ACRSApplication.getConfiguration().getPaypalIpnUrl());
-		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ACRSApplication.getConfiguration().getServerProxyName(), 8080));
-		URLConnection uc = u.openConnection(proxy);
+		URLConnection uc = u.openConnection();
 
 		uc.setDoOutput(true);
 		uc.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
