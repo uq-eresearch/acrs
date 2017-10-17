@@ -30,7 +30,6 @@ public class ApplicationContext implements Configuration, ServletContextListener
     private final MemberDao memberDao;
     private final Logger logger = Logger.getLogger(ApplicationContext.class.getName());
     private final Properties submissionEmailConfig;
-    private final String serverProxy;
     private final String paypalIpnUrl;
     private final String baseUrl;
     private final String paypalBusinessCode;
@@ -101,7 +100,6 @@ public class ApplicationContext implements Configuration, ServletContextListener
 
         this.submissionEmailConfig = new Properties();
         String submissionEmailServer = getProperty(properties, "emailServer");
-        this.serverProxy = getProperty(properties, "serverProxyName");
         this.paypalIpnUrl = getProperty(properties, "paypalIpnUrl");
         this.paypalBusinessCode = getProperty(properties, "paypalBusinessCode");
         this.paypalCharset = getProperty(properties, "paypalCharset");
@@ -137,11 +135,6 @@ public class ApplicationContext implements Configuration, ServletContextListener
     @Override
     public Properties getSubmissionEmailConfig() {
         return submissionEmailConfig;
-    }
-
-    @Override
-    public String getServerProxyName() {
-        return serverProxy;
     }
 
     public String getPaypalIpnUrl() {
