@@ -335,7 +335,7 @@ public class ConferenceRegistrationPortlet extends GenericPortlet {
       for(String recipient : StringUtils.split(notificationRecipients, ';')) {
         final String r = StringUtils.strip(recipient);
         if(StringUtils.isNotBlank((r))) {
-          Emailer.sendEmail(r, "no-reply@acrs.org", "New ACRS Conference Registration",
+          Emailer.sendEmail(r, "no-reply@australiancoralreefsociety.org", "New ACRS Conference Registration",
               approvalMessage + applicantDetail);
           _log.info(String.format("new acrs conference registration notification send to '%s'", r));
         }

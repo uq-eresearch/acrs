@@ -262,13 +262,13 @@ public class MembersPortlet extends GenericPortlet {
                   for(String recipient : StringUtils.split(notificationRecipients, ';')) {
                     final String r = StringUtils.strip(recipient);
                     if(StringUtils.isNotBlank((r))) {
-                      Emailer.sendEmail(r, "no-reply@acrs.org", "New ACRS Membership",
+                      Emailer.sendEmail(r, "no-reply@australiancoralreefsociety.org", "New ACRS Membership",
                           approvalMessage + applicantDetail);
                       _log.info(String.format("new acrs member notification send to '%s'", r));
                     }
                   }
                   if (acrsEmailListFlag.equals("Y")) {
-                    Emailer.sendEmail(emailListCoordEmail, "no-reply@acrs.org",
+                    Emailer.sendEmail(emailListCoordEmail, "no-reply@australiancoralreefsociety.org",
                         "New ACRS Mail List Subscribe Request", emailListMessage + applicantDetail);
                   }
                 } catch (MessagingException e) {
