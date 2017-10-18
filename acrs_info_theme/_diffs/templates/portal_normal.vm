@@ -14,16 +14,16 @@
           content="coral, feef, reef, monitoring, bleaching, The University of Queensland, Brisbane, Australia"/>
     $theme.include($top_head_include)
 
-    <link rel="stylesheet" type="text/css" href="http://o.aolcdn.com/dojo/1.4.0/dijit/themes/tundra/tundra.css"/>
+    <link rel="stylesheet" type="text/css" href="https://o.aolcdn.com/dojo/1.4.0/dijit/themes/tundra/tundra.css"/>
     <script type="text/javascript">
         var djConfig = {
             isDebug:false, parseOnLoad:true, locale:"en"
         };
     </script>
-    <script type="text/javascript" src="http://o.aolcdn.com/dojo/1.4.0/dojo/dojo.xd.js"></script>
-    <link rel="stylesheet" href="http://o.aolcdn.com/dojo/1.4.0/dojox/grid/resources/Grid.css">
-    <link rel="stylesheet" href="http://o.aolcdn.com/dojo/1.4.0/dojox/grid/resources/tundraGrid.css">
-    <link rel="stylesheet" href="http://o.aolcdn.com/dojo/1.4.0/dojox/form/resources/Rating.css">
+    <script type="text/javascript" src="https://o.aolcdn.com/dojo/1.4.0/dojo/dojo.xd.js"></script>
+    <link rel="stylesheet" href="https://o.aolcdn.com/dojo/1.4.0/dojox/grid/resources/Grid.css">
+    <link rel="stylesheet" href="https://o.aolcdn.com/dojo/1.4.0/dojox/grid/resources/tundraGrid.css">
+    <link rel="stylesheet" href="https://o.aolcdn.com/dojo/1.4.0/dojox/form/resources/Rating.css">
     <style type="text/css">
         .dojoxGrid table {
             margin: 0;
